@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+{% block title %}Données — ILMYS{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row align-items-end">
+            <div class="col-lg-8">
+                <div class="page-hero-eyebrow">
+                    <span class="hero-dot me-2"></span>
+                    Données ouvertes
+                </div>
+                <h1 class="page-hero-title">
+                    Données disponibles
+                </h1>
+                <p class="page-hero-desc">
+                    Tous les jeux de données utilisés dans nos 
+                    analyses sont librement téléchargeables. 
+                    Sources vérifiées, fichiers propres et documentés.
+                </p>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="donnees-stat-box">
+                            <div class="donnees-stat-num 
+                                        text-vert">
+                                {{ total }}
+                            </div>
+                            <div class="donnees-stat-label">
+                                Jeux de données
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="donnees-stat-box">
+                            <div class="donnees-stat-num 
+                                        text-bleu">
+                                {{ total_dl }}
+                            </div>
+                            <div class="donnees-stat-label">
+                                Téléchargements
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BANNIÈRE OPEN DATA -->
+<div class="opendata-banner">
+    <div class="container">
+        <div class="row align-items-center g-3">
+            <div class="col-auto">
+                <div class="opendata-icon">
+                    <svg width="24" height="24"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="#16A34A" stroke-width="1.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="col">
+                <div class="opendata-text">
+                    <strong>Données ouvertes</strong> — 
+                    Tous les fichiers sont librement utilisables 
+                    avec mention de la source. ILMYS s'engage à 
+                    publier uniquement des données vérifiables 
+                    et documentées.
+                </div>
+            </div>
+            <div class="col-auto">
+                <a href="{{ url_for('collaborer') }}"
+                   class="opendata-link">
+                    Proposer des données →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FILTRES -->
+<div class="analyses-filters sticky-top">
+    <div class="container">
+        <div class="filters-inner">
+            <a href="{{ url_for('donnees') }}"
+               class="filter-btn {% if categorie == 'toutes' or not categorie %}active{% endif %}">
+                Toutes
+                <span class="filter-count">
+                    {{ categories.toutes }}
+                </span>
+            </a>
+            <a href="{{ url_for('donnees') }}?categorie=sante"
+               class="filter-btn {% if categorie == 'sante' %}active{% endif %}">
+                <span class="filter-dot"
+                      style="background:#16A34A"></span>
+                Santé
+                <span class="filter-count">
+                    {{ categories.sante }}
+                </span>
+            </a>
+            <a href="{{ url_for('donnees') }}?categorie=education"
+               class="filter-btn {% if categorie == 'education' %}active{% endif %}">
+                <span class="filter-dot"
+                      style="background:#2563EB"></span>
+                Éducation
+                <span class="filter-count">
+                    {{ categories.education }}
+                </span>
+            </a>
+            <a href="{{ url_for('donnees') }}?categorie=economie"
+               class="filter-btn {% if categorie == 'economie' %}active{% endif %}">
+                <span class="filter-dot"
+                      style="background:#D97706"></span>
+                Économie
+                <span class="filter-count">
+                    {{ categories.economie }}
+                </span>
+            </a>
+            <a href="{{ url_for('donnees') }}?categorie=gouvernance"
+               class="filter-btn {% if categorie == 'gouvernance' %}active{% endif %}">
+                <span class="filter-dot"
+                      style="background:#7C3AED"></span>
+                Gouvernance
+                <span class="filter-count">
+                    {{ categories.gouvernance }}
+                </span>
+            </a>
+            <a href="{{ url_for('donnees') }}?categorie=agriculture"
+               class="filter-btn {% if categorie == 'agriculture' %}active{% endif %}">
+                <span class="filter-dot"
+                      style="background:#0891B2"></span>
+                Agriculture
+                <span class="filter-count">
+                    {{ categories.agriculture }}
+                </span>
+            </a>
+            <a href="{{ url_for('donnees') }}?categorie=environnement"
+               class="filter-btn {% if categorie == 'environnement' %}active{% endif %}">
+                <span class="filter-dot"
+                      style="background:#DC2626"></span>
+                Environnement
+                <span class="filter-count">
+                    {{ categories.environnement }}
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- LISTE DONNÉES -->
+<section class="ilmys-section">
+    <div class="container">
+
+        {% if donnees %}
+
+        <div class="donnees-list">
+            {% for d in donnees %}
+            <div class="donnee-row">
+                <div class="row align-items-center g-3">
+
+                    <!-- TYPE FICHIER -->
+                    <div class="col-auto">
+                        <div class="fichier-type-badge 
+                                    ftype-{{ d[8]|lower if d[8] else 'csv' }}">
+                            {{ d[8] or 'CSV' }}
+                        </div>
+                    </div>
+
+                    <!-- INFO PRINCIPALE -->
+                    <div class="col">
+                        <div class="donnee-titre">{{ d[1] }}</div>
+                        <div class="donnee-desc">
+                            {{ d[2][:100] if d[2] else '' }}
+                        </div>
+                        <div class="donnee-meta">
+                            {% if d[11] %}
+                            <span class="donnee-meta-item">
+                                <svg width="12" height="12"
+                                     viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                    <circle cx="12" cy="10" r="3"/>
+                                </svg>
+                                {{ d[11] }}
+                            </span>
+                            {% endif %}
+                            {% if d[10] %}
+                            <span class="donnee-meta-item">
+                                {{ d[10] }}
+                            </span>
+                            {% endif %}
+                            {% if d[4] %}
+                            <span class="donnee-meta-item">
+                                Source :
+                                {% if d[5] %}
+                                <a href="{{ d[5] }}"
+                                   target="_blank"
+                                   class="donnee-source-link">
+                                    {{ d[4] }}
+                                </a>
+                                {% else %}
+                                {{ d[4] }}
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                            <span class="donnee-meta-item">
+                                <svg width="12" height="12"
+                                     viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                {{ d[12] }} téléchargement(s)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- BADGE CATÉGORIE -->
+                    <div class="col-auto d-none d-md-block">
+                        <div class="analyse-badge 
+                                    badge-{{ d[3] }}">
+                            {{ d[3]|capitalize }}
+                        </div>
+                    </div>
+
+                    <!-- TAILLE -->
+                    {% if d[9] %}
+                    <div class="col-auto d-none d-lg-block">
+                        <div class="fichier-taille">{{ d[9] }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- BOUTON TÉLÉCHARGEMENT -->
+                    <div class="col-auto">
+                        {% if d[6] %}
+                        <a href="{{ url_for('donnees_telecharger', id=d[0]) }}"
+                           class="btn-dl">
+                            <svg width="14" height="14"
+                                 viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Télécharger
+                        </a>
+                        {% else %}
+                        <div class="btn-dl-disabled">
+                            Bientôt
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <svg width="48" height="48" viewBox="0 0 24 24"
+                     fill="none" stroke="#9CA3AF" stroke-width="1.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+            </div>
+            <h3 style="font-size:18px;color:#374151;
+                       font-family:sans-serif;font-weight:500;
+                       margin-bottom:8px">
+                Aucune donnée dans cette catégorie
+            </h3>
+            <p style="font-size:14px;color:#9CA3AF;
+                      font-family:sans-serif">
+                Les premiers fichiers arrivent bientôt.
+            </p>
+            <a href="{{ url_for('donnees') }}"
+               class="btn-outline mt-4 d-inline-block">
+                Voir toutes les données
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- SOURCES -->
+<section class="ilmys-section bg-light-green">
+    <div class="container">
+        <div class="section-label">Nos sources principales</div>
+        <div class="row g-3">
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="source-card">
+                    <div class="source-name">Dataivoire</div>
+                    <div class="source-desc">
+                        Données publiques ivoiriennes
+                    </div>
+                    <a href="https://dataivoire.ci"
+                       target="_blank"
+                       class="source-link">
+                        Visiter →
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="source-card">
+                    <div class="source-name">WHO / OMS</div>
+                    <div class="source-desc">
+                        Données mondiales de santé
+                    </div>
+                    <a href="https://www.who.int/data"
+                       target="_blank"
+                       class="source-link">
+                        Visiter →
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="source-card">
+                    <div class="source-name">Banque Mondiale</div>
+                    <div class="source-desc">
+                        Indicateurs du développement
+                    </div>
+                    <a href="https://data.worldbank.org"
+                       target="_blank"
+                       class="source-link">
+                        Visiter →
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="source-card">
+                    <div class="source-name">INS Côte d'Ivoire</div>
+                    <div class="source-desc">
+                        Institut National de Statistique
+                    </div>
+                    <a href="https://www.ins.ci"
+                       target="_blank"
+                       class="source-link">
+                        Visiter →
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="source-card">
+                    <div class="source-name">FAO</div>
+                    <div class="source-desc">
+                        Agriculture et alimentation
+                    </div>
+                    <a href="https://www.fao.org/faostat"
+                       target="_blank"
+                       class="source-link">
+                        Visiter →
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="source-card">
+                    <div class="source-name">HDX</div>
+                    <div class="source-desc">
+                        Humanitarian Data Exchange
+                    </div>
+                    <a href="https://data.humdata.org"
+                       target="_blank"
+                       class="source-link">
+                        Visiter →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="ilmys-collab">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="collab-title">
+                    Vous avez des données à partager ?<br>
+                    <em>Contactez-nous.</em>
+                </div>
+                <p class="collab-desc">
+                    Nous acceptons les jeux de données publics 
+                    et vérifiables sur l'Afrique francophone.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{{ url_for('collaborer') }}"
+                   class="btn-collab-main">
+                    Proposer des données →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+
+{% block title %}ILMYS — Données · Analyses · Afrique{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="ilmys-hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <!-- GAUCHE -->
+            <div class="col-lg-6">
+                <div class="hero-tag">
+                    <div class="hero-dot"></div>
+                    <span>Plateforme d'analyses — Afrique francophone</span>
+                </div>
+                <h1 class="hero-title">
+                    Les données africaines,<br>
+                    <em>rendues lisibles.</em>
+                </h1>
+                <p class="hero-desc">
+                    ILMYS analyse et visualise les données publiques
+                    africaines pour informer les citoyens, les journalistes
+                    et les décideurs. Gratuitement. Rigoureusement.
+                </p>
+                <div class="hero-stats">
+                    <div>
+                        <span class="stat-num">{{ stats.analyses }}</span>
+                        <span class="stat-label">Analyses publiées</span>
+                    </div>
+                    <div>
+                        <span class="stat-num">6</span>
+                        <span class="stat-label">Thèmes couverts</span>
+                    </div>
+                    <div>
+                        <span class="stat-num">100%</span>
+                        <span class="stat-label">Sources vérifiables</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DROITE — carte dernière analyse -->
+            <div class="col-lg-6">
+                {% if derniere_analyse %}
+                {% set a = derniere_analyse %}
+                <div class="hero-card">
+
+                <!-- IMAGE PRINCIPALE -->
+                {% if a[9] %}
+                <div class="ratio ratio-16x9">
+                    <img src="{{ a[9] }}" 
+                        alt="{{ a[1] }}"
+                        class="img-fluid rounded-top"
+                        style="object-fit:contain;
+                                background:#F8FAFC;
+                                padding:12px">
+                </div>
+                {% else %}
+                <div class="hc-visual">
+                    <div class="bar b-gray"  style="height:40px;width:30px"></div>
+                    <div class="bar b-blue"  style="height:90px;width:30px"></div>
+                    <div class="bar b-green" style="height:55px;width:30px"></div>
+                    <div class="bar b-blue"  style="height:115px;width:30px"></div>
+                    <div class="bar b-gray"  style="height:35px;width:30px"></div>
+                    <div class="bar b-green" style="height:78px;width:30px"></div>
+                </div>
+                {% endif %}
+
+                <div class="hc-body">
+                    <div class="hc-tag">
+                        Dernière analyse · {{ a[3]|capitalize }}
+                    </div>
+                    <div class="hc-title">{{ a[1] }}</div>
+                    <div class="hc-meta">
+                        {{ a[8].strftime('%B %Y') if a[8] else '' }}
+                        · Source : {{ a[6] or 'ILMYS' }}
+                        · {{ a[5] }} de lecture
+                    </div>
+                    <a href="{{ url_for('analyse_detail', slug=a[2]) }}"
+                    class="hc-link">
+                        Lire l'analyse →
+                    </a>
+                </div>
+            </div>
+
+            {% else %}
+            <div class="hero-card">
+                <div class="hc-visual">
+                    <div class="bar b-gray"  style="height:40px;width:30px"></div>
+                    <div class="bar b-blue"  style="height:90px;width:30px"></div>
+                    <div class="bar b-green" style="height:55px;width:30px"></div>
+                    <div class="bar b-blue"  style="height:115px;width:30px"></div>
+                    <div class="bar b-gray"  style="height:35px;width:30px"></div>
+                    <div class="bar b-green" style="height:78px;width:30px"></div>
+                </div>
+                <div class="hc-body">
+                    <div class="hc-tag">Prochainement</div>
+                    <div class="hc-title">
+                        Première analyse en cours de préparation
+                    </div>
+                    <div class="hc-meta">ILMYS · 2025</div>
+                </div>
+            </div>
+            {% endif %}
+    </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FACT BAND -->
+{% if fact %}
+<div class="fact-band">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-auto">
+                <div class="fact-num">{{ fact.chiffre }}</div>
+            </div>
+            <div class="col-auto d-none d-md-block">
+                <div class="fact-divider"></div>
+            </div>
+            <div class="col">
+                <div class="fact-text">{{ fact.texte }}</div>
+                <div class="fact-source">{{ fact.source }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- THÈMES -->
+<div class="themes-band">
+    <div class="container">
+        <div class="row g-0">
+            <div class="col theme-item">
+                <a href="{{ url_for('analyses') }}?theme=sante"
+                   class="theme-link">
+                    <div class="theme-dot" style="background:#16A34A"></div>
+                    <div class="theme-label">Santé</div>
+                    <div class="theme-count">{{ themes.sante }} analyse(s)</div>
+                </a>
+            </div>
+            <div class="col theme-item">
+                <a href="{{ url_for('analyses') }}?theme=education"
+                   class="theme-link">
+                    <div class="theme-dot" style="background:#2563EB"></div>
+                    <div class="theme-label">Éducation</div>
+                    <div class="theme-count">{{ themes.education }} analyse(s)</div>
+                </a>
+            </div>
+            <div class="col theme-item">
+                <a href="{{ url_for('analyses') }}?theme=economie"
+                   class="theme-link">
+                    <div class="theme-dot" style="background:#D97706"></div>
+                    <div class="theme-label">Économie</div>
+                    <div class="theme-count">{{ themes.economie }} analyse(s)</div>
+                </a>
+            </div>
+            <div class="col theme-item">
+                <a href="{{ url_for('analyses') }}?theme=gouvernance"
+                   class="theme-link">
+                    <div class="theme-dot" style="background:#7C3AED"></div>
+                    <div class="theme-label">Gouvernance</div>
+                    <div class="theme-count">{{ themes.gouvernance }} analyse(s)</div>
+                </a>
+            </div>
+            <div class="col theme-item">
+                <a href="{{ url_for('analyses') }}?theme=agriculture"
+                   class="theme-link">
+                    <div class="theme-dot" style="background:#0891B2"></div>
+                    <div class="theme-label">Agriculture</div>
+                    <div class="theme-count">{{ themes.agriculture }} analyse(s)</div>
+                </a>
+            </div>
+            <div class="col theme-item">
+                <a href="{{ url_for('analyses') }}?theme=environnement"
+                   class="theme-link">
+                    <div class="theme-dot" style="background:#DC2626"></div>
+                    <div class="theme-label">Environnement</div>
+                    <div class="theme-count">{{ themes.environnement }} analyse(s)</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ANALYSE À LA UNE -->
+{% if analyse_une %}
+{% set p = analyse_une %}
+<section class="ilmys-section bg-light-green">
+    <div class="container">
+        <div class="section-label">Analyse à la une</div>
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                {% if p[9] %}
+                <div class="ratio ratio-16x9">
+                    <img src="{{ p[9] }}" alt="{{ p[1] }}"
+                        class="img-fluid rounded"
+                        style="object-fit:contain;
+                                background:#F8FAFC;
+                                padding:12px">
+                </div>
+                {% else %}
+                <div class="featured-visual">
+                    <div class="bar b-gray"  style="height:50px;width:36px"></div>
+                    <div class="bar b-blue"  style="height:100px;width:36px"></div>
+                    <div class="bar b-green" style="height:65px;width:36px"></div>
+                    <div class="bar b-blue"  style="height:125px;width:36px"></div>
+                    <div class="bar b-gray"  style="height:42px;width:36px"></div>
+                    <div class="bar b-green" style="height:88px;width:36px"></div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <div class="f-cat">{{ p[3]|capitalize }}</div>
+                <div class="f-title">{{ p[1] }}</div>
+                <div class="f-excerpt">{{ p[4] }}</div>
+                <div class="f-meta">
+                    <span>{{ p[8].strftime('%B %Y') if p[8] else '' }}</span>
+                    <span>·</span>
+                    <span><strong>Source :</strong> {{ p[6] or 'ILMYS' }}</span>
+                    <span>·</span>
+                    <span>{{ p[5] }} de lecture</span>
+                </div>
+                <a href="{{ url_for('analyse_detail', slug=p[2]) }}"
+                   class="btn-lire">
+                    Lire l'analyse complète →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ANALYSES RÉCENTES -->
+{% if analyses_recentes %}
+<section class="ilmys-section">
+    <div class="container">
+        <div class="section-label">Analyses récentes</div>
+        <div class="row g-4">
+            {% for a in analyses_recentes %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card ilmys-card h-100">
+                    <div class="card-top {{ a[3] }}"></div>
+
+                    {% if a[9] %}
+                    <div class="ratio ratio-16x9">
+                        <img src="{{ a[9] }}" alt="{{ a[1] }}"
+                            class="img-fluid"
+                            style="object-fit:contain;
+                                    background:#F8FAFC;
+                                    padding:8px">
+                    </div>
+                    {% else %}
+                    <div class="card-visual">
+                        <div class="bar b-green" style="height:35px;width:22px"></div>
+                        <div class="bar b-blue"  style="height:58px;width:22px"></div>
+                        <div class="bar b-green" style="height:45px;width:22px"></div>
+                        <div class="bar b-gray"  style="height:28px;width:22px"></div>
+                        <div class="bar b-blue"  style="height:62px;width:22px"></div>
+                    </div>
+                    {% endif %}
+
+                    <div class="card-body ilmys-card-body">
+                        <div class="c-cat">{{ a[3]|capitalize }}</div>
+                        <div class="c-title">{{ a[1] }}</div>
+                        <div class="c-excerpt">
+                            {{ a[4][:90] if a[4] else '' }}...
+                        </div>
+                    </div>
+                    <div class="card-footer ilmys-card-footer">
+                        <span class="c-date">
+                            {{ a[8].strftime('%B %Y') if a[8] else '' }}
+                        </span>
+                        <a href="{{ url_for('analyse_detail', slug=a[2]) }}"
+                        class="c-link">Lire →</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{{ url_for('analyses') }}" class="btn-outline">
+                Voir toutes les analyses →
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ABOUT -->
+<section class="ilmys-section bg-light-green">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="about-title">
+                    Des données.<br>
+                    <em>Pas des opinions.</em>
+                </div>
+                <p class="about-text">
+                    ILMYS est une plateforme indépendante d'analyses
+                    de données sur l'Afrique francophone. Nous ne
+                    commentons pas. Nous montrons ce que les données
+                    disent — avec rigueur et clarté.
+                </p>
+                <p class="about-text">
+                    Fondée par un bioinformaticien ivoirien formé
+                    en France et au Canada, ILMYS met la science
+                    au service de l'information publique.
+                </p>
+                <a href="{{ url_for('about') }}" class="about-link">
+                    Notre méthode →
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="val-box">
+                            <span class="val-num">01</span>
+                            <div class="val-title">Vérité</div>
+                            <div class="val-text">Chaque chiffre est sourcé et vérifiable.</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="val-box" style="border-left-color:#2563EB">
+                            <span class="val-num" style="color:#2563EB">02</span>
+                            <div class="val-title">Clarté</div>
+                            <div class="val-text">Une figure se comprend en 10 secondes.</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="val-box" style="border-left-color:#D97706">
+                            <span class="val-num" style="color:#D97706">03</span>
+                            <div class="val-title">Accessibilité</div>
+                            <div class="val-text">Gratuit pour tous, toujours.</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="val-box" style="border-left-color:#7C3AED">
+                            <span class="val-num" style="color:#7C3AED">04</span>
+                            <div class="val-title">Rigueur</div>
+                            <div class="val-text">Méthodes expliquées, erreurs corrigées.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COLLAB -->
+<section class="ilmys-collab">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="collab-title">
+                    Vous travaillez avec des données ?<br>
+                    <em>Collaborons.</em>
+                </div>
+                <p class="collab-desc">
+                    Médias, institutions, chercheurs — si vous avez
+                    des données à analyser ou souhaitez utiliser
+                    nos visualisations, contactez-nous.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-column gap-2 align-items-lg-end">
+                    <a href="{{ url_for('collaborer') }}"
+                       class="btn-collab-main">
+                        Prendre contact →
+                    </a>
+                    <a href="{{ url_for('analyses') }}"
+                       class="btn-collab-sec">
+                        Voir toutes les analyses →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Page introuvable — ILMYS{% endblock %}
+
+{% block content %}
+
+<section style="padding:120px 0;background:var(--vert-clair);
+                border-bottom:1px solid var(--border);
+                min-height:70vh;display:flex;align-items:center">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-6">
+
+                <!-- GRAND CHIFFRE -->
+                <div style="font-size:120px;font-family:'Georgia',serif;
+                            color:var(--vert);line-height:1;
+                            opacity:0.2;margin-bottom:0">
+                    404
+                </div>
+
+                <div style="font-size:11px;letter-spacing:3px;
+                            color:var(--vert);font-family:sans-serif;
+                            text-transform:uppercase;margin-bottom:20px;
+                            margin-top:-20px">
+                    Page introuvable
+                </div>
+
+                <h1 style="font-size:28px;font-weight:400;
+                           color:var(--noir);margin-bottom:16px;
+                           font-family:'Georgia',serif;line-height:1.3">
+                    Cette page n'existe pas<br>
+                    ou a été déplacée.
+                </h1>
+
+                <p style="font-size:15px;color:var(--muted);
+                          font-family:sans-serif;line-height:1.75;
+                          margin-bottom:36px;max-width:400px;
+                          margin-left:auto;margin-right:auto">
+                    La page que vous cherchez est introuvable. 
+                    Elle a peut-être été supprimée ou l'URL 
+                    est incorrecte.
+                </p>
+
+                <!-- ACTIONS -->
+                <div class="d-flex gap-3 justify-content-center 
+                            flex-wrap">
+                    <a href="{{ url_for('index') }}"
+                       class="btn-collab-main">
+                        ← Retour à l'accueil
+                    </a>
+                    <a href="{{ url_for('analyses') }}"
+                       class="btn-outline">
+                        Voir les analyses
+                    </a>
+                </div>
+
+                <!-- LIENS UTILES -->
+                <div style="margin-top:48px;padding-top:32px;
+                            border-top:1px solid var(--border)">
+                    <div style="font-size:11px;letter-spacing:2px;
+                                color:var(--light);font-family:sans-serif;
+                                text-transform:uppercase;margin-bottom:16px">
+                        Pages populaires
+                    </div>
+                    <div class="d-flex gap-3 justify-content-center 
+                                flex-wrap">
+                        <a href="{{ url_for('analyses') }}"
+                           style="font-size:13px;color:var(--bleu);
+                                  font-family:sans-serif;
+                                  text-decoration:none;
+                                  border-bottom:1px solid var(--bleu-mid);
+                                  padding-bottom:1px">
+                            Analyses
+                        </a>
+                        <a href="{{ url_for('donnees') }}"
+                           style="font-size:13px;color:var(--bleu);
+                                  font-family:sans-serif;
+                                  text-decoration:none;
+                                  border-bottom:1px solid var(--bleu-mid);
+                                  padding-bottom:1px">
+                            Données
+                        </a>
+                        <a href="{{ url_for('about') }}"
+                           style="font-size:13px;color:var(--bleu);
+                                  font-family:sans-serif;
+                                  text-decoration:none;
+                                  border-bottom:1px solid var(--bleu-mid);
+                                  padding-bottom:1px">
+                            À propos
+                        </a>
+                        <a href="{{ url_for('collaborer') }}"
+                           style="font-size:13px;color:var(--bleu);
+                                  font-family:sans-serif;
+                                  text-decoration:none;
+                                  border-bottom:1px solid var(--bleu-mid);
+                                  padding-bottom:1px">
+                            Collaborer
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

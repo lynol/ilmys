@@ -1,0 +1,112 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Analyses — Admin ILMYS{% endblock %}
+{% block page_title %}Gestion des analyses{% endblock %}
+
+{% block header_action %}
+<a href="{{ url_for('admin_analyse_ajouter') }}"
+   class="admin-btn-primary">
+    + Nouvelle analyse
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            {{ analyses|length }} analyse(s)
+        </div>
+    </div>
+
+    {% if analyses %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Thème</th>
+                <th>À la une</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in analyses %}
+            <tr>
+                <td>
+                    <div class="table-title">{{ a[1] }}</div>
+                </td>
+                <td>
+                    <span class="analyse-badge badge-{{ a[2] }}">
+                        {{ a[2]|capitalize }}
+                    </span>
+                </td>
+                <td>
+                    {% if a[4] %}
+                    <span class="status-badge status-une">
+                        ★ Une
+                    </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST"
+                          action="{{ url_for('admin_analyse_toggle', id=a[0]) }}"
+                          style="display:inline">
+                        {% if a[3] %}
+                        <button type="submit"
+                                class="status-badge status-publie"
+                                style="border:none;cursor:pointer">
+                            Publié
+                        </button>
+                        {% else %}
+                        <button type="submit"
+                                class="status-badge status-brouillon"
+                                style="border:none;cursor:pointer">
+                            Brouillon
+                        </button>
+                        {% endif %}
+                    </form>
+                </td>
+                <td class="table-date">
+                    {{ a[6].strftime('%d/%m/%Y') if a[6] else '—' }}
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <a href="{{ url_for('admin_analyse_modifier', id=a[0]) }}"
+                           class="table-action-btn btn-edit">
+                            Modifier
+                        </a>
+                        {% if a[3] %}
+                        <a href="{{ url_for('analyse_detail', slug='') }}{{ a[1]|lower }}"
+                           target="_blank"
+                           class="table-action-btn btn-view">
+                            Voir
+                        </a>
+                        {% endif %}
+                        <form method="POST"
+                              action="{{ url_for('admin_analyse_supprimer', id=a[0]) }}"
+                              style="display:inline"
+                              onsubmit="return confirm('Supprimer cette analyse ?')">
+                            <button type="submit"
+                                    class="table-action-btn btn-delete">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="table-empty p-5 text-center">
+        <p>Aucune analyse. Créez votre première analyse.</p>
+        <a href="{{ url_for('admin_analyse_ajouter') }}"
+           class="admin-btn-primary mt-3 d-inline-block">
+            + Nouvelle analyse
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

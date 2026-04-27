@@ -1,0 +1,95 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Messages — Admin ILMYS{% endblock %}
+{% block page_title %}Messages{% endblock %}
+
+{% block content %}
+
+<!-- FILTRES -->
+<div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('admin_messages') }}"
+       class="admin-filter {% if filtre == 'tous' %}active{% endif %}">
+        Tous
+    </a>
+    <a href="{{ url_for('admin_messages') }}?filtre=non_lus"
+       class="admin-filter {% if filtre == 'non_lus' %}active{% endif %}">
+        Non lus
+    </a>
+</div>
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            {{ messages|length }} message(s)
+        </div>
+    </div>
+
+    {% if messages %}
+    {% for m in messages %}
+    <div class="message-full {% if not m[6] %}msg-unread{% endif %}">
+        <div class="message-full-header">
+            <div class="message-sender-info">
+                <div class="sender-avatar-sm">
+                    {{ m[1][0]|upper }}
+                </div>
+                <div>
+                    <div class="sender-nom-full">{{ m[1] }}</div>
+                    <div class="sender-email-full">{{ m[2] }}</div>
+                </div>
+            </div>
+            <div class="message-right-info">
+                {% if m[3] %}
+                <span class="analyse-badge badge-education">
+                    {{ m[3] }}
+                </span>
+                {% endif %}
+                <span class="table-date">
+                    {{ m[5].strftime('%d/%m/%Y %H:%M')
+                       if m[5] else '' }}
+                </span>
+                {% if not m[6] %}
+                <span class="status-badge status-unread">
+                    Nouveau
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="message-full-content">
+            {{ m[4] }}
+        </div>
+
+        <div class="message-full-actions">
+            {% if not m[6] %}
+            <form method="POST"
+                  action="{{ url_for('admin_marquer_lu', id=m[0]) }}"
+                  style="display:inline">
+                <button type="submit"
+                        class="table-action-btn btn-edit">
+                    Marquer lu
+                </button>
+            </form>
+            {% endif %}
+            <a href="mailto:{{ m[2] }}"
+               class="table-action-btn btn-view">
+                Répondre →
+            </a>
+            <form method="POST"
+                  action="{{ url_for('admin_message_supprimer', id=m[0]) }}"
+                  style="display:inline"
+                  onsubmit="return confirm('Supprimer ce message ?')">
+                <button type="submit"
+                        class="table-action-btn btn-delete">
+                    Supprimer
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="table-empty p-5 text-center">
+        Aucun message pour le moment.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

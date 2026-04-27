@@ -1,0 +1,274 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}
+    {{ 'Modifier' if action == 'modifier' else 'Nouvelle' }}
+    analyse — Admin ILMYS
+{% endblock %}
+
+{% block page_title %}
+    {{ 'Modifier l\'analyse' if action == 'modifier'
+       else 'Nouvelle analyse' }}
+{% endblock %}
+
+{% block header_action %}
+<a href="{{ url_for('admin_analyses') }}"
+   class="admin-btn-outline">
+    ← Retour
+</a>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" enctype="multipart/form-data">
+<div class="row g-4">
+
+    <!-- COLONNE PRINCIPALE -->
+    <div class="col-lg-8">
+
+        <div class="admin-card mb-4">
+            <div class="admin-card-header">
+                <div class="admin-card-title">Contenu</div>
+            </div>
+            <div class="admin-card-body">
+
+                <div class="mb-3">
+                    <label class="admin-label">Titre *</label>
+                    <input type="text" name="titre"
+                           class="admin-input"
+                           value="{{ analyse[1] if analyse else '' }}"
+                           placeholder="Titre de l'analyse"
+                           required>
+                    <div class="admin-hint">
+                        Le slug URL sera généré automatiquement.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="admin-label">Extrait</label>
+                    <textarea name="extrait"
+                              class="admin-input"
+                              rows="3"
+                              placeholder="Résumé court affiché sur la liste...">{{ analyse[4] if analyse else '' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="admin-label">
+                        Contenu *
+                    </label>
+                    <div class="editor-toolbar">
+                        <button type="button"
+                                onclick="tag('h2')"
+                                class="editor-btn">H2</button>
+                        <button type="button"
+                                onclick="tag('h3')"
+                                class="editor-btn">H3</button>
+                        <button type="button"
+                                onclick="tag('p')"
+                                class="editor-btn">§</button>
+                        <button type="button"
+                                onclick="tag('strong')"
+                                class="editor-btn">G</button>
+                        <button type="button"
+                                onclick="tag('em')"
+                                class="editor-btn">I</button>
+                        <button type="button"
+                                onclick="liste()"
+                                class="editor-btn">Liste</button>
+                        <button type="button"
+                                onclick="imgTag()"
+                                class="editor-btn">Image</button>
+                    </div>
+                    <textarea name="contenu" id="contenu"
+                              class="admin-input admin-editor"
+                              rows="20"
+                              placeholder="Contenu en HTML..."
+                              required>{{ analyse[5] if analyse else '' }}</textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FICHIERS -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">
+                    Fichiers (optionnel)
+                </div>
+            </div>
+            <div class="admin-card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="admin-label">
+                            Image principale
+                        </label>
+                        {% if analyse and analyse[11] %}
+                        <div class="current-file mb-2">
+                            <img src="{{ analyse[11] }}"
+                                 style="max-height:80px;
+                                        border-radius:4px">
+                            <div class="admin-hint mt-1">
+                                Image actuelle — uploadez pour remplacer
+                            </div>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="image"
+                               class="admin-input"
+                               accept=".png,.jpg,.jpeg,.webp">
+                        <div class="admin-hint">
+                            PNG, JPG — max 20 MB
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="admin-label">
+                            Données téléchargeables
+                        </label>
+                        {% if analyse and analyse[12] %}
+                        <div class="current-file mb-2">
+                            <span class="admin-hint">
+                                Actuel : {{ analyse[13] }}
+                            </span>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="fichier"
+                               class="admin-input"
+                               accept=".csv,.xlsx,.xls,.pdf,.zip">
+                        <div class="admin-hint">
+                            CSV, Excel, PDF — max 20 MB
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- COLONNE DROITE -->
+    <div class="col-lg-4">
+
+        <!-- PUBLICATION -->
+        <div class="admin-card mb-4">
+            <div class="admin-card-header">
+                <div class="admin-card-title">Publication</div>
+            </div>
+            <div class="admin-card-body">
+
+                <div class="mb-3">
+                    <div class="admin-checkbox">
+                        <input type="checkbox" name="actif"
+                               id="actif"
+                                {% if analyse and analyse[10] %}
+                                    checked
+                                {% endif %}>
+                        <label for="actif">
+                            Publier (visible sur le site)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="admin-checkbox">
+                        <input type="checkbox" name="une"
+                               id="une"
+                                {% if analyse and analyse[9] %}
+                                    checked
+                                {% endif %}>
+                        <label for="une">
+                            ★ Mettre à la une
+                        </label>
+                    </div>
+                    <div class="admin-hint">
+                        L'analyse à la une s'affiche en grand 
+                        sur la homepage.
+                    </div>
+                </div>
+
+                <button type="submit"
+                        class="admin-btn-primary w-100">
+                    {{ 'Modifier' if action == 'modifier'
+                       else 'Publier' }} l'analyse →
+                </button>
+
+            </div>
+        </div>
+
+        <!-- MÉTADONNÉES -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">Métadonnées</div>
+            </div>
+            <div class="admin-card-body">
+
+                <div class="mb-3">
+                    <label class="admin-label">Thème *</label>
+                    <select name="categorie" class="admin-input">
+                        {% set themes = [
+                            ('sante','Santé'),
+                            ('education','Éducation'),
+                            ('economie','Économie'),
+                            ('gouvernance','Gouvernance'),
+                            ('agriculture','Agriculture'),
+                            ('environnement','Environnement')
+                        ] %}
+                        {% for val, label in themes %}
+                        <option value="{{ val }}"
+                            {% if analyse and analyse[3] == val %}
+                                selected
+                            {% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="admin-label">Source</label>
+                    <input type="text" name="source"
+                           class="admin-input"
+                           value="{{ analyse[7] if analyse else '' }}"
+                           placeholder="Ex: Dataivoire, WHO...">
+                </div>
+
+                <div class="mb-3">
+                    <label class="admin-label">
+                        Temps de lecture
+                    </label>
+                    <input type="text" name="temps_lecture"
+                           class="admin-input"
+                           value="{{ analyse[6] if analyse else '5 min' }}"
+                           placeholder="5 min">
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</form>
+
+<script>
+function tag(t) {
+    const ta = document.getElementById('contenu');
+    const s = ta.selectionStart, e = ta.selectionEnd;
+    const txt = ta.value.substring(s,e) || 'Texte ici';
+    ta.value = ta.value.substring(0,s) +
+               '<'+t+'>'+txt+'</'+t+'>' +
+               ta.value.substring(e);
+    ta.focus();
+}
+function liste() {
+    const ta = document.getElementById('contenu');
+    const p = ta.selectionStart;
+    const li = '\n<ul>\n  <li>Élément 1</li>\n  <li>Élément 2</li>\n</ul>\n';
+    ta.value = ta.value.substring(0,p) + li + ta.value.substring(p);
+    ta.focus();
+}
+function imgTag() {
+    const ta = document.getElementById('contenu');
+    const p = ta.selectionStart;
+    const img = '\n<img src="/static/uploads/images/votre-image.png" alt="Description" style="width:100%;border-radius:6px;margin:16px 0">\n';
+    ta.value = ta.value.substring(0,p) + img + ta.value.substring(p);
+    ta.focus();
+}
+</script>
+
+{% endblock %}

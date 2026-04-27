@@ -1,0 +1,125 @@
+<footer class="ilmys-footer">
+    <div class="container">
+
+        <!-- HAUT DU FOOTER -->
+        <div class="row g-5 footer-top">
+
+            <!-- COLONNE 1 — BRAND -->
+            <div class="col-lg-4">
+                <div class="footer-logo">ILMYS</div>
+                <div class="footer-tagline">
+                    Données · Analyses · Afrique
+                </div>
+                <p class="footer-desc">
+                    Plateforme indépendante d'analyses de données 
+                    sur l'Afrique francophone. Gratuit. Rigoureux. 
+                    Sourcé.
+                </p>
+                <div class="footer-socials">
+                    <a href="#" class="footer-social-link">LinkedIn</a>
+                    <a href="#" class="footer-social-link">Twitter/X</a>
+                    <a href="#" class="footer-social-link">GitHub</a>
+                </div>
+            </div>
+
+            <!-- COLONNE 2 — NAVIGATION -->
+            <div class="col-lg-2 col-6">
+                <div class="footer-col-title">Navigation</div>
+                <ul class="footer-links">
+                    <li>
+                        <a href="{{ url_for('index') }}">Accueil</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyses') }}">Analyses</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('donnees') }}">Données</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('about') }}">À propos</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('collaborer') }}">Collaborer</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- COLONNE 3 — THÈMES -->
+            <div class="col-lg-2 col-6">
+                <div class="footer-col-title">Thèmes</div>
+                <ul class="footer-links">
+                    <li>
+                        <a href="{{ url_for('analyses') }}?theme=sante">
+                            Santé
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyses') }}?theme=education">
+                            Éducation
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyses') }}?theme=economie">
+                            Économie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyses') }}?theme=gouvernance">
+                            Gouvernance
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyses') }}?theme=agriculture">
+                            Agriculture
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('analyses') }}?theme=environnement">
+                            Environnement
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- COLONNE 4 — CONTACT -->
+            <div class="col-lg-4">
+                <div class="footer-col-title">Contact</div>
+                <p class="footer-contact-text">
+                    Une collaboration, une question, 
+                    une donnée à signaler ?
+                </p>
+                <a href="{{ url_for('collaborer') }}"
+                   class="footer-btn">
+                    Prendre contact →
+                </a>
+                <div class="footer-contact-info">
+                    <div class="footer-contact-item">
+                        <span class="footer-contact-label">Email</span>
+                        <span>contact@ilmys.com</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <span class="footer-contact-label">
+                            Basé à
+                        </span>
+                        <span>
+                            Québec, Canada · Abidjan, Côte d'Ivoire
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BAS DU FOOTER -->
+        <div class="footer-bottom">
+            <div class="footer-copy">
+                © 2025 ILMYS · Tous droits réservés
+            </div>
+            <div class="footer-copy">
+                Sources citées · Données vérifiées · 
+                Méthodes expliquées
+            </div>
+        </div>
+
+    </div>
+</footer>

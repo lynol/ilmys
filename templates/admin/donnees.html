@@ -1,0 +1,92 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Données — Admin ILMYS{% endblock %}
+{% block page_title %}Gestion des données{% endblock %}
+
+{% block header_action %}
+<a href="{{ url_for('admin_donnee_ajouter') }}"
+   class="admin-btn-primary">
+    + Ajouter un fichier
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-card">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            {{ donnees|length }} jeu(x) de données
+        </div>
+    </div>
+
+    {% if donnees %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Titre</th>
+                <th>Thème</th>
+                <th>Source</th>
+                <th>DL</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in donnees %}
+            <tr>
+                <td>
+                    <div class="fichier-type-badge 
+                                ftype-{{ d[4]|lower if d[4] else 'csv' }}">
+                        {{ d[4] or 'CSV' }}
+                    </div>
+                </td>
+                <td>
+                    <div class="table-title">{{ d[1] }}</div>
+                </td>
+                <td>
+                    <span class="analyse-badge badge-{{ d[2] }}">
+                        {{ d[2]|capitalize }}
+                    </span>
+                </td>
+                <td class="table-date">{{ d[3] or '—' }}</td>
+                <td class="table-date">{{ d[6] }}</td>
+                <td>
+                    {% if d[5] %}
+                    <span class="status-badge status-publie">
+                        Actif
+                    </span>
+                    {% else %}
+                    <span class="status-badge status-brouillon">
+                        Inactif
+                    </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="table-actions">
+                        <form method="POST"
+                              action="{{ url_for('admin_donnee_supprimer', id=d[0]) }}"
+                              style="display:inline"
+                              onsubmit="return confirm('Supprimer ?')">
+                            <button type="submit"
+                                    class="table-action-btn btn-delete">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="table-empty p-5 text-center">
+        <p>Aucun fichier. Ajoutez votre premier jeu de données.</p>
+        <a href="{{ url_for('admin_donnee_ajouter') }}"
+           class="admin-btn-primary mt-3 d-inline-block">
+            + Ajouter un fichier
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

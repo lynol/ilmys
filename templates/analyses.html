@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block meta_description %}Toutes les analyses de données publiques africaines publiées par ILMYS. Santé, éducation, économie, gouvernance, agriculture, environnement.{% endblock %}
+{% block og_title %}Analyses — ILMYS{% endblock %}
+{% block og_description %}Analyses de données publiques africaines. Sourcées, vérifiées, librement accessibles.{% endblock %}
+
+{% block content %}
+
+<!-- HERO PAGE -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="page-hero-eyebrow">
+                    <span class="hero-dot me-2"></span>
+                    Toutes les analyses
+                </div>
+                <h1 class="page-hero-title">Analyses de données</h1>
+                <p class="page-hero-desc">
+                    Des analyses rigoureuses sur les données publiques 
+                    africaines. Chaque analyse est sourcée, vérifiable 
+                    et librement téléchargeable.
+                </p>
+            </div>
+            <div class="col-lg-4 d-flex align-items-end 
+                        justify-content-lg-end mt-4 mt-lg-0">
+                <div class="page-hero-stat">
+                    <span class="page-hero-stat-num">
+                        {{ themes.tous }}
+                    </span>
+                    <span class="page-hero-stat-label">
+                        Analyses publiées
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FILTRES -->
+<div class="analyses-filters sticky-top">
+    <div class="container">
+        <div class="filters-inner">
+
+            <a href="{{ url_for('analyses') }}"
+               class="filter-btn {% if theme == 'tous' or not theme %}active{% endif %}">
+                Tous
+                <span class="filter-count">{{ themes.tous }}</span>
+            </a>
+
+            <a href="{{ url_for('analyses') }}?theme=sante"
+               class="filter-btn {% if theme == 'sante' %}active{% endif %}">
+                <span class="filter-dot" 
+                      style="background:#16A34A"></span>
+                Santé
+                <span class="filter-count">{{ themes.sante }}</span>
+            </a>
+
+            <a href="{{ url_for('analyses') }}?theme=education"
+               class="filter-btn {% if theme == 'education' %}active{% endif %}">
+                <span class="filter-dot" 
+                      style="background:#2563EB"></span>
+                Éducation
+                <span class="filter-count">{{ themes.education }}</span>
+            </a>
+
+            <a href="{{ url_for('analyses') }}?theme=economie"
+               class="filter-btn {% if theme == 'economie' %}active{% endif %}">
+                <span class="filter-dot" 
+                      style="background:#D97706"></span>
+                Économie
+                <span class="filter-count">{{ themes.economie }}</span>
+            </a>
+
+            <a href="{{ url_for('analyses') }}?theme=gouvernance"
+               class="filter-btn {% if theme == 'gouvernance' %}active{% endif %}">
+                <span class="filter-dot" 
+                      style="background:#7C3AED"></span>
+                Gouvernance
+                <span class="filter-count">{{ themes.gouvernance }}</span>
+            </a>
+
+            <a href="{{ url_for('analyses') }}?theme=agriculture"
+               class="filter-btn {% if theme == 'agriculture' %}active{% endif %}">
+                <span class="filter-dot" 
+                      style="background:#0891B2"></span>
+                Agriculture
+                <span class="filter-count">{{ themes.agriculture }}</span>
+            </a>
+
+            <a href="{{ url_for('analyses') }}?theme=environnement"
+               class="filter-btn {% if theme == 'environnement' %}active{% endif %}">
+                <span class="filter-dot" 
+                      style="background:#DC2626"></span>
+                Environnement
+                <span class="filter-count">{{ themes.environnement }}</span>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+<!-- LISTE ANALYSES -->
+<section class="ilmys-section">
+    <div class="container">
+
+        {% if analyses %}
+
+        <!-- PREMIÈRE ANALYSE — grande -->
+        {% set premier = analyses[0] %}
+        <div class="analyse-featured-row mb-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="featured-visual featured-{{ premier[3] }}">
+                        {% if premier[9] %}
+                        <div class="ratio ratio-16x9 w-100">
+                            <img src="{{ premier[9] }}"
+                                alt="{{ premier[1] }}"
+                                style="object-fit:contain;background:#F8FAFC;padding:12px">
+                        </div>
+                        {% else %}
+                        <div class="bar b-gray"  style="height:50px;width:36px"></div>
+                        <div class="bar b-blue"  style="height:105px;width:36px"></div>
+                        <div class="bar b-green" style="height:68px;width:36px"></div>
+                        <div class="bar b-blue"  style="height:128px;width:36px"></div>
+                        <div class="bar b-gray"  style="height:44px;width:36px"></div>
+                        <div class="bar b-green" style="height:90px;width:36px"></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="analyse-badge 
+                                badge-{{ premier[3] }}">
+                        {{ premier[3]|capitalize }}
+                    </div>
+                    <h2 class="analyse-featured-title">
+                        {{ premier[1] }}
+                    </h2>
+                    <p class="analyse-featured-excerpt">
+                        {{ premier[4] }}
+                    </p>
+                    <div class="analyse-meta mb-4">
+                        <span>
+                            {{ premier[8].strftime('%d %B %Y') 
+                               if premier[8] else '' }}
+                        </span>
+                        {% if premier[6] %}
+                        <span>·</span>
+                        <span>
+                            <strong>Source :</strong> 
+                            {{ premier[6] }}
+                        </span>
+                        {% endif %}
+                        <span>·</span>
+                        <span>{{ premier[5] }} de lecture</span>
+                    </div>
+                    <a href="{{ url_for('analyse_detail', 
+                                        slug=premier[2]) }}"
+                       class="btn-lire">
+                        Lire l'analyse →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="analyses-divider mb-5">
+
+        <!-- AUTRES ANALYSES -->
+        {% if analyses|length > 1 %}
+        <div class="row g-4">
+            {% for a in analyses[1:] %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card ilmys-card h-100">
+                    <div class="card-top {{ a[3] }}"></div>
+                    <div class="card-visual" style="padding:0;background:#F8FAFC">
+                        {% if a[9] %}
+                        <img src="{{ a[9] }}" alt="{{ a[1] }}"
+                            class="w-100 h-100"
+                            style="object-fit:contain;
+                                    padding:8px;
+                                    opacity:.9">
+                        {% else %}
+                        <div class="bar b-green" style="height:35px;width:22px"></div>
+                        <div class="bar b-blue"  style="height:58px;width:22px"></div>
+                        <div class="bar b-green" style="height:45px;width:22px"></div>
+                        <div class="bar b-gray"  style="height:28px;width:22px"></div>
+                        <div class="bar b-blue"  style="height:62px;width:22px"></div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body ilmys-card-body">
+                        <div class="analyse-badge 
+                                    badge-{{ a[3] }} mb-2">
+                            {{ a[3]|capitalize }}
+                        </div>
+                        <div class="c-title">{{ a[1] }}</div>
+                        <div class="c-excerpt">
+                            {{ a[4][:100] if a[4] else '' }}...
+                        </div>
+                    </div>
+                    <div class="card-footer ilmys-card-footer">
+                        <span class="c-date">
+                            {{ a[8].strftime('%d %B %Y') 
+                               if a[8] else '' }}
+                        </span>
+                        <a href="{{ url_for('analyse_detail', 
+                                            slug=a[2]) }}"
+                           class="c-link">
+                            Lire →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% else %}
+
+        <!-- ÉTAT VIDE -->
+        <div class="text-center py-5">
+            <div class="empty-icon mb-3">
+                <svg width="48" height="48" viewBox="0 0 24 24"
+                     fill="none" stroke="#9CA3AF" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+            </div>
+            <h3 style="font-size:18px;color:#374151;
+                       font-family:sans-serif;font-weight:500;
+                       margin-bottom:8px">
+                Aucune analyse dans ce thème
+            </h3>
+            <p style="font-size:14px;color:#9CA3AF;
+                      font-family:sans-serif">
+                Les premières analyses arrivent bientôt.
+            </p>
+            <a href="{{ url_for('analyses') }}" 
+               class="btn-outline mt-4 d-inline-block">
+                Voir toutes les analyses
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- COLLAB -->
+<section class="ilmys-collab">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="collab-title">
+                    Vous avez des données à analyser ?<br>
+                    <em>Collaborons.</em>
+                </div>
+                <p class="collab-desc">
+                    Institutions, médias, chercheurs — 
+                    contactez-nous pour une analyse sur mesure.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{{ url_for('collaborer') }}"
+                   class="btn-collab-main">
+                    Prendre contact →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

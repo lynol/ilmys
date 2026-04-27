@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin — ILMYS{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-body">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+
+        <div class="sidebar-brand">
+            <div class="sidebar-logo">ILMYS</div>
+            <div class="sidebar-admin-label">Admin</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin_dashboard') }}"
+               class="sidebar-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                </svg>
+                Dashboard
+            </a>
+
+            <div class="sidebar-section-label">Contenu</div>
+
+            <a href="{{ url_for('admin_analyses') }}"
+               class="sidebar-link {% if 'analyses' in request.endpoint %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6"  y1="20" x2="6"  y2="14"/>
+                </svg>
+                Analyses
+            </a>
+
+            <a href="{{ url_for('admin_donnees') }}"
+               class="sidebar-link {% if 'donnees' in request.endpoint %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                </svg>
+                Données
+            </a>
+
+            <div class="sidebar-section-label">Interactions</div>
+
+            <a href="{{ url_for('admin_messages') }}"
+               class="sidebar-link {% if 'messages' in request.endpoint %}active{% endif %}">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                Messages
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{{ url_for('index') }}"
+               target="_blank"
+               class="sidebar-site-link">
+                <svg viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <polyline points="15 3 21 3 21 9"/>
+                    <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                Voir le site
+            </a>
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
+                    {{ session.get('admin_username', 'A')[0]|upper }}
+                </div>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name">
+                        {{ session.get('admin_username', 'Admin') }}
+                    </div>
+                    <a href="{{ url_for('admin_logout') }}"
+                       class="sidebar-logout">
+                        Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+        <header class="admin-header">
+            <h1 class="admin-page-title">
+                {% block page_title %}Dashboard{% endblock %}
+            </h1>
+            {% block header_action %}{% endblock %}
+        </header>
+
+        {% with messages = get_flashed_messages(
+            with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="admin-alert admin-alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

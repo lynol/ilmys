@@ -1,0 +1,220 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Dashboard — Admin ILMYS{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- KPIs -->
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-6">
+        <div class="admin-kpi" 
+             style="border-top-color:#16A34A;
+                    background:linear-gradient(135deg,#F0FDF4,#fff)">
+            <div class="kpi-num" style="color:#16A34A">
+                {{ nb_analyses }}
+            </div>
+            <div class="kpi-label">Analyses publiées</div>
+            <div class="kpi-sub">+ {{ nb_brouillons }} brouillon(s)</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="admin-kpi"
+             style="border-top-color:#2563EB;
+                    background:linear-gradient(135deg,#EFF6FF,#fff)">
+            <div class="kpi-num" style="color:#2563EB">
+                {{ nb_donnees }}
+            </div>
+            <div class="kpi-label">Jeux de données</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="admin-kpi"
+             style="border-top-color:{% if nb_messages > 0 %}#DC2626{% else %}#D97706{% endif %};
+                    background:linear-gradient(135deg,{% if nb_messages > 0 %}rgba(220,38,38,.06){% else %}rgba(217,119,6,.06){% endif %},#fff)">
+            <div class="kpi-num" 
+                 style="color:{% if nb_messages > 0 %}#DC2626{% else %}#D97706{% endif %}">
+                {{ nb_messages }}
+            </div>
+            <div class="kpi-label">Messages non lus</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="admin-kpi"
+             style="border-top-color:#7C3AED;
+                    background:linear-gradient(135deg,rgba(124,58,237,.06),#fff)">
+            <div class="kpi-num" style="color:#7C3AED;font-size:22px">
+                En ligne ✓
+            </div>
+            <div class="kpi-label">Plateforme active</div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTENU PRINCIPAL -->
+<div class="row g-4">
+
+    <!-- ANALYSES RÉCENTES -->
+    <div class="col-lg-7">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">
+                    Analyses récentes
+                </div>
+                <a href="{{ url_for('admin_analyses') }}"
+                   class="admin-card-link">
+                    Voir tout →
+                </a>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Thème</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in recentes %}
+                    <tr>
+                        <td>
+                            <div class="table-title">
+                                {{ a[1][:45] }}...
+                            </div>
+                        </td>
+                        <td>
+                            <span class="analyse-badge 
+                                         badge-{{ a[2] }}">
+                                {{ a[2]|capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if a[3] %}
+                            <span class="status-badge 
+                                         status-publie">
+                                Publié
+                            </span>
+                            {% else %}
+                            <span class="status-badge 
+                                         status-brouillon">
+                                Brouillon
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="table-date">
+                            {{ a[4].strftime('%d/%m/%Y')
+                               if a[4] else '—' }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="table-empty">
+                            Aucune analyse publiée.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DERNIERS MESSAGES -->
+    <div class="col-lg-5">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">
+                    Derniers messages
+                </div>
+                <a href="{{ url_for('admin_messages') }}"
+                   class="admin-card-link">
+                    Voir tout →
+                </a>
+            </div>
+            <div class="messages-preview">
+                {% for m in derniers_messages %}
+                <div class="message-preview-item 
+                            {% if not m[6] %}msg-unread{% endif %}">
+                    <div class="msg-preview-top">
+                        <div class="msg-preview-nom">
+                            {{ m[1] }}
+                        </div>
+                        <div class="msg-preview-date">
+                            {{ m[5].strftime('%d/%m') if m[5] else '' }}
+                        </div>
+                    </div>
+                    <div class="msg-preview-email">
+                        {{ m[2] }}
+                    </div>
+                    <div class="msg-preview-text">
+                        {{ m[4] }}...
+                    </div>
+                </div>
+                {% else %}
+                <div class="table-empty p-4">
+                    Aucun message.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ACTIONS RAPIDES -->
+<div class="row g-3 mt-2">
+    <div class="col-12">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">Actions rapides</div>
+            </div>
+            <div class="quick-actions">
+                <a href="{{ url_for('admin_analyse_ajouter') }}"
+                   class="quick-action-btn">
+                    <svg width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="#16A34A" stroke-width="1.5">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Nouvelle analyse
+                </a>
+                <a href="{{ url_for('admin_donnee_ajouter') }}"
+                   class="quick-action-btn">
+                    <svg width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="#2563EB" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Ajouter des données
+                </a>
+                <a href="{{ url_for('admin_messages') }}"
+                   class="quick-action-btn">
+                    <svg width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="#D97706" stroke-width="1.5">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    Voir les messages
+                </a>
+                <a href="{{ url_for('index') }}"
+                   target="_blank"
+                   class="quick-action-btn">
+                    <svg width="20" height="20"
+                         viewBox="0 0 24 24" fill="none"
+                         stroke="#7C3AED" stroke-width="1.5">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Voir le site
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

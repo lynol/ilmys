@@ -1,0 +1,147 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Ajouter données — Admin ILMYS{% endblock %}
+{% block page_title %}Ajouter un jeu de données{% endblock %}
+
+{% block header_action %}
+<a href="{{ url_for('admin_donnees') }}"
+   class="admin-btn-outline">← Retour</a>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" enctype="multipart/form-data">
+<div class="row g-4">
+
+    <div class="col-lg-8">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">Informations</div>
+            </div>
+            <div class="admin-card-body">
+
+                <div class="mb-3">
+                    <label class="admin-label">Titre *</label>
+                    <input type="text" name="titre"
+                           class="admin-input"
+                           placeholder="Ex: Résultats BAC 2025 — Côte d'Ivoire"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="admin-label">Description</label>
+                    <textarea name="description"
+                              class="admin-input"
+                              rows="3"
+                              placeholder="Décrivez le contenu du fichier..."></textarea>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="admin-label">Source</label>
+                        <input type="text" name="source"
+                               class="admin-input"
+                               placeholder="Ex: Dataivoire, INS, WHO">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="admin-label">URL source</label>
+                        <input type="url" name="source_url"
+                               class="admin-input"
+                               placeholder="https://...">
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4">
+                        <label class="admin-label">Année</label>
+                        <input type="text" name="annee"
+                               class="admin-input"
+                               placeholder="2025">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="admin-label">Pays</label>
+                        <input type="text" name="pays"
+                               class="admin-input"
+                               value="Côte d'Ivoire">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="admin-label">Taille</label>
+                        <input type="text" name="fichier_taille"
+                               class="admin-input"
+                               placeholder="Ex: 2.3 MB">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="admin-label">
+                        Fichier à télécharger
+                    </label>
+                    <input type="file" name="fichier"
+                           class="admin-input"
+                           accept=".csv,.xlsx,.xls,.pdf,.zip,.json">
+                    <div class="admin-hint">
+                        CSV, Excel, PDF, ZIP — max 20 MB
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-title">Paramètres</div>
+            </div>
+            <div class="admin-card-body">
+
+                <div class="mb-3">
+                    <label class="admin-label">Thème *</label>
+                    <select name="categorie" class="admin-input">
+                        {% set themes = [
+                            ('sante','Santé'),
+                            ('education','Éducation'),
+                            ('economie','Économie'),
+                            ('gouvernance','Gouvernance'),
+                            ('agriculture','Agriculture'),
+                            ('environnement','Environnement')
+                        ] %}
+                        {% for val, label in themes %}
+                        <option value="{{ val }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="admin-label">Type de fichier</label>
+                    <select name="fichier_type" class="admin-input">
+                        <option value="CSV">CSV</option>
+                        <option value="XLSX">Excel (XLSX)</option>
+                        <option value="PDF">PDF</option>
+                        <option value="ZIP">ZIP</option>
+                        <option value="JSON">JSON</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <div class="admin-checkbox">
+                        <input type="checkbox" name="actif"
+                               id="actif" checked>
+                        <label for="actif">
+                            Visible sur le site
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit"
+                        class="admin-btn-primary w-100">
+                    Ajouter le fichier →
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</form>
+
+{% endblock %}

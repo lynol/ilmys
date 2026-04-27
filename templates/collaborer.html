@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+
+{% block title %}Collaborer — ILMYS{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="page-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="page-hero-eyebrow">
+                    <span class="hero-dot me-2"></span>
+                    Collaborer
+                </div>
+                <h1 class="page-hero-title">
+                    Travaillons ensemble.
+                </h1>
+                <p class="page-hero-desc">
+                    Médias, institutions, chercheurs, ONG — 
+                    si vous travaillez avec des données africaines 
+                    ou souhaitez utiliser nos analyses, contactez-nous.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TYPES DE COLLABORATION -->
+<section class="ilmys-section bg-light-green">
+    <div class="container">
+        <div class="section-label">Ce qu'on peut faire ensemble</div>
+        <div class="row g-4">
+
+            <div class="col-lg-4 col-md-6">
+                <div class="collab-type-card">
+                    <div class="collab-type-icon"
+                         style="background:rgba(22,163,74,.1)">
+                        <svg width="24" height="24"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#16A34A" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18"
+                                  rx="2"/>
+                            <path d="M3 9h18M9 21V9"/>
+                        </svg>
+                    </div>
+                    <div class="collab-type-title">
+                        Médias & Journalistes
+                    </div>
+                    <div class="collab-type-text">
+                        Utiliser nos visualisations dans vos 
+                        reportages, articles ou émissions. 
+                        Nous produisons des infographies 
+                        sur mesure pour vos sujets.
+                    </div>
+                    <div class="collab-type-detail">
+                        Mention source ILMYS requise.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="collab-type-card">
+                    <div class="collab-type-icon"
+                         style="background:rgba(37,99,235,.1)">
+                        <svg width="24" height="24"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#2563EB" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div class="collab-type-title">
+                        Institutions & ONG
+                    </div>
+                    <div class="collab-type-text">
+                        Analyses sur mesure sur vos données 
+                        ou sur des sujets spécifiques. 
+                        Rapports complets avec visualisations 
+                        pour vos publications.
+                    </div>
+                    <div class="collab-type-detail">
+                        Devis sur demande.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="collab-type-card">
+                    <div class="collab-type-icon"
+                         style="background:rgba(124,58,237,.1)">
+                        <svg width="24" height="24"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#7C3AED" stroke-width="1.5">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        </svg>
+                    </div>
+                    <div class="collab-type-title">
+                        Chercheurs & Académiques
+                    </div>
+                    <div class="collab-type-text">
+                        Partage de données, co-analyses, 
+                        contributions méthodologiques. 
+                        Nous croyons à la science ouverte 
+                        et au partage des connaissances.
+                    </div>
+                    <div class="collab-type-detail">
+                        Gratuit pour la recherche.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="collab-type-card">
+                    <div class="collab-type-icon"
+                         style="background:rgba(217,119,6,.1)">
+                        <svg width="24" height="24"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#D97706" stroke-width="1.5">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <div class="collab-type-title">
+                        Signaler une erreur
+                    </div>
+                    <div class="collab-type-text">
+                        Vous avez constaté une erreur dans 
+                        une de nos analyses ? Contactez-nous. 
+                        Nous corrigeons publiquement 
+                        et transparentement.
+                    </div>
+                    <div class="collab-type-detail">
+                        Réponse sous 48h.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="collab-type-card">
+                    <div class="collab-type-icon"
+                         style="background:rgba(8,145,178,.1)">
+                        <svg width="24" height="24"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#0891B2" stroke-width="1.5">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <div class="collab-type-title">
+                        Proposer des données
+                    </div>
+                    <div class="collab-type-text">
+                        Vous connaissez des sources de données 
+                        africaines peu connues ? Vous avez 
+                        des données à rendre publiques ? 
+                        Partagez-les avec nous.
+                    </div>
+                    <div class="collab-type-detail">
+                        Données publiques uniquement.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="collab-type-card">
+                    <div class="collab-type-icon"
+                         style="background:rgba(220,38,38,.1)">
+                        <svg width="24" height="24"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#DC2626" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <div class="collab-type-title">
+                        Autre demande
+                    </div>
+                    <div class="collab-type-text">
+                        Une idée, une question, 
+                        une proposition qui ne rentre 
+                        pas dans les cases ci-dessus ? 
+                        Écrivez-nous quand même.
+                    </div>
+                    <div class="collab-type-detail">
+                        Nous lisons tout.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FORMULAIRE -->
+<section class="ilmys-section">
+    <div class="container">
+        <div class="row g-5">
+
+            <!-- FORMULAIRE -->
+            <div class="col-lg-7">
+                <div class="section-label">Formulaire de contact</div>
+
+                {% with messages = get_flashed_messages(
+                    with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="flash-{{ category }} mb-4">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/collaborer">
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Nom complet *
+                            </label>
+                            <input type="text" name="nom"
+                                   class="form-input"
+                                   placeholder="Votre nom"
+                                   required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                Organisation
+                            </label>
+                            <input type="text" name="organisation"
+                                   class="form-input"
+                                   placeholder="Média, ONG, université...">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email"
+                               class="form-input"
+                               placeholder="votre@email.com"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Type de collaboration
+                        </label>
+                        <select name="type_collab"
+                                class="form-input">
+                            <option value="">
+                                Sélectionner...
+                            </option>
+                            <option>Médias & Journalistes</option>
+                            <option>Institutions & ONG</option>
+                            <option>Chercheurs & Académiques</option>
+                            <option>Signaler une erreur</option>
+                            <option>Proposer des données</option>
+                            <option>Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Message *</label>
+                        <textarea name="message"
+                                  class="form-input"
+                                  rows="6"
+                                  placeholder="Décrivez votre projet ou votre demande..."
+                                  required></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="btn-collab-main w-100">
+                        Envoyer le message →
+                    </button>
+
+                    <p class="form-note mt-3">
+                        Réponse sous 48h. Vos données ne sont 
+                        pas partagées avec des tiers.
+                    </p>
+
+                </form>
+            </div>
+
+            <!-- INFOS -->
+            <div class="col-lg-5">
+                <div class="section-label">Informations</div>
+
+                <div class="contact-info-card mb-3">
+                    <div class="contact-info-icon"
+                         style="background:rgba(22,163,74,.1)">
+                        <svg width="20" height="20"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#16A34A" stroke-width="1.5">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="contact-info-label">Email</div>
+                        <div class="contact-info-value">
+                            contact@ilmys.com
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-info-card mb-3">
+                    <div class="contact-info-icon"
+                         style="background:rgba(37,99,235,.1)">
+                        <svg width="20" height="20"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#2563EB" stroke-width="1.5">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="contact-info-label">
+                            Localisation
+                        </div>
+                        <div class="contact-info-value">
+                            Québec, Canada
+                        </div>
+                        <div class="contact-info-value">
+                            Abidjan, Côte d'Ivoire
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-info-card mb-4">
+                    <div class="contact-info-icon"
+                         style="background:rgba(217,119,6,.1)">
+                        <svg width="20" height="20"
+                             viewBox="0 0 24 24" fill="none"
+                             stroke="#D97706" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="contact-info-label">
+                            Délai de réponse
+                        </div>
+                        <div class="contact-info-value">
+                            Sous 48 heures
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENGAGEMENTS -->
+                <div class="collab-engagements">
+                    <div class="engagement-title">
+                        Nos engagements
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-check">✓</span>
+                        Réponse à toutes les demandes
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-check">✓</span>
+                        Transparence sur nos méthodes
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-check">✓</span>
+                        Données jamais partagées
+                    </div>
+                    <div class="engagement-item">
+                        <span class="engagement-check">✓</span>
+                        Corrections publiques si erreur
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

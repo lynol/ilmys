@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg ilmys-nav sticky-top">
+    <div class="container">
+
+        <!-- LOGO -->
+        <a class="navbar-brand ilmys-logo" href="{{ url_for('index') }}">
+            ILMYS
+            <span>Données · Analyses · Afrique</span>
+        </a>
+
+        <!-- BURGER -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- LIENS -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'analyses' %}active{% endif %}"
+                       href="{{ url_for('analyses') }}">
+                        Analyses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'donnees' %}active{% endif %}"
+                       href="{{ url_for('donnees') }}">
+                        Données
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}"
+                       href="{{ url_for('about') }}">
+                        À propos
+                    </a>
+                </li>
+            </ul>
+
+            <!-- CTA -->
+            <a href="{{ url_for('collaborer') }}" 
+               class="btn ilmys-btn-cta">
+                Collaborer
+            </a>
+        </div>
+
+    </div>
+</nav>

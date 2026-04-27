@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ analyse[1] }} — ILMYS{% endblock %}
+
+{% block meta_description %}{{ analyse[4][:160] if analyse[4] else analyse[1] }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ analyse[1] }} — ILMYS{% endblock %}
+{% block og_description %}{{ analyse[4][:200] if analyse[4] else analyse[1] }}{% endblock %}
+{% block og_image %}{% if analyse[10] %}{{ request.host_url[:-1] }}{{ analyse[10] }}{% else %}{{ request.host_url }}static/assets/og-default.png{% endif %}{% endblock %}
+
+{% block twitter_title %}{{ analyse[1] }} — ILMYS{% endblock %}
+{% block twitter_description %}{{ analyse[4][:200] if analyse[4] else analyse[1] }}{% endblock %}
+{% block twitter_image %}{% if analyse[10] %}{{ request.host_url[:-1] }}{{ analyse[10] }}{% else %}{{ request.host_url }}static/assets/og-default.png{% endif %}{% endblock %}
+
+{% block content %}
+
+<!-- HERO ARTICLE -->
+<section class="article-hero-section 
+                article-hero-{{ analyse[3] }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+
+                <!-- BREADCRUMB -->
+                <div class="article-breadcrumb">
+                    <a href="{{ url_for('index') }}">Accueil</a>
+                    <span>›</span>
+                    <a href="{{ url_for('analyses') }}">Analyses</a>
+                    <span>›</span>
+                    <a href="{{ url_for('analyses') }}?theme={{ analyse[3] }}">
+                        {{ analyse[3]|capitalize }}
+                    </a>
+                </div>
+
+                <!-- BADGE -->
+                <div class="analyse-badge 
+                            badge-{{ analyse[3] }} mb-3">
+                    {{ analyse[3]|capitalize }}
+                </div>
+
+                <!-- TITRE -->
+                <h1 class="article-main-title">
+                    {{ analyse[1] }}
+                </h1>
+
+                <!-- META -->
+                <div class="article-hero-meta">
+                    {% if analyse[9] %}
+                    <span>
+                        {{ analyse[9].strftime('%d %B %Y') }}
+                    </span>
+                    <span>·</span>
+                    {% endif %}
+                    {% if analyse[7] %}
+                    <span>
+                        <strong>Source :</strong> {{ analyse[7] }}
+                    </span>
+                    <span>·</span>
+                    {% endif %}
+                    <span>{{ analyse[6] }} de lecture</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CONTENU -->
+<section class="ilmys-section">
+    <div class="container">
+        <div class="row g-5">
+
+            <!-- ARTICLE PRINCIPAL -->
+            <div class="col-lg-8">
+
+                <!-- EXTRAIT -->
+                {% if analyse[4] %}
+                <div class="article-extrait">
+                    {{ analyse[4] }}
+                </div>
+                {% endif %}
+
+                <!-- TÉLÉCHARGEMENT -->
+                {% if analyse[11] %}
+                <a href="{{ analyse[11] }}"
+                   download="{{ analyse[12] or 'fichier' }}"
+                   class="btn-download mb-4 d-inline-flex">
+                    <svg width="16" height="16" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Télécharger les données
+                    {% if analyse[12] %}
+                    ({{ analyse[12] }})
+                    {% endif %}
+                </a>
+                {% endif %}
+
+                <!-- CONTENU PRINCIPAL -->
+                <div class="article-body">
+                    {{ analyse[5]|safe }}
+                </div>
+
+                <!-- SOURCE -->
+                {% if analyse[7] %}
+                <div class="article-source-box">
+                    <div class="article-source-label">
+                        Source des données
+                    </div>
+                    <div class="article-source-text">
+                        {{ analyse[7] }}
+                    </div>
+                    <div class="article-source-note">
+                        ILMYS s'engage à ne publier que des données 
+                        vérifiables. Si vous constatez une erreur, 
+                        <a href="{{ url_for('collaborer') }}">
+                            contactez-nous
+                        </a>.
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4">
+                <div class="article-sidebar">
+
+                    <!-- À PROPOS ILMYS -->
+                    <div class="sidebar-card mb-3">
+                        <div class="sidebar-card-title">
+                            À propos d'ILMYS
+                        </div>
+                        <p class="sidebar-card-text">
+                            Plateforme indépendante d'analyses 
+                            de données sur l'Afrique francophone. 
+                            Gratuit. Rigoureux. Sourcé.
+                        </p>
+                        <a href="{{ url_for('about') }}"
+                           class="sidebar-link-btn">
+                            Notre méthode →
+                        </a>
+                    </div>
+
+                    <!-- DONNÉES DISPONIBLES -->
+                    {% if analyse[11] %}
+                    <div class="sidebar-card mb-3 
+                                sidebar-card-green">
+                        <div class="sidebar-card-title">
+                            Données disponibles
+                        </div>
+                        <p class="sidebar-card-text">
+                            Les données de cette analyse sont 
+                            librement téléchargeables.
+                        </p>
+                        <a href="{{ analyse[11] }}"
+                           download="{{ analyse[12] or 'donnees' }}"
+                           class="btn-download-sm">
+                            Télécharger →
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- COLLABORER -->
+                    <div class="sidebar-card mb-3">
+                        <div class="sidebar-card-title">
+                            Utiliser cette analyse ?
+                        </div>
+                        <p class="sidebar-card-text">
+                            Médias, institutions — vous pouvez 
+                            utiliser nos visualisations avec 
+                            mention de la source ILMYS.
+                        </p>
+                        <a href="{{ url_for('collaborer') }}"
+                           class="sidebar-link-btn">
+                            Nous contacter →
+                        </a>
+                    </div>
+
+                    <!-- THÈMES -->
+                    <div class="sidebar-card">
+                        <div class="sidebar-card-title">
+                            Explorer par thème
+                        </div>
+                        <div class="sidebar-themes">
+                            <a href="{{ url_for('analyses') }}?theme=sante"
+                               class="sidebar-theme-link">
+                                <span class="sidebar-theme-dot"
+                                      style="background:#16A34A">
+                                </span>
+                                Santé
+                            </a>
+                            <a href="{{ url_for('analyses') }}?theme=education"
+                               class="sidebar-theme-link">
+                                <span class="sidebar-theme-dot"
+                                      style="background:#2563EB">
+                                </span>
+                                Éducation
+                            </a>
+                            <a href="{{ url_for('analyses') }}?theme=economie"
+                               class="sidebar-theme-link">
+                                <span class="sidebar-theme-dot"
+                                      style="background:#D97706">
+                                </span>
+                                Économie
+                            </a>
+                            <a href="{{ url_for('analyses') }}?theme=gouvernance"
+                               class="sidebar-theme-link">
+                                <span class="sidebar-theme-dot"
+                                      style="background:#7C3AED">
+                                </span>
+                                Gouvernance
+                            </a>
+                            <a href="{{ url_for('analyses') }}?theme=agriculture"
+                               class="sidebar-theme-link">
+                                <span class="sidebar-theme-dot"
+                                      style="background:#0891B2">
+                                </span>
+                                Agriculture
+                            </a>
+                            <a href="{{ url_for('analyses') }}?theme=environnement"
+                               class="sidebar-theme-link">
+                                <span class="sidebar-theme-dot"
+                                      style="background:#DC2626">
+                                </span>
+                                Environnement
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ANALYSES SIMILAIRES -->
+{% if similaires %}
+<section class="ilmys-section bg-light-green">
+    <div class="container">
+        <div class="section-label">
+            Dans le même thème
+        </div>
+        <div class="row g-4">
+            {% for s in similaires %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card ilmys-card h-100">
+                    <div class="card-top {{ s[3] }}"></div>
+                    <div class="card-visual">
+                        {% if s[7] %}
+                        <img src="{{ s[7] }}" alt="{{ s[1] }}"
+                             style="width:100%;height:100%;
+                                    object-fit:cover;opacity:.85">
+                        {% else %}
+                        <div class="bar b-green"
+                             style="height:35px;width:22px"></div>
+                        <div class="bar b-blue"
+                             style="height:58px;width:22px"></div>
+                        <div class="bar b-green"
+                             style="height:45px;width:22px"></div>
+                        <div class="bar b-gray"
+                             style="height:28px;width:22px"></div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body ilmys-card-body">
+                        <div class="c-title">{{ s[1] }}</div>
+                        <div class="c-excerpt">
+                            {{ s[4][:80] if s[4] else '' }}...
+                        </div>
+                    </div>
+                    <div class="card-footer ilmys-card-footer">
+                        <span class="c-date">
+                            {{ s[6].strftime('%B %Y') 
+                               if s[6] else '' }}
+                        </span>
+                        <a href="{{ url_for('analyse_detail',
+                                            slug=s[2]) }}"
+                           class="c-link">
+                            Lire →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
