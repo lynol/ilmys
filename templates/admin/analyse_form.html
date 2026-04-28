@@ -52,37 +52,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="admin-label">
-                        Contenu *
-                    </label>
-                    <div class="editor-toolbar">
-                        <button type="button"
-                                onclick="tag('h2')"
-                                class="editor-btn">H2</button>
-                        <button type="button"
-                                onclick="tag('h3')"
-                                class="editor-btn">H3</button>
-                        <button type="button"
-                                onclick="tag('p')"
-                                class="editor-btn">§</button>
-                        <button type="button"
-                                onclick="tag('strong')"
-                                class="editor-btn">G</button>
-                        <button type="button"
-                                onclick="tag('em')"
-                                class="editor-btn">I</button>
-                        <button type="button"
-                                onclick="liste()"
-                                class="editor-btn">Liste</button>
-                        <button type="button"
-                                onclick="imgTag()"
-                                class="editor-btn">Image</button>
-                    </div>
+                    <label class="admin-label">Contenu *</label>
                     <textarea name="contenu" id="contenu"
-                              class="admin-input admin-editor"
-                              rows="20"
-                              placeholder="Contenu en HTML..."
-                              required>{{ analyse[5] if analyse else '' }}</textarea>
+                            class="admin-input"
+                            rows="20">{{ analyse[5] if analyse else '' }}</textarea>
                 </div>
 
             </div>
@@ -246,29 +219,73 @@
 </form>
 
 <script>
-function tag(t) {
-    const ta = document.getElementById('contenu');
-    const s = ta.selectionStart, e = ta.selectionEnd;
-    const txt = ta.value.substring(s,e) || 'Texte ici';
-    ta.value = ta.value.substring(0,s) +
-               '<'+t+'>'+txt+'</'+t+'>' +
-               ta.value.substring(e);
-    ta.focus();
-}
-function liste() {
-    const ta = document.getElementById('contenu');
-    const p = ta.selectionStart;
-    const li = '\n<ul>\n  <li>Élément 1</li>\n  <li>Élément 2</li>\n</ul>\n';
-    ta.value = ta.value.substring(0,p) + li + ta.value.substring(p);
-    ta.focus();
-}
-function imgTag() {
-    const ta = document.getElementById('contenu');
-    const p = ta.selectionStart;
-    const img = '\n<img src="/static/uploads/images/votre-image.png" alt="Description" style="width:100%;border-radius:6px;margin:16px 0">\n';
-    ta.value = ta.value.substring(0,p) + img + ta.value.substring(p);
-    ta.focus();
-}
+    tinymce.init({
+        selector: '#contenu',
+        language: 'fr_FR',
+        height: 600,
+        plugins: [
+            'anchor', 'autolink', 'charmap', 'codesample',
+            'link', 'lists', 'media', 'searchreplace',
+            'table', 'visualblocks', 'wordcount', 'image'
+        ],
+        toolbar: 'undo redo | blocks | bold italic underline | ' +
+                'alignleft aligncenter alignright | ' +
+                'bullist numlist | link image media table | ' +
+                'removeformat code',
+        // Upload images vers le serveur
+        images_upload_url: '/admin/upload-image',
+        images_upload_handler: function (blobInfo, progress) {
+            return new Promise(function (resolve, reject) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/admin/upload-image');
+                xhr.upload.onprogress = function (e) {
+                    progress(e.loaded / e.total * 100);
+                };
+                xhr.onload = function () {
+                    if (xhr.status < 200 || xhr.status >= 300) {
+                        reject('Erreur HTTP: ' + xhr.status);
+                        return;
+                    }
+                    var json = JSON.parse(xhr.responseText);
+                    if (!json || typeof json.location !== 'string') {
+                        reject('Réponse invalide');
+                        return;
+                    }
+                    resolve(json.location);
+                };
+                xhr.onerror = function () {
+                    reject('Upload échoué');
+                };
+                var formData = new FormData();
+                formData.append('file', blobInfo.blob(),
+                                blobInfo.filename());
+                xhr.send(formData);
+            });
+        },
+        content_style: `
+            body {
+                font-family: sans-serif;
+                font-size: 15px;
+                line-height: 1.8;
+                color: #374151;
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 0 20px;
+            }
+            h2 {
+                font-size: 22px;
+                color: #111827;
+                border-bottom: 1px solid #E5E7EB;
+                padding-bottom: 10px;
+            }
+            img { max-width: 100%; border-radius: 6px; }
+            blockquote {
+                border-left: 3px solid #16A34A;
+                padding: 16px 20px;
+                background: #F0FDF4;
+            }
+        `
+    });
 </script>
 
 {% endblock %}

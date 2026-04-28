@@ -1,4 +1,4 @@
-from flask import (Flask, render_template, request, redirect, url_for, flash, session)
+from flask import (Flask, render_template, request, redirect, url_for, flash, session, jsonify)
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
@@ -480,6 +480,17 @@ def sauvegarder_fichier(fichier, sous_dossier):
         fichier.save(chemin)
         return f"/static/uploads/{sous_dossier}/{nom_unique}"
     return None
+
+@app.route('/admin/upload-image', methods=['POST'])
+@login_required
+def admin_upload_image():
+    if 'file' not in request.files:
+        return jsonify({'error': 'Pas de fichier'}), 400
+    fichier = request.files['file']
+    if fichier and allowed_image(fichier.filename):
+        url = sauvegarder_fichier(fichier, 'images')
+        return jsonify({'location': url})
+    return jsonify({'error': 'Format non autorisé'}), 400
 
 def generer_slug(titre):
     slug = titre.lower()
