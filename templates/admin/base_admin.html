@@ -69,6 +69,11 @@
                 </svg>
                 Messages
             </a>
+
+            <a href="{{ url_for('admin_users') }}" 
+            class="sidebar-link {% if request.endpoint == 'admin_users' %}active{% endif %}">
+                👥 Utilisateurs
+            </a>
         </nav>
 
         <div class="sidebar-footer">

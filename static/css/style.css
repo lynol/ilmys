@@ -22,6 +22,8 @@
 body {
     font-family: 'Georgia', serif;
     color: var(--noir);
+    font-size: 17px;
+
 }
 
 /* ─── NAVBAR ─── */
@@ -53,13 +55,17 @@ body {
 }
 
 .ilmys-nav .nav-link {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted) !important;
     font-family: sans-serif;
     letter-spacing: 1px;
     text-transform: uppercase;
     padding: 0 16px !important;
     transition: color .2s;
+}
+
+.nav-link {
+    font-size: 13px !important;
 }
 
 .ilmys-nav .nav-link:hover,
@@ -1011,7 +1017,7 @@ body {
 }
 
 .article-body h2 {
-    font-size: 24px;
+    font-size: 26px;
     color: var(--noir);
     font-family: 'Georgia', serif;
     font-weight: 400;
@@ -1021,18 +1027,21 @@ body {
 }
 
 .article-body h3 {
-    font-size: 19px;
+    font-size: 21px;
     color: var(--noir);
     font-family: 'Georgia', serif;
     font-weight: 400;
-    margin: 28px 0 12px;
+    margin: 32px 0 14px;
 }
 
 .article-body p {
-    font-size: 15px;
+    font-size: 17px;
     color: #374151;
     margin-bottom: 18px;
     line-height: 1.85;
+}
+.card-title {
+    font-size: 17px;
 }
 
 .article-body strong { color: var(--noir); font-weight: 700; }

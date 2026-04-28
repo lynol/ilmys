@@ -1,4 +1,5 @@
 from flask import (Flask, render_template, request, redirect, url_for, flash, session, jsonify)
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
@@ -7,6 +8,10 @@ from functools import wraps
 import re
 import time
 import os
+
+from flask_mail import Mail, Message
+import secrets
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -19,6 +24,16 @@ app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB']       = os.getenv('MYSQL_DB')
 
 mysql = MySQL(app)
+
+# ─── FLASK-MAIL ───
+app.config['MAIL_SERVER']   = 'smtp.gmail.com'
+app.config['MAIL_PORT']     = 587
+app.config['MAIL_USE_TLS']  = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = ('ILMYS', os.getenv('MAIL_USERNAME'))
+
+mail = Mail(app)
 
 # ─── UPLOADS ───
 UPLOAD_FOLDER    = os.path.join(
@@ -62,16 +77,6 @@ def generer_slug(titre):
     slug = re.sub(r'[^a-z0-9\s-]', '', slug)
     slug = re.sub(r'[\s]+', '-', slug).strip('-')
     return slug
-
-# ─── DÉCORATEUR ADMIN ───
-def login_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if 'admin_logged_in' not in session:
-            flash('Accès réservé.', 'error')
-            return redirect(url_for('admin_login'))
-        return f(*args, **kwargs)
-    return decorated
 
 
 @app.route('/')
@@ -481,6 +486,65 @@ def sauvegarder_fichier(fichier, sous_dossier):
         return f"/static/uploads/{sous_dossier}/{nom_unique}"
     return None
 
+
+# ─── SIGNUP ───
+@app.route('/admin/signup', methods=['GET', 'POST'])
+def admin_signup():
+    if request.method == 'POST':
+        nom      = request.form.get('nom', '').strip()
+        email    = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        confirm  = request.form.get('confirm', '')
+
+        # Validations
+        if not nom or not email or not password:
+            flash('Tous les champs sont obligatoires.', 'error')
+            return redirect(url_for('admin_signup'))
+
+        if password != confirm:
+            flash('Les mots de passe ne correspondent pas.', 'error')
+            return redirect(url_for('admin_signup'))
+
+        if len(password) < 8:
+            flash('Le mot de passe doit contenir au moins 8 caractères.', 'error')
+            return redirect(url_for('admin_signup'))
+
+        # Vérifier si email existe déjà
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        existing = cur.fetchone()
+
+        if existing:
+            flash('Cet email est déjà utilisé.', 'error')
+            cur.close()
+            return redirect(url_for('admin_signup'))
+
+        # Créer le compte
+        password_hash = generate_password_hash(password)
+        cur.execute("""
+            INSERT INTO users (nom, email, password_hash, role, statut)
+            VALUES (%s, %s, %s, 'auteur', 'en_attente')
+        """, (nom, email, password_hash))
+        mysql.connection.commit()
+        cur.close()
+
+        flash('Compte créé. En attente de validation par l\'administrateur.', 'success')
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin/signup.html')
+
+
+# ─── DÉCORATEUR ADMIN ───
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'admin_logged_in' not in session:
+            flash('Accès réservé.', 'error')
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated
+
+
 @app.route('/admin/upload-image', methods=['POST'])
 @login_required
 def admin_upload_image():
@@ -519,32 +583,224 @@ def login_required(f):
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    if 'admin_logged_in' in session:
-        return redirect(url_for('admin_dashboard'))
-
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
-        password = request.form.get('password', '').strip()
-        try:
-            cur = mysql.connection.cursor()
-            cur.execute(
-                "SELECT * FROM admins WHERE username = %s",
-                (username,)
-            )
-            admin = cur.fetchone()
-            cur.close()
-            if admin and check_password_hash(admin[2], password):
-                session['admin_logged_in'] = True
-                session['admin_username']  = admin[1]
-                return redirect(url_for('admin_dashboard'))
-            else:
-                flash('Identifiants incorrects.', 'error')
-        except Exception as e:
-            print(f"Erreur login : {e}")
-            flash('Erreur de connexion.', 'error')
+        password = request.form.get('password', '')
+
+        cur = mysql.connection.cursor()
+
+        # Chercher dans users (par email ou nom)
+        cur.execute("""
+            SELECT id, nom, email, password_hash, role, statut
+            FROM users
+            WHERE email = %s OR nom = %s
+        """, (username, username))
+        user = cur.fetchone()
+        cur.close()
+
+        if user and check_password_hash(user[3], password):
+            if user[5] == 'en_attente':
+                flash('Votre compte est en attente de validation.', 'error')
+                return redirect(url_for('admin_login'))
+            if user[5] == 'suspendu':
+                flash('Votre compte est suspendu.', 'error')
+                return redirect(url_for('admin_login'))
+
+            session['user_id']   = user[0]
+            session['user_nom']  = user[1]
+            session['user_role'] = user[4]
+            session['admin_logged_in'] = True
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Identifiants incorrects.', 'error')
 
     return render_template('admin/login.html')
 
+# ─── GESTION USERS DANS L'ADMIN ───
+@app.route('/admin/users')
+@login_required
+def admin_users():
+    if session.get('user_role') != 'admin':
+        flash('Accès réservé à l\'administrateur.', 'error')
+        return redirect(url_for('admin_dashboard'))
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT id, nom, email, role, statut, created_at
+        FROM users ORDER BY created_at DESC
+    """)
+    users = cur.fetchall()
+    cur.close()
+    return render_template('admin/users.html', users=users)
+
+
+@app.route('/admin/users/<int:user_id>/activer')
+@login_required
+def admin_activer_user(user_id):
+    if session.get('user_role') != 'admin':
+        return redirect(url_for('admin_dashboard'))
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE users SET statut = 'actif' WHERE id = %s
+    """, (user_id,))
+    mysql.connection.commit()
+    cur.close()
+    flash('Compte activé.', 'success')
+    return redirect(url_for('admin_users'))
+
+
+@app.route('/admin/users/<int:user_id>/suspendre')
+@login_required
+def admin_suspendre_user(user_id):
+    if session.get('user_role') != 'admin':
+        return redirect(url_for('admin_dashboard'))
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE users SET statut = 'suspendu' WHERE id = %s
+    """, (user_id,))
+    mysql.connection.commit()
+    cur.close()
+    flash('Compte suspendu.', 'success')
+    return redirect(url_for('admin_users'))
+
+
+@app.route('/admin/users/<int:user_id>/supprimer')
+@login_required
+def admin_supprimer_user(user_id):
+    if session.get('user_role') != 'admin':
+        return redirect(url_for('admin_dashboard'))
+
+    # Ne pas supprimer son propre compte
+    if user_id == session.get('user_id'):
+        flash('Vous ne pouvez pas supprimer votre propre compte.', 'error')
+        return redirect(url_for('admin_users'))
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM users WHERE id = %s", (user_id,))
+    mysql.connection.commit()
+    cur.close()
+    flash('Compte supprimé.', 'success')
+    return redirect(url_for('admin_users'))
+
+
+# ─── DEMANDE RESET ───
+@app.route('/admin/reset-password', methods=['GET', 'POST'])
+def admin_reset_request():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id, nom FROM users WHERE email = %s",
+                    (email,))
+        user = cur.fetchone()
+
+        if user:
+            # Générer token
+            token = secrets.token_urlsafe(32)
+            expires = datetime.now() + timedelta(hours=1)
+
+            cur.execute("""
+                INSERT INTO reset_tokens 
+                (user_id, token, expires_at)
+                VALUES (%s, %s, %s)
+            """, (user[0], token, expires))
+            mysql.connection.commit()
+
+            # Envoyer email
+            reset_url = url_for('admin_reset_password',
+                                token=token, _external=True)
+            msg = Message(
+                subject = 'Réinitialisation de mot de passe — ILMYS',
+                recipients = [email]
+            )
+            msg.html = f"""
+            <div style="font-family:sans-serif;max-width:500px;
+                        margin:0 auto;padding:20px">
+                <h2 style="color:#16A34A">ILMYS</h2>
+                <p>Bonjour {user[1]},</p>
+                <p>Vous avez demandé une réinitialisation de mot de passe.</p>
+                <p>Cliquez sur le bouton ci-dessous — 
+                   ce lien expire dans <strong>1 heure</strong>.</p>
+                <a href="{reset_url}"
+                   style="display:inline-block;background:#16A34A;
+                          color:#fff;padding:12px 24px;border-radius:6px;
+                          text-decoration:none;margin:16px 0">
+                    Réinitialiser mon mot de passe
+                </a>
+                <p style="color:#9CA3AF;font-size:12px">
+                    Si vous n'avez pas fait cette demande, ignorez cet email.
+                </p>
+            </div>
+            """
+            mail.send(msg)
+
+        cur.close()
+
+        # Toujours afficher ce message (sécurité)
+        flash('Si cet email existe, un lien de réinitialisation a été envoyé.', 'success')
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin/reset_request.html')
+
+
+# ─── NOUVEAU MOT DE PASSE ───
+@app.route('/admin/reset-password/<token>',
+           methods=['GET', 'POST'])
+def admin_reset_password(token):
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT rt.id, rt.user_id, rt.expires_at, rt.used
+        FROM reset_tokens rt
+        WHERE rt.token = %s
+    """, (token,))
+    reset = cur.fetchone()
+
+    # Vérifications
+    if not reset:
+        flash('Lien invalide.', 'error')
+        return redirect(url_for('admin_login'))
+
+    if reset[3]:  # used
+        flash('Ce lien a déjà été utilisé.', 'error')
+        return redirect(url_for('admin_login'))
+
+    if datetime.now() > reset[2]:  # expiré
+        flash('Ce lien a expiré.', 'error')
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        confirm  = request.form.get('confirm', '')
+
+        if len(password) < 8:
+            flash('8 caractères minimum.', 'error')
+            return redirect(request.url)
+
+        if password != confirm:
+            flash('Les mots de passe ne correspondent pas.', 'error')
+            return redirect(request.url)
+
+        # Mettre à jour le mot de passe
+        password_hash = generate_password_hash(password)
+        cur.execute("""
+            UPDATE users SET password_hash = %s WHERE id = %s
+        """, (password_hash, reset[1]))
+
+        # Marquer le token comme utilisé
+        cur.execute("""
+            UPDATE reset_tokens SET used = TRUE WHERE id = %s
+        """, (reset[0],))
+
+        mysql.connection.commit()
+        cur.close()
+
+        flash('Mot de passe mis à jour. Connectez-vous.', 'success')
+        return redirect(url_for('admin_login'))
+
+    cur.close()
+    return render_template('admin/reset_password.html', token=token)
 
 @app.route('/admin/logout')
 def admin_logout():
@@ -1042,5 +1298,7 @@ def admin_message_supprimer(id):
     return redirect(url_for('admin_messages'))
 
 
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

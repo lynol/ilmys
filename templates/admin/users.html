@@ -1,0 +1,91 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Utilisateurs — ILMYS Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="admin-page-title mb-1">Utilisateurs</h4>
+            <p class="text-muted mb-0" style="font-size:13px">
+                {{ users|length }} compte(s) enregistré(s)
+            </p>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="admin-card">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Statut</th>
+                    <th>Inscrit le</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td><strong>{{ u[1] }}</strong></td>
+                    <td style="font-size:13px;color:var(--muted)">
+                        {{ u[2] }}
+                    </td>
+                    <td>
+                        <span class="badge" style="
+                            background:{{ '#16A34A' if u[3] == 'admin' else '#2563EB' }};
+                            color:#fff;font-size:11px;padding:4px 8px;
+                            border-radius:4px">
+                            {{ u[3] }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge" style="
+                            background:{{ '#16A34A' if u[4] == 'actif' else '#D97706' if u[4] == 'en_attente' else '#DC2626' }};
+                            color:#fff;font-size:11px;padding:4px 8px;
+                            border-radius:4px">
+                            {{ u[4] }}
+                        </span>
+                    </td>
+                    <td style="font-size:13px;color:var(--muted)">
+                        {{ u[5].strftime('%d/%m/%Y') if u[5] else '' }}
+                    </td>
+                    <td>
+                        {% if u[4] == 'en_attente' %}
+                        <a href="{{ url_for('admin_activer_user', user_id=u[0]) }}"
+                           class="btn btn-sm"
+                           style="background:#16A34A;color:#fff;
+                                  font-size:11px;padding:3px 8px">
+                            Activer
+                        </a>
+                        {% elif u[4] == 'actif' and u[3] != 'admin' %}
+                        <a href="{{ url_for('admin_suspendre_user', user_id=u[0]) }}"
+                           class="btn btn-sm"
+                           style="background:#D97706;color:#fff;
+                                  font-size:11px;padding:3px 8px">
+                            Suspendre
+                        </a>
+                        {% endif %}
+
+                        {% if u[3] != 'admin' %}
+                        <a href="{{ url_for('admin_supprimer_user', user_id=u[0]) }}"
+                           class="btn btn-sm"
+                           style="background:#DC2626;color:#fff;
+                                  font-size:11px;padding:3px 8px"
+                           onclick="return confirm('Supprimer ce compte ?')">
+                            Supprimer
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

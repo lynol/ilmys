@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte — ILMYS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body style="background:#F8FAFC;min-height:100vh">
+
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-5">
+
+                <!-- LOGO -->
+                <div class="text-center mb-4">
+                    <a href="/" class="ilmys-logo" 
+                       style="font-size:28px;text-decoration:none">
+                        ILMYS
+                    </a>
+                    <p class="text-muted mt-1" style="font-size:13px">
+                        Créer un compte auteur
+                    </p>
+                </div>
+
+                <!-- CARD -->
+                <div class="admin-card p-4">
+
+                    <!-- MESSAGES -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} 
+                                    py-2 px-3 mb-3" 
+                             style="font-size:13px;border-radius:6px">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <!-- FORMULAIRE -->
+                    <form method="POST" action="{{ url_for('admin_signup') }}">
+
+                        <div class="mb-3">
+                            <label class="admin-label">Nom complet *</label>
+                            <input type="text" name="nom"
+                                   class="admin-input"
+                                   placeholder="Alidou Sana"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="admin-label">Email *</label>
+                            <input type="email" name="email"
+                                   class="admin-input"
+                                   placeholder="vous@email.com"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="admin-label">Mot de passe *</label>
+                            <input type="password" name="password"
+                                   class="admin-input"
+                                   placeholder="8 caractères minimum"
+                                   required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="admin-label">Confirmer *</label>
+                            <input type="password" name="confirm"
+                                   class="admin-input"
+                                   placeholder="Répète le mot de passe"
+                                   required>
+                        </div>
+
+                        <button type="submit" 
+                                class="btn ilmys-btn-cta w-100 mb-3">
+                            Créer mon compte
+                        </button>
+
+                        <div class="text-center">
+                            <a href="{{ url_for('admin_login') }}"
+                               style="font-size:13px;color:var(--muted)">
+                                Déjà un compte ? Se connecter
+                            </a>
+                        </div>
+
+                    </form>
+
+                    <!-- NOTE -->
+                    <div class="mt-4 p-3" 
+                         style="background:#F0FDF4;border-radius:6px;
+                                border-left:3px solid var(--vert)">
+                        <p style="font-size:12px;color:var(--muted);margin:0">
+                            ℹ️ Votre compte sera activé par l'administrateur 
+                            avant que vous puissiez publier.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- LIEN RETOUR SITE -->
+                <div class="text-center mt-3">
+                    <a href="/" style="font-size:12px;color:var(--muted)">
+                        ← Retour au site
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
