@@ -193,6 +193,9 @@ def index():
         fact              = fact
     )
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 @app.route('/api/dashboard')
 def api_dashboard():
