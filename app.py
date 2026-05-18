@@ -277,8 +277,16 @@ def api_dashboard():
             ) if 'Valeur' in elect.columns else None
 
             # Participation
-            inscrits = elect['INSCRITS'].sum() if 'INSCRITS' in elect.columns else 0
-            votants  = elect['VOTANTS'].sum()  if 'VOTANTS'  in elect.columns else 0
+            def to_num(series):
+                return pd.to_numeric(
+                    series.astype(str)
+                        .str.replace(' ','')
+                        .str.replace('\xa0',''),
+                    errors='coerce'
+                ).fillna(0)
+
+            inscrits = to_num(elect['INSCRITS']).sum() if 'INSCRITS' in elect.columns else 0
+            votants  = to_num(elect['VOTANTS']).sum()  if 'VOTANTS'  in elect.columns else 0
             taux     = round(votants/inscrits*100, 1) if inscrits > 0 else 0
 
             # Élus
