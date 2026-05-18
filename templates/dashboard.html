@@ -413,6 +413,37 @@ function mkChart(id, type, labels, data, colors, opts={}) {
         }
     });
 }
+// ─── CHARGER LES DONNÉES API ───
+fetch('/api/dashboard')
+    .then(r => r.json())
+    .then(data => {
+
+        // ─── BAC ───
+        if (data.bac && !data.bac.error) {
+            const b = data.bac;
+            const el = document.getElementById('kpi-bac-taux');
+            if (el) el.textContent = b.taux_national + '%';
+            const el2 = document.getElementById('kpi-bac-etab');
+            if (el2) el2.textContent = b.nb_etablissements.toLocaleString() + ' établissements';
+        }
+
+        // ─── ÉLECTIONS ───
+        if (data.elections && !data.elections.error) {
+            const e = data.elections;
+            const el = document.getElementById('kpi-elect-part');
+            if (el) el.textContent = e.taux_participation + '%';
+            const el2 = document.getElementById('kpi-elect-inscrits');
+            if (el2) el2.textContent = (e.inscrits/1e6).toFixed(1) + 'M inscrits · ' + e.nb_sieges + ' sièges';
+        }
+
+        // ─── LFI ───
+        if (data.lfi && !data.lfi.error) {
+            const el = document.getElementById('kpi-budget');
+            if (el) el.textContent = parseFloat(data.lfi.total).toLocaleString('fr-FR') + ' Mds';
+        }
+
+    })
+    .catch(err => console.error('API error:', err));
 
 // Initialiser tous les graphiques
 setTimeout(() => {
