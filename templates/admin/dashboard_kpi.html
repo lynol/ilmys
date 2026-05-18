@@ -1,0 +1,77 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard KPI — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="admin-page-title mb-0">Indicateurs du Dashboard</h4>
+        <a href="{{ url_for('dashboard') }}" target="_blank"
+           class="btn btn-sm" style="background:#00d2b2;color:#fff">
+            Voir le dashboard →
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}
+                    py-2 px-3 mb-3" style="font-size:13px">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="admin-card">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>Clé</th>
+                    <th>Année</th>
+                    <th>Valeur</th>
+                    <th>Label</th>
+                    <th>Source</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kpi in kpis %}
+                <tr>
+                    <form method="POST">
+                    <input type="hidden" name="id" value="{{ kpi[0] }}">
+                    <td><code style="font-size:11px">{{ kpi[1] }}</code></td>
+                    <td>{{ kpi[4] }}</td>
+                    <td>
+                        <input type="text" name="valeur"
+                               value="{{ kpi[2] }}"
+                               class="admin-input"
+                               style="width:120px;padding:4px 8px;font-size:12px">
+                    </td>
+                    <td>
+                        <input type="text" name="label"
+                               value="{{ kpi[3] }}"
+                               class="admin-input"
+                               style="width:200px;padding:4px 8px;font-size:12px">
+                    </td>
+                    <td>
+                        <input type="text" name="source"
+                               value="{{ kpi[5] }}"
+                               class="admin-input"
+                               style="width:160px;padding:4px 8px;font-size:12px">
+                    </td>
+                    <td>
+                        <button type="submit"
+                                class="btn btn-sm"
+                                style="background:#00213f;color:#fff;
+                                       font-size:11px;padding:3px 10px">
+                            Sauvegarder
+                        </button>
+                    </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

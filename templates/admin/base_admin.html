@@ -58,6 +58,11 @@
                 Données
             </a>
 
+            <a href="{{ url_for('admin_dashboard_kpi') }}"
+            class="admin-nav-link {% if request.endpoint == 'admin_dashboard_kpi' %}active{% endif %}">
+                <i class="ti ti-chart-bar"></i> Dashboard KPI
+            </a>
+
             <div class="sidebar-section-label">Interactions</div>
 
             <a href="{{ url_for('admin_messages') }}"

@@ -201,6 +201,23 @@ def dashboard():
 def api_dashboard():
     data = {}
 
+    # ─── KPI depuis MySQL ───
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT cle, valeur, label, annee, source FROM dashboard_kpi")
+        rows = cur.fetchall()
+        cur.close()
+        data['kpi'] = {
+            r[0]: {
+                'valeur': r[1],
+                'label' : r[2],
+                'annee' : r[3],
+                'source': r[4]
+            } for r in rows
+        }
+    except Exception as e:
+        data['kpi'] = {'error': str(e)}
+
     try:
         # ─── BAC 2025 ───
         bac_path = os.path.join(
@@ -776,6 +793,34 @@ def admin_login():
             flash('Identifiants incorrects.', 'error')
 
     return render_template('admin/login.html')
+
+
+@app.route('/admin/dashboard', methods=['GET', 'POST'])
+@login_required
+def admin_dashboard_kpi():
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        kpi_id  = request.form.get('id')
+        valeur  = request.form.get('valeur', '').strip()
+        label   = request.form.get('label', '').strip()
+        source  = request.form.get('source', '').strip()
+        cur.execute("""
+            UPDATE dashboard_kpi
+            SET valeur=%s, label=%s, source=%s
+            WHERE id=%s
+        """, (valeur, label, source, kpi_id))
+        mysql.connection.commit()
+        flash('KPI mis à jour.', 'success')
+
+    cur.execute("""
+        SELECT id, cle, valeur, label, annee, source
+        FROM dashboard_kpi
+        ORDER BY annee, cle
+    """)
+    kpis = cur.fetchall()
+    cur.close()
+    return render_template('admin/dashboard_kpi.html', kpis=kpis)
 
 # ─── GESTION USERS DANS L'ADMIN ───
 @app.route('/admin/users')
