@@ -207,6 +207,7 @@ def api_dashboard():
         fichiers_dir = os.path.join(
             app.root_path, 'static', 'uploads', 'fichiers'
         )
+        # ─── BAC 2025 ───
         bac_files = sorted([
             f for f in os.listdir(fichiers_dir)
             if 'bac' in f.lower() and f.endswith('.xlsx')
@@ -214,34 +215,46 @@ def api_dashboard():
         if bac_files:
             bac_path = os.path.join(fichiers_dir, bac_files[-1])
             bac = pd.read_excel(bac_path)
-            # Adapter selon les colonnes réelles
-            cols = bac.columns.tolist()
-            # Cherche colonnes taux et région
-            col_taux   = [c for c in cols if 'taux' in c.lower() or 'tx' in c.lower()]
-            col_region = [c for c in cols if 'region' in c.lower() or 'région' in c.lower()]
-            col_etab   = [c for c in cols if 'etabl' in c.lower() or 'etab' in c.lower()]
 
-            if col_taux and col_region:
-                t = col_taux[0]
-                r = col_region[0]
-                bac_clean = bac[[r, t]].dropna()
-                bac_clean[t] = pd.to_numeric(
-                    bac_clean[t].astype(str)
-                       .str.replace('%','')
-                       .str.replace(',','.'),
-                    errors='coerce'
-                )
-                bac_clean = bac_clean.dropna()
-                data['bac'] = {
-                    'taux_national': round(bac_clean[t].mean(), 1),
-                    'nb_etablissements': len(bac_clean),
-                    'top_region': bac_clean.loc[bac_clean[t].idxmax(), r],
-                    'top_taux': round(bac_clean[t].max(), 1),
-                    'flop_region': bac_clean.loc[bac_clean[t].idxmin(), r],
-                    'flop_taux': round(bac_clean[t].min(), 1),
-                    'top5': bac_clean.nlargest(5, t)[[r,t]].values.tolist(),
-                    'flop5': bac_clean.nsmallest(5, t)[[r,t]].values.tolist(),
-                }
+            # Calcul taux par établissement
+            bac = bac.dropna(subset=['PRESENTS', 'ADMIS'])
+            bac['TAUX'] = bac.apply(
+                lambda r: round(r['ADMIS']/r['PRESENTS']*100, 1)
+                if r['PRESENTS'] > 0 else 0, axis=1
+            )
+
+            # Taux national
+            total_presents = bac['PRESENTS'].sum()
+            total_admis    = bac['ADMIS'].sum()
+            taux_national  = round(total_admis/total_presents*100, 1) \
+                            if total_presents > 0 else 0
+
+            # Taux par région
+            par_region = bac.groupby('REGION').agg(
+                presents=('PRESENTS','sum'),
+                admis=('ADMIS','sum')
+            ).reset_index()
+            par_region['taux'] = (
+                par_region['admis']/par_region['presents']*100
+            ).round(1)
+            par_region = par_region.sort_values('taux', ascending=False)
+
+            top5  = par_region.head(5)[['REGION','taux']].values.tolist()
+            flop5 = par_region.tail(5)[['REGION','taux']].values.tolist()
+
+            top_row  = par_region.iloc[0]
+            flop_row = par_region.iloc[-1]
+
+            data['bac'] = {
+                'taux_national'    : taux_national,
+                'nb_etablissements': len(bac),
+                'top_region'       : top_row['REGION'].title(),
+                'top_taux'         : float(top_row['taux']),
+                'flop_region'      : flop_row['REGION'].title(),
+                'flop_taux'        : float(flop_row['taux']),
+                'top5'             : [[r[0].title(), r[1]] for r in top5],
+                'flop5'            : [[r[0].title(), r[1]] for r in flop5],
+            }  
     except Exception as e:
         data['bac'] = {'error': str(e)}
 
@@ -269,7 +282,7 @@ def api_dashboard():
             taux     = round(votants/inscrits*100, 1) if inscrits > 0 else 0
 
             # Élus
-            elus = elect[elect['RESULTAT'] == 'ELU'] if 'RESULTAT' in elect.columns else pd.DataFrame()
+            elus = elect[elect['RESULTAT'].astype(str) == 'ELU'] if 'RESULTAT' in elect.columns else pd.DataFrame()
             partis = elus['GRP. POL.'].value_counts().to_dict() if len(elus) > 0 else {}
 
             data['elections'] = {
