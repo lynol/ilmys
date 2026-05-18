@@ -45,12 +45,25 @@
 </head>
 <body>
     {% include 'components/navbar.html' %}
-    <!-- ─── BREAKING NEWS ─── -->
-    {% if breaking_news %}
-    <div class="breaking-news-bar">
-        <span class="breaking-label">BREAKING</span>
-        <span class="breaking-text">{{ breaking_news }}</span>
-        <a href="{{ breaking_url }}" class="breaking-link">Lire →</a>
+    {% if ticker_news %}
+    <div class="ticker-bar">
+        <span class="ticker-label">ACTU</span>
+        <div class="ticker-wrapper">
+            <div class="ticker-content">
+                {% for item in ticker_news %}
+                <span class="ticker-item">
+                    <a href="{{ item.url }}">{{ item.texte }}</a>
+                    <span class="ticker-sep">◆</span>
+                </span>
+                {% endfor %}
+                {% for item in ticker_news %}
+                <span class="ticker-item">
+                    <a href="{{ item.url }}">{{ item.texte }}</a>
+                    <span class="ticker-sep">◆</span>
+                </span>
+                {% endfor %}
+            </div>
+        </div>
     </div>
     {% endif %}
     {% block content %}{% endblock %}

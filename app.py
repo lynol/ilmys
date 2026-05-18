@@ -37,16 +37,17 @@ mail = Mail(app)
 
 # ─── BREAKING NEWS ─── 
 # None pour désactiver
-BREAKING_NEWS = {
-    'texte': "Nouveau — Budget 2026 de la Côte d'Ivoire décrypté",
-    'url'  : '/analyses/budget-2026-cote-divoire'
-}
+# ─── TICKER ACTUALITÉS ───
+TICKER_NEWS = [
+    {"texte": "Lancement des épreuves du CEPE 2026 en Côte d'Ivoire", "url": "/"},
+    {"texte": "Budget 2026 de la CI décrypté — 17 350 Mds FCFA", "url": "/analyses/budget-2025-cote-divoire"},
+    {"texte": "Législatives 2025 — RHDP remporte 196 sièges sur 255", "url": "/analyses/legislatives-2025"},
+]
 
 @app.context_processor
 def inject_breaking():
     return {
-        'breaking_news' : BREAKING_NEWS['texte'],
-        'breaking_url'  : BREAKING_NEWS['url']
+        'ticker_news': TICKER_NEWS
     }
 
 # ─── UPLOADS ───
