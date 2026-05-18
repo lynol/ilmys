@@ -192,6 +192,10 @@ def index():
         fact              = fact
     )
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
 @app.route('/analyses')
 def analyses():
     theme = request.args.get('theme', 'tous')

@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — ILMYS{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:960px;margin:40px auto;padding:0 20px">
+
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;
+                padding-bottom:1rem;border-bottom:0.5px solid var(--border);
+                margin-bottom:1.5rem;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:40px;height:40px;background:#00213f;border-radius:8px;
+                        display:flex;align-items:center;justify-content:center;
+                        color:#00d2b2;font-size:13px;font-weight:500;letter-spacing:1px">
+                IL
+            </div>
+            <div>
+                <h1 style="font-size:18px;font-weight:500;
+                           color:var(--noir);margin:0">
+                    Dashboard Côte d'Ivoire
+                </h1>
+                <p style="font-size:11px;color:var(--muted);margin:0">
+                    Données publiques vérifiées · ILMYS
+                </p>
+            </div>
+        </div>
+        <span style="font-size:11px;padding:4px 12px;border-radius:20px;
+                     background:#00213f;color:#00d2b2;letter-spacing:0.5px">
+            ilmys.com
+        </span>
+    </div>
+
+    <!-- ONGLETS -->
+    <div style="display:flex;gap:2px;margin-bottom:1.5rem;
+                border-bottom:0.5px solid var(--border);overflow-x:auto">
+        <button class="dash-tab active" onclick="showTab('vue',this)">
+            <i class="ti ti-layout-dashboard"></i> Vue générale
+        </button>
+        <button class="dash-tab" onclick="showTab('finances',this)">
+            <i class="ti ti-coin"></i> Finances
+        </button>
+        <button class="dash-tab" onclick="showTab('education',this)">
+            <i class="ti ti-school"></i> Éducation
+        </button>
+        <button class="dash-tab" onclick="showTab('gouvernance',this)">
+            <i class="ti ti-building-bank"></i> Gouvernance
+        </button>
+        <button class="dash-tab" onclick="showTab('sante',this)">
+            <i class="ti ti-heart"></i> Santé
+        </button>
+        <button class="dash-tab" onclick="showTab('agriculture',this)">
+            <i class="ti ti-plant"></i> Agriculture
+        </button>
+    </div>
+
+    <!-- CONTENU — colle ici tout le HTML des sections -->
+    <div id="dash-content">
+
+        <!-- VUE GÉNÉRALE -->
+        <div id="tab-vue" class="dash-section active">
+            <!-- FILTRE -->
+            <div class="dash-filter">
+                <label>Année :</label>
+                <select id="vueYear" onchange="updateVue()">
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+
+            <!-- KPI -->
+            <div class="dash-kpi-grid">
+
+                <div class="dash-kpi">
+                    <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
+                    <i class="ti ti-users" style="font-size:22px;color:#00d2b2;margin-bottom:8px;display:block"></i>
+                    <div style="font-size:20px;font-weight:500;color:var(--noir)">29,4 M</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Population (RGPH 2021)</div>
+                    <div style="font-size:10px;color:#00a88f;margin-top:5px">+2,6% / an</div>
+                </div>
+
+                <div class="dash-kpi">
+                    <div class="dash-kpi-stripe" style="background:#00213f"></div>
+                    <i class="ti ti-cash" style="font-size:22px;color:#00213f;margin-bottom:8px;display:block"></i>
+                    <div style="font-size:20px;font-weight:500;color:var(--noir)" id="vue-budget">15 339</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:3px" id="vue-budget-lbl">Budget État 2025 (Mds FCFA)</div>
+                    <div style="font-size:10px;color:var(--muted);margin-top:5px" id="vue-budget-trend">sur 17 350 Mds en 2026</div>
+                </div>
+
+                <div class="dash-kpi">
+                    <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
+                    <i class="ti ti-certificate" style="font-size:22px;color:#f59e0b;margin-bottom:8px;display:block"></i>
+                    <div style="font-size:20px;font-weight:500;color:var(--noir)">41,5%</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Réussite BAC 2025</div>
+                    <div style="font-size:10px;color:#92400e;margin-top:5px">2 088 établissements</div>
+                </div>
+
+                <div class="dash-kpi">
+                    <div class="dash-kpi-stripe" style="background:#ef4444"></div>
+                    <i class="ti ti-vote" style="font-size:22px;color:#ef4444;margin-bottom:8px;display:block"></i>
+                    <div style="font-size:20px;font-weight:500;color:var(--noir)">35,1%</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Participation législatives 2025</div>
+                    <div style="font-size:10px;color:#991b1b;margin-top:5px">8,6M inscrits · 255 sièges</div>
+                </div>
+
+            </div>
+
+            <!-- GRAPHIQUES -->
+            <div class="dash-grid2">
+
+                <div class="dash-card">
+                    <div class="dash-card-title">Répartition des dépenses budgétaires</div>
+                    <div class="dash-card-sub" id="vue-donut-sub">Budget 2025 · 15 339 Mds FCFA · Source : MEF</div>
+                    <div style="position:relative;width:100%;height:200px">
+                        <canvas id="cVueBudget" role="img" aria-label="Répartition dépenses budget">
+                            Ministères, dettes, CST, institutions
+                        </canvas>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--muted)">
+                        <span style="display:flex;align-items:center;gap:4px">
+                            <span style="width:10px;height:10px;border-radius:2px;background:#00213f;display:inline-block"></span>Ministères
+                        </span>
+                        <span style="display:flex;align-items:center;gap:4px">
+                            <span style="width:10px;height:10px;border-radius:2px;background:#ef4444;display:inline-block"></span>Dettes
+                        </span>
+                        <span style="display:flex;align-items:center;gap:4px">
+                            <span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>CST
+                        </span>
+                        <span style="display:flex;align-items:center;gap:4px">
+                            <span style="width:10px;height:10px;border-radius:2px;background:#00d2b2;display:inline-block"></span>Institutions
+                        </span>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <div class="dash-card-title">BAC 2025 — top & flop régions</div>
+                    <div class="dash-card-sub">Taux de réussite · Source : Dataivoire</div>
+                    <div style="position:relative;width:100%;height:200px">
+                        <canvas id="cVueBAC" role="img" aria-label="BAC 2025 par région">
+                            Abidjan 52.7, Bafing 24.7, nationale 41.5
+                        </canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TABLEAU LÉGISLATIVES -->
+            <div class="tbl-card" style="background:#fff;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem">
+                <div style="padding:12px 16px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                    <h3 style="font-size:13px;font-weight:500;color:var(--noir)">
+                        Assemblée Nationale 2025 — résultats définitifs
+                    </h3>
+                    <span style="font-size:10px;padding:2px 8px;border-radius:20px;background:#00213f;color:#00d2b2">
+                        255 sièges · CEI
+                    </span>
+                </div>
+                <table style="width:100%;border-collapse:collapse;font-size:12px">
+                    <thead>
+                        <tr>
+                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">Parti</th>
+                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">Sièges</th>
+                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">%</th>
+                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">Représentation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)"><strong>RHDP</strong></td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">196</td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                                <span style="background:#00213f;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px">76,9%</span>
+                            </td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                                <div class="dash-pbar"><div class="dash-pfill" style="background:#00213f;width:76.9%"></div></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">PDCI-RDA</td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">32</td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                                <span style="background:#00d2b2;color:#003d35;padding:2px 8px;border-radius:20px;font-size:10px">12,5%</span>
+                            </td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                                <div class="dash-pbar"><div class="dash-pfill" style="background:#00d2b2;width:12.5%"></div></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">Indépendants</td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">24</td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                                <span style="background:#f59e0b;color:#451a03;padding:2px 8px;border-radius:20px;font-size:10px">9,4%</span>
+                            </td>
+                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                                <div class="dash-pbar"><div class="dash-pfill" style="background:#f59e0b;width:9.4%"></div></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:9px 14px">Autres</td>
+                            <td style="padding:9px 14px">3</td>
+                            <td style="padding:9px 14px">
+                                <span style="background:#F3F4F6;color:var(--muted);padding:2px 8px;border-radius:20px;font-size:10px">1,2%</span>
+                            </td>
+                            <td style="padding:9px 14px">
+                                <div class="dash-pbar"><div class="dash-pfill" style="background:#aaa;width:1.2%"></div></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FINANCES -->
+        <div id="tab-finances" class="dash-section">
+            <!-- ... contenu finances ... -->
+        </div>
+
+        <!-- ÉDUCATION -->
+        <div id="tab-education" class="dash-section">
+            <!-- ... contenu éducation ... -->
+        </div>
+
+        <!-- GOUVERNANCE -->
+        <div id="tab-gouvernance" class="dash-section">
+            <!-- ... contenu gouvernance ... -->
+        </div>
+
+        <!-- SANTÉ -->
+        <div id="tab-sante" class="dash-section">
+            <div class="dash-soon">
+                <i class="ti ti-heart" style="font-size:32px;color:#00d2b2;
+                   display:block;margin-bottom:8px"></i>
+                <strong>Données Santé — à venir</strong><br>
+                Indicateurs WHO · Mortalité · Paludisme · VIH · CMU
+            </div>
+        </div>
+
+        <!-- AGRICULTURE -->
+        <div id="tab-agriculture" class="dash-section">
+            <div class="dash-soon">
+                <i class="ti ti-plant" style="font-size:32px;color:#00d2b2;
+                   display:block;margin-bottom:8px"></i>
+                <strong>Données Agriculture — à venir</strong><br>
+                Production cacao · Café · Cultures vivrières
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- CSS Dashboard -->
+<style>
+.dash-tab {
+    padding: 9px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -0.5px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.15s;
+    font-family: sans-serif;
+}
+.dash-tab:hover { color: var(--noir); }
+.dash-tab.active { color: #00213f; border-bottom-color: #00d2b2; font-weight: 500; }
+
+.dash-section { display: none; }
+.dash-section.active { display: block; }
+
+.dash-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.dash-kpi {
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    border: 0.5px solid var(--border);
+    background: #fff;
+}
+
+.dash-kpi-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 10px 10px 0 0;
+}
+
+.dash-grid2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 1.5rem;
+}
+
+.dash-card {
+    background: #fff;
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+}
+
+.dash-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--noir);
+    margin-bottom: 3px;
+}
+
+.dash-card-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+.dash-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 10px 14px;
+    background: #F9FAFB;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+}
+
+.dash-filter label { font-size: 11px; color: var(--muted); }
+.dash-filter select { font-size: 12px; padding: 5px 10px; }
+
+.dash-soon {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 40px;
+    text-align: center;
+    background: #F9FAFB;
+    border-radius: 8px;
+    border: 0.5px dashed var(--border);
+    line-height: 1.8;
+}
+
+.dash-note {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 10px 14px;
+    background: #F9FAFB;
+    border-radius: 8px;
+    border-left: 3px solid #00d2b2;
+    margin-top: 1rem;
+    line-height: 1.6;
+}
+
+.dash-pbar { background: #F3F4F6; border-radius: 4px; height: 8px; width: 100%; overflow: hidden; margin-top: 4px; }
+.dash-pfill { height: 100%; border-radius: 4px; }
+</style>
+
+<!-- JS Dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+function showTab(id, btn) {
+    document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+const C = {
+    vert: '#00d2b2', bleu: '#00213f',
+    rouge: '#ef4444', orange: '#f59e0b',
+    violet: '#8b5cf6', gris: '#aaa'
+};
+
+const gc = 'rgba(0,0,0,0.06)';
+const tc = 'rgba(0,0,0,0.45)';
+
+const charts = {};
+
+function mkChart(id, type, labels, data, colors, opts={}) {
+    if (charts[id]) charts[id].destroy();
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    charts[id] = new Chart(ctx, {
+        type,
+        data: {
+            labels,
+            datasets: [{
+                data,
+                backgroundColor: colors,
+                borderWidth: (type==='doughnut'||type==='pie') ? 2 : 0,
+                borderColor: (type==='doughnut'||type==='pie') ? '#fff' : undefined,
+                borderRadius: type==='bar' ? 4 : undefined,
+                borderSkipped: type==='bar' ? false : undefined
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: type==='doughnut'||type==='pie' ? {} : {
+                x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
+                y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } }
+            },
+            ...opts
+        }
+    });
+}
+
+// Initialiser tous les graphiques
+setTimeout(() => {
+    mkChart('cVueBudget','doughnut',
+        ['Ministères','Dettes','CST','Institutions'],
+        [7889,5636,1374,440],
+        [C.bleu,C.rouge,C.orange,C.vert],
+        { cutout:'62%' }
+    );
+    mkChart('cVueBAC','bar',
+        ['Abidjan','Lagunes','Sud-C.','Nat.','Tonkpi','Bafing'],
+        [52.7,50.1,48.3,41.5,28.1,24.7],
+        [C.vert,C.vert,C.vert,C.bleu,C.orange,C.rouge],
+        { scales:{ x:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:10 } } }, y:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 }, callback:v=>v+'%' }, min:0, max:60 } } }
+    );
+    mkChart('cFinMin','bar',
+        ['Finances','Intérieur','Défense','Santé','Équip.','Ens.Sup','Mines','Éduc.'],
+        [973,468,442,470,437,329,216,287],
+        [C.bleu,C.bleu,C.bleu,C.vert,C.bleu,C.bleu,C.orange,C.vert],
+        { indexAxis:'y', scales:{ x:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 } } }, y:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:10 } } } } }
+    );
+    mkChart('cFinEvo','bar',
+        ['Numérique','Construct.','Commerce','Mines','Transports','Santé','Jeunesse'],
+        [128.3,60.5,60.0,52.8,28.0,0.2,-21.7],
+        [C.vert,C.vert,C.vert,C.vert,C.vert,C.orange,C.rouge],
+        { scales:{ x:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:9 }, maxRotation:35 } }, y:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 }, callback:v=>v+'%' } } } }
+    );
+    mkChart('cFinFisc','doughnut',
+        ['Revenus','Importations','TVA','Exportations','Autres'],
+        [2022,2011,1733,790,831],
+        [C.bleu,C.vert,C.orange,C.rouge,C.violet],
+        { cutout:'58%' }
+    );
+    mkChart('cFinDette','doughnut',
+        ['Intérieure','Extérieure'],
+        [3341,2295],
+        [C.bleu,C.rouge],
+        { cutout:'60%' }
+    );
+    mkChart('cEducReg','bar',
+        ['Abidjan','Lagunes','Sud-C.','Bélier','Tonkpi','Bafing'],
+        [52.7,50.1,48.3,44.2,28.1,24.7],
+        [C.vert,C.vert,C.vert,C.bleu,C.orange,C.rouge],
+        { scales:{ x:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:10 } } }, y:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 }, callback:v=>v+'%' }, min:0, max:60 } } }
+    );
+    mkChart('cGovSieges','doughnut',
+        ['RHDP','PDCI-RDA','Indépendants','Autres'],
+        [196,32,24,3],
+        [C.bleu,C.vert,C.orange,C.gris],
+        { cutout:'60%' }
+    );
+    mkChart('cGovPart','bar',
+        ['Poro','Tchologo','Kabadougou','Hambol','Bélier','Gôh','Abidjan'],
+        [79.1,76.3,75.9,56.1,33.9,23.9,18.9],
+        [C.vert,C.vert,C.vert,C.vert,C.orange,C.rouge,C.rouge],
+        { scales:{ x:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:9 }, maxRotation:35 } }, y:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 }, callback:v=>v+'%' }, min:0, max:90 } } }
+    );
+}, 100);
+
+// Filtres
+const finData = {
+    2025:{ total:'15 339', dette:'5 636', detteS:'36,7% du budget', sante:'470', educ:'287' },
+    2026:{ total:'17 350', dette:'1 199', detteS:'-78,7% vs 2025', sante:'471', educ:'311' }
+};
+
+const finMin = {
+    2025:{ vals:[973,468,442,470,437,329,216,287] },
+    2026:{ vals:[832,538,481,471,455,339,330,311] }
+};
+
+function updateVue() {
+    const y = document.getElementById('vueYear').value;
+    const b = y==='2026' ? '17 350' : '15 339';
+    document.getElementById('vue-budget').textContent = b;
+    if(charts['cVueBudget']){
+        charts['cVueBudget'].data.datasets[0].data = y==='2026'
+            ? [5855,1199,962,413]
+            : [7889,5636,1374,440];
+        charts['cVueBudget'].update();
+    }
+}
+
+function updateFin() {
+    const y = document.getElementById('finYear').value;
+    const d = finData[y];
+    document.getElementById('fin-total').textContent = d.total;
+    document.getElementById('fin-dette').textContent = d.dette;
+    document.getElementById('fin-dette-sub').textContent = d.detteS;
+    document.getElementById('fin-sante').textContent = d.sante;
+    document.getElementById('fin-educ').textContent = d.educ;
+    if(charts['cFinMin']){
+        charts['cFinMin'].data.datasets[0].data = finMin[y].vals;
+        charts['cFinMin'].update();
+    }
+}
+</script>
+{% endblock %}

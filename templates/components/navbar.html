@@ -35,6 +35,13 @@
                         À propos
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+                    href="{{ url_for('dashboard') }}">
+                        Dashboard
+                    </a>
+                </li>
             </ul>
 
             <!-- CTA -->
@@ -42,6 +49,7 @@
                class="btn ilmys-btn-cta">
                 Collaborer
             </a>
+
         </div>
 
     </div>
