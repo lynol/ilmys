@@ -1388,6 +1388,14 @@ body {
     100% { transform: translateX(-50%); }
 }
 
+.dash-kpi { font-size: 14px; }
+.dash-kpi .kpi-val { font-size: 24px; }
+.dash-kpi .kpi-lbl { font-size: 13px; }
+.dash-card-title { font-size: 15px; }
+.dash-card-sub { font-size: 12px; }
+table { font-size: 13px; }
+th, td { font-size: 13px; }
+
 /* ─── ABOUT ─── */
 .about-section-title {
     font-size: 28px;

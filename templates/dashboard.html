@@ -82,7 +82,7 @@
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00213f"></div>
                     <i class="ti ti-cash" style="font-size:22px;color:#00213f;margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)" id="vue-budget">15 339</div>
+                    <div style="font-size:20px;font-weight:500;color:var(--noir)" id="kpi-budget">15 339</div>
                     <div style="font-size:11px;color:var(--muted);margin-top:3px" id="vue-budget-lbl">Budget État 2025 (Mds FCFA)</div>
                     <div style="font-size:10px;color:var(--muted);margin-top:5px" id="vue-budget-trend">sur 17 350 Mds en 2026</div>
                 </div>
@@ -90,17 +90,17 @@
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
                     <i class="ti ti-certificate" style="font-size:22px;color:#f59e0b;margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)">41,5%</div>
+                    <div id="kpi-bac-taux" style="font-size:20px;font-weight:500;color:var(--noir)">41,5%</div>
                     <div style="font-size:11px;color:var(--muted);margin-top:3px">Réussite BAC 2025</div>
-                    <div style="font-size:10px;color:#92400e;margin-top:5px">2 088 établissements</div>
+                    <div id="kpi-bac-etab" style="font-size:10px;color:#92400e;margin-top:5px">2 088 établissements</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#ef4444"></div>
                     <i class="ti ti-vote" style="font-size:22px;color:#ef4444;margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)">35,1%</div>
+                    <div id="kpi-elect-part" style="font-size:20px;font-weight:500;color:var(--noir)">35,1%</div>
                     <div style="font-size:11px;color:var(--muted);margin-top:3px">Participation législatives 2025</div>
-                    <div style="font-size:10px;color:#991b1b;margin-top:5px">8,6M inscrits · 255 sièges</div>
+                    <div id="kpi-elect-inscrits" style="font-size:10px;color:#991b1b;margin-top:5px">8,6M inscrits · 255 sièges</div>
                 </div>
 
             </div>
@@ -364,6 +364,7 @@
 
 <!-- JS Dashboard -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <script>
 function showTab(id, btn) {
     document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
@@ -507,5 +508,69 @@ function updateFin() {
         charts['cFinMin'].update();
     }
 }
+
+// Charger les KPI depuis l'API
+fetch('/api/dashboard')
+    .then(r => r.json())
+    .then(data => {
+
+        // ─── BAC ───
+        if (data.bac && !data.bac.error) {
+            const b = data.bac;
+            document.getElementById('kpi-bac-taux').textContent =
+                b.taux_national + '%';
+            document.getElementById('kpi-bac-etab').textContent =
+                b.nb_etablissements.toLocaleString();
+            document.getElementById('kpi-bac-top').textContent =
+                b.top_taux + '%';
+            document.getElementById('kpi-bac-top-lbl').textContent =
+                b.top_region;
+            document.getElementById('kpi-bac-bas').textContent =
+                b.flop_taux + '%';
+            document.getElementById('kpi-bac-bas-lbl').textContent =
+                b.flop_region;
+
+            // Graphique régions
+            if (b.top5 && b.flop5) {
+                const labels = [...b.top5, ...b.flop5].map(r => r[0]);
+                const vals   = [...b.top5, ...b.flop5].map(r => r[1]);
+                const colors = [...b.top5.map(() => C.vert),
+                                ...b.flop5.map(() => C.rouge)];
+                mkChart('cEducReg', 'bar', labels, vals, colors, {
+                    scales:{
+                        x:{ grid:{ display:false }, ticks:{ color:tc, font:{ size:9 }, maxRotation:35 } },
+                        y:{ grid:{ color:gc }, ticks:{ color:tc, font:{ size:10 }, callback:v=>v+'%' }, min:0, max:60 }
+                    }
+                });
+            }
+        }
+
+        // ─── ÉLECTIONS ───
+        if (data.elections && !data.elections.error) {
+            const e = data.elections;
+            document.getElementById('kpi-elect-part').textContent =
+                e.taux_participation + '%';
+            document.getElementById('kpi-elect-inscrits').textContent =
+                (e.inscrits/1e6).toFixed(1) + 'M';
+
+            // Graphique sièges
+            if (e.partis) {
+                const labels = Object.keys(e.partis);
+                const vals   = Object.values(e.partis);
+                const colors = [C.bleu, C.vert, C.orange, C.gris];
+                mkChart('cGovSieges', 'doughnut', labels, vals,
+                    colors.slice(0, labels.length),
+                    { cutout:'60%' }
+                );
+            }
+        }
+
+        // ─── LFI ───
+        if (data.lfi && !data.lfi.error) {
+            document.getElementById('kpi-budget').textContent =
+                data.lfi.total.toLocaleString() + ' Mds';
+        }
+    })
+    .catch(err => console.error('Dashboard API error:', err));
 </script>
 {% endblock %}

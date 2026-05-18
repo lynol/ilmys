@@ -8,6 +8,7 @@ from functools import wraps
 import re
 import time
 import os
+import pandas as pd
 
 from flask_mail import Mail, Message
 import secrets
@@ -192,9 +193,126 @@ def index():
         fact              = fact
     )
 
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
+
+@app.route('/api/dashboard')
+def api_dashboard():
+    data = {}
+
+    try:
+        # ─── BAC 2025 ───
+        bac_path = os.path.join(
+            app.root_path, 'data', 'bac_2025.xlsx'
+        )
+        # Cherche le dernier fichier BAC uploadé
+        fichiers_dir = os.path.join(
+            app.root_path, 'static', 'uploads', 'fichiers'
+        )
+        bac_files = sorted([
+            f for f in os.listdir(fichiers_dir)
+            if 'bac' in f.lower() and f.endswith('.xlsx')
+        ])
+        if bac_files:
+            bac_path = os.path.join(fichiers_dir, bac_files[-1])
+            bac = pd.read_excel(bac_path)
+            # Adapter selon les colonnes réelles
+            cols = bac.columns.tolist()
+            # Cherche colonnes taux et région
+            col_taux   = [c for c in cols if 'taux' in c.lower() or 'tx' in c.lower()]
+            col_region = [c for c in cols if 'region' in c.lower() or 'région' in c.lower()]
+            col_etab   = [c for c in cols if 'etabl' in c.lower() or 'etab' in c.lower()]
+
+            if col_taux and col_region:
+                t = col_taux[0]
+                r = col_region[0]
+                bac_clean = bac[[r, t]].dropna()
+                bac_clean[t] = pd.to_numeric(
+                    bac_clean[t].astype(str)
+                       .str.replace('%','')
+                       .str.replace(',','.'),
+                    errors='coerce'
+                )
+                bac_clean = bac_clean.dropna()
+                data['bac'] = {
+                    'taux_national': round(bac_clean[t].mean(), 1),
+                    'nb_etablissements': len(bac_clean),
+                    'top_region': bac_clean.loc[bac_clean[t].idxmax(), r],
+                    'top_taux': round(bac_clean[t].max(), 1),
+                    'flop_region': bac_clean.loc[bac_clean[t].idxmin(), r],
+                    'flop_taux': round(bac_clean[t].min(), 1),
+                    'top5': bac_clean.nlargest(5, t)[[r,t]].values.tolist(),
+                    'flop5': bac_clean.nsmallest(5, t)[[r,t]].values.tolist(),
+                }
+    except Exception as e:
+        data['bac'] = {'error': str(e)}
+
+    try:
+        # ─── ÉLECTIONS 2025 ───
+        elect_files = sorted([
+            f for f in os.listdir(fichiers_dir)
+            if 'edan' in f.lower() or 'legislat' in f.lower()
+        ])
+        if elect_files:
+            elect_path = os.path.join(fichiers_dir, elect_files[-1])
+            elect = pd.read_csv(
+                elect_path, encoding='latin-1',
+                sep=';', on_bad_lines='skip'
+            )
+            elect['valeur_num'] = pd.to_numeric(
+                elect['Valeur'].astype(str)
+                   .str.replace(' ','').str.replace('\xa0',''),
+                errors='coerce'
+            ) if 'Valeur' in elect.columns else None
+
+            # Participation
+            inscrits = elect['INSCRITS'].sum() if 'INSCRITS' in elect.columns else 0
+            votants  = elect['VOTANTS'].sum()  if 'VOTANTS'  in elect.columns else 0
+            taux     = round(votants/inscrits*100, 1) if inscrits > 0 else 0
+
+            # Élus
+            elus = elect[elect['RESULTAT'] == 'ELU'] if 'RESULTAT' in elect.columns else pd.DataFrame()
+            partis = elus['GRP. POL.'].value_counts().to_dict() if len(elus) > 0 else {}
+
+            data['elections'] = {
+                'inscrits'          : int(inscrits),
+                'votants'           : int(votants),
+                'taux_participation': taux,
+                'nb_sieges'         : len(elus),
+                'partis'            : partis,
+            }
+    except Exception as e:
+        data['elections'] = {'error': str(e)}
+
+    try:
+        # ─── LFI 2025 ───
+        lfi_files = sorted([
+            f for f in os.listdir(fichiers_dir)
+            if 'finance' in f.lower() and f.endswith('.csv')
+        ])
+        if lfi_files:
+            lfi_path = os.path.join(fichiers_dir, lfi_files[-1])
+            lfi = pd.read_csv(
+                lfi_path, encoding='latin-1',
+                sep=';', on_bad_lines='skip'
+            )
+            lfi['valeur_num'] = pd.to_numeric(
+                lfi['Valeur'].astype(str)
+                   .str.replace(' ','').str.replace('\xa0',''),
+                errors='coerce'
+            )
+            total = lfi[
+                lfi['Nom indicateur 1'] == 'RESSOURCES'
+            ]['valeur_num'].sum()
+
+            data['lfi'] = {
+                'annee': '2025',
+                'total': round(total/1e9, 1),
+            }
+    except Exception as e:
+        data['lfi'] = {'error': str(e)}
+
+    from flask import jsonify
+    return jsonify(data)
+
 
 @app.route('/analyses')
 def analyses():
