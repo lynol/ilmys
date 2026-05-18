@@ -1388,13 +1388,14 @@ body {
     100% { transform: translateX(-50%); }
 }
 
-.dash-kpi { font-size: 14px; }
-.dash-kpi .kpi-val { font-size: 24px; }
-.dash-kpi .kpi-lbl { font-size: 13px; }
-.dash-card-title { font-size: 15px; }
-.dash-card-sub { font-size: 12px; }
-table { font-size: 13px; }
-th, td { font-size: 13px; }
+.dash-kpi-grid .dash-kpi div[style*="font-size:20px"] { font-size: 26px !important; }
+.dash-kpi-grid .dash-kpi div[style*="font-size:13px"] { font-size: 14px !important; }
+.dash-kpi-grid .dash-kpi div[style*="font-size:11px"] { font-size: 12px !important; }
+.dash-card-title { font-size: 15px !important; }
+.dash-card-sub   { font-size: 13px !important; }
+table { font-size: 14px !important; }
+th, td { font-size: 14px !important; padding: 11px 16px !important; }
+.dash-tab { font-size: 14px !important; padding: 11px 16px !important; }
 
 /* ─── ABOUT ─── */
 .about-section-title {
