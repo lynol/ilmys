@@ -45,6 +45,14 @@
 </head>
 <body>
     {% include 'components/navbar.html' %}
+    <!-- ─── BREAKING NEWS ─── -->
+    {% if breaking_news %}
+    <div class="breaking-news-bar">
+        <span class="breaking-label">BREAKING</span>
+        <span class="breaking-text">{{ breaking_news }}</span>
+        <a href="{{ breaking_url }}" class="breaking-link">Lire →</a>
+    </div>
+    {% endif %}
     {% block content %}{% endblock %}
     {% include 'components/footer.html' %}
 

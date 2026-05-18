@@ -35,6 +35,20 @@ app.config['MAIL_DEFAULT_SENDER'] = ('ILMYS', os.getenv('MAIL_USERNAME'))
 
 mail = Mail(app)
 
+# ─── BREAKING NEWS ─── 
+# None pour désactiver
+BREAKING_NEWS = {
+    'texte': "Nouveau — Budget 2026 de la Côte d'Ivoire décrypté",
+    'url'  : '/analyses/budget-2026-cote-divoire'
+}
+
+@app.context_processor
+def inject_breaking():
+    return {
+        'breaking_news' : BREAKING_NEWS['texte'],
+        'breaking_url'  : BREAKING_NEWS['url']
+    }
+
 # ─── UPLOADS ───
 UPLOAD_FOLDER    = os.path.join(
     os.path.dirname(__file__), 'static', 'uploads'
