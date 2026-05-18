@@ -1317,54 +1317,75 @@ body {
     .nav-links a:last-child { border-bottom: none; }
 }
 
-/* ─── BREAKING NEWS ─── */
-.breaking-news-bar {
-    background: #DC2626;
+/* ─── TICKER ACTUALITÉS ─── */
+.ticker-bar {
+    background: #111827;
     color: #fff;
-    padding: 10px 20px;
+    padding: 0 20px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 0;
     font-family: sans-serif;
     font-size: 13px;
     position: sticky;
     top: 68px;
     z-index: 998;
-    box-shadow: 0 2px 8px rgba(220,38,38,0.3);
-}
-
-.breaking-label {
-    background: #fff;
-    color: #DC2626;
-    font-weight: 700;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 2px;
-    letter-spacing: 1px;
-    flex-shrink: 0;
-}
-
-.breaking-text {
-    flex: 1;
-    white-space: nowrap;
+    height: 38px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.breaking-link {
+.ticker-label {
+    background: #16A34A;
     color: #fff;
-    font-weight: 600;
-    text-decoration: none;
+    font-weight: 700;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 1.5px;
     flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,0.5);
-    padding: 3px 10px;
-    border-radius: 3px;
-    transition: background 0.2s;
+    margin-right: 20px;
 }
 
-.breaking-link:hover {
-    background: rgba(255,255,255,0.2);
-    color: #fff;
+.ticker-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 38px;
+    display: flex;
+    align-items: center;
+}
+
+.ticker-content {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: ticker-scroll 30s linear infinite;
+}
+
+.ticker-content:hover {
+    animation-play-state: paused;
+}
+
+.ticker-item a {
+    color: #D1FAE5;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.ticker-item a:hover {
+    color: #16A34A;
+}
+
+.ticker-sep {
+    color: #16A34A;
+    margin: 0 24px;
+    font-size: 8px;
+}
+
+@keyframes ticker-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 /* ─── ABOUT ─── */
