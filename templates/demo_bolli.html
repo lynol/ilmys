@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Bolli Drive Africa</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --vert  : #00d2b2;
+            --bleu  : #00213f;
+            --rouge : #ef4444;
+            --orange: #f59e0b;
+            --gris  : #6B7280;
+            --bg    : #f4f6f8;
+            --card  : #ffffff;
+            --border: #E5E7EB;
+            --noir  : #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont,
+                         'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--noir);
+            font-size: 14px;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            background: var(--bleu);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-logo {
+            width: 42px; height: 42px;
+            background: var(--vert);
+            border-radius: 10px;
+            display: flex; align-items: center;
+            justify-content: center;
+            font-weight: 700; font-size: 13px;
+            color: var(--bleu);
+            letter-spacing: 1px;
+        }
+
+        .header h1 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .header p {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 1px;
+        }
+
+        .header-badge {
+            font-size: 11px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            background: rgba(0,210,178,0.15);
+            color: var(--vert);
+            border: 1px solid rgba(0,210,178,0.3);
+        }
+
+        /* ─── TABS ─── */
+        .tabs {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 28px;
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--gris);
+            cursor: pointer;
+            border: none;
+            background: none;
+            border-bottom: 2.5px solid transparent;
+            margin-bottom: -1px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s;
+        }
+
+        .tab:hover { color: var(--noir); }
+        .tab.active {
+            color: var(--bleu);
+            border-bottom-color: var(--vert);
+            font-weight: 600;
+        }
+
+        /* ─── CONTENU ─── */
+        .content {
+            padding: 24px 28px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* ─── FILTRE ─── */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background: var(--card);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .filter-bar label {
+            font-size: 12px;
+            color: var(--gris);
+        }
+
+        .filter-bar select {
+            font-size: 12px;
+            padding: 5px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--noir);
+        }
+
+        /* ─── KPI GRID ─── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .kpi {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .kpi.vert::before  { background: var(--vert); }
+        .kpi.bleu::before  { background: var(--bleu); }
+        .kpi.rouge::before { background: var(--rouge); }
+        .kpi.orange::before{ background: var(--orange); }
+
+        .kpi-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .kpi-val {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--noir);
+            line-height: 1.1;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--gris);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .kpi-sub {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* ─── CARDS GRID ─── */
+        .grid2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--noir);
+            margin-bottom: 4px;
+        }
+
+        .card-sub {
+            font-size: 11px;
+            color: var(--gris);
+            margin-bottom: 16px;
+        }
+
+        .chart-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        /* ─── TABLE ─── */
+        .tbl-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tbl-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tbl-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--noir);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: var(--gris);
+            font-weight: 600;
+            padding: 10px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--noir);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f9fafb; }
+
+        /* ─── BADGE ─── */
+        .badge {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-vert   { background: rgba(0,210,178,0.12); color: #00a88f; }
+        .badge-bleu   { background: rgba(0,33,63,0.1);   color: var(--bleu); }
+        .badge-rouge  { background: rgba(239,68,68,0.1); color: #b91c1c; }
+        .badge-orange { background: rgba(245,158,11,0.1);color: #92400e; }
+
+        /* ─── PROGRESS ─── */
+        .pbar {
+            background: #f3f4f6;
+            border-radius: 4px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .pfill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        /* ─── STARS ─── */
+        .stars { color: var(--orange); font-size: 13px; }
+
+        /* ─── FOOTER ─── */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: var(--gris);
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .footer strong { color: var(--vert); }
+
+        /* ─── POWERED ─── */
+        .powered {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--gris);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--card);
+        }
+
+        .powered span { color: var(--vert); font-weight: 600; }
+
+        @media (max-width: 600px) {
+            .content { padding: 16px; }
+            .header  { padding: 12px 16px; }
+            .tabs    { padding: 0 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<div class="header">
+    <div class="header-left">
+        <div class="header-logo">BDA</div>
+        <div>
+            <h1>Bolli Drive Africa</h1>
+            <p>Tableau de bord · Données fictives à titre de démonstration</p>
+        </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+        <div class="powered">
+            Propulsé par <span>ILMYS</span>
+        </div>
+        <div class="header-badge">
+            <i class="ti ti-refresh"></i> Fév — Avr 2026
+        </div>
+    </div>
+</div>
+
+<!-- ─── TABS ─── -->
+<div class="tabs">
+    <button class="tab active" onclick="showTab('vue',this)">
+        <i class="ti ti-layout-dashboard"></i> Vue générale
+    </button>
+    <button class="tab" onclick="showTab('chauffeurs',this)">
+        <i class="ti ti-users"></i> Chauffeurs
+    </button>
+    <button class="tab" onclick="showTab('flotte',this)">
+        <i class="ti ti-car"></i> Flotte
+    </button>
+    <button class="tab" onclick="showTab('remboursements',this)">
+        <i class="ti ti-coin"></i> Remboursements
+    </button>
+</div>
+
+<!-- ─── CONTENU ─── -->
+<div class="content">
+
+<!-- ══ VUE GÉNÉRALE ══ -->
+<div id="tab-vue" class="section active">
+
+    <div class="filter-bar">
+        <label>Période :</label>
+        <select id="vueMonth" onchange="updateVue()">
+            <option value="all">Fév — Avr 2026 (3 mois)</option>
+            {% for m in par_mois %}
+            <option value="{{ m.mois }}">{{ m.mois }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi vert">
+            <i class="ti ti-steering-wheel kpi-icon"
+               style="color:var(--vert)"></i>
+            <div class="kpi-val" id="kpi-courses">
+                {{ kpi.courses }}
+            </div>
+            <div class="kpi-label">Courses effectuées</div>
+            <div class="kpi-sub" style="color:var(--vert)">
+                3 mois cumulés
+            </div>
+        </div>
+
+        <div class="kpi bleu">
+            <i class="ti ti-cash kpi-icon"
+               style="color:var(--bleu)"></i>
+            <div class="kpi-val" id="kpi-revenu">
+                {{ kpi.revenu[:4] }} Mds
+            </div>
+            <div class="kpi-label">Revenus bruts (FCFA)</div>
+            <div class="kpi-sub" style="color:var(--bleu)">
+                {{ kpi.revenu }} FCFA
+            </div>
+        </div>
+
+        <div class="kpi orange">
+            <i class="ti ti-trending-up kpi-icon"
+               style="color:var(--orange)"></i>
+            <div class="kpi-val" id="kpi-rembourse">
+                {{ kpi.rembourse[:4] }}
+            </div>
+            <div class="kpi-label">Total remboursé (FCFA)</div>
+            <div class="kpi-sub" style="color:var(--orange)">
+                {{ kpi.rembourse }} FCFA
+            </div>
+        </div>
+
+        <div class="kpi vert">
+            <i class="ti ti-users kpi-icon"
+               style="color:var(--vert)"></i>
+            <div class="kpi-val">{{ kpi.chauffeurs }}</div>
+            <div class="kpi-label">Chauffeurs actifs</div>
+            <div class="kpi-sub" style="color:var(--vert)">
+                ★ {{ kpi.note }} note moyenne
+            </div>
+        </div>
+    </div>
+
+    <div class="grid2">
+        <div class="card">
+            <div class="card-title">Courses par mois</div>
+            <div class="card-sub">Volume d'activité · 3 mois</div>
+            <div class="chart-wrap" style="height:200px">
+                <canvas id="cCourses" role="img"
+                        aria-label="Courses par mois">
+                </canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Revenus vs Remboursements</div>
+            <div class="card-sub">En FCFA · par mois</div>
+            <div class="chart-wrap" style="height:200px">
+                <canvas id="cRevenu" role="img"
+                        aria-label="Revenus et remboursements">
+                </canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="tbl-card">
+        <div class="tbl-header">
+            <h3>Top 5 chauffeurs — courses cumulées</h3>
+            <span class="badge badge-vert">Fév — Avr 2026</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Chauffeur</th>
+                    <th>Véhicule</th>
+                    <th>Courses</th>
+                    <th>Note</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in top[:5] %}
+                <tr>
+                    <td>
+                        <strong style="color:var(--vert)">
+                            {{ loop.index }}
+                        </strong>
+                    </td>
+                    <td><strong>{{ c.nom }}</strong></td>
+                    <td>{{ c.vehicule if c.vehicule else '—' }}</td>
+                    <td>
+                        <strong>{{ c.courses }}</strong>
+                    </td>
+                    <td>
+                        <span class="stars">★</span>
+                        {{ "%.1f"|format(c.note) }}
+                    </td>
+                    <td>
+                        <span class="badge badge-vert">Actif</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ══ CHAUFFEURS ══ -->
+<div id="tab-chauffeurs" class="section">
+
+    <div class="filter-bar">
+        <label>Trier par :</label>
+        <select id="chaufSort" onchange="sortChauffeurs()">
+            <option value="courses">Courses</option>
+            <option value="revenu">Revenus</option>
+            <option value="note">Note</option>
+        </select>
+    </div>
+
+    <div class="tbl-card">
+        <div class="tbl-header">
+            <h3>Performance individuelle — tous chauffeurs</h3>
+            <span class="badge badge-bleu">
+                {{ top|length }} chauffeurs
+            </span>
+        </div>
+        <table id="chaufTable">
+            <thead>
+                <tr>
+                    <th>Rang</th>
+                    <th>Chauffeur</th>
+                    <th>Courses</th>
+                    <th>Revenus bruts</th>
+                    <th>Note moy.</th>
+                    <th>Tendance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in top %}
+                <tr>
+                    <td>
+                        {% if loop.index == 1 %}
+                            <span class="badge badge-orange">🥇 1er</span>
+                        {% elif loop.index == 2 %}
+                            <span class="badge badge-bleu">2e</span>
+                        {% elif loop.index == 3 %}
+                            <span class="badge badge-vert">3e</span>
+                        {% else %}
+                            {{ loop.index }}e
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ c.nom }}</strong></td>
+                    <td>{{ c.courses }}</td>
+                    <td>
+                        {{ "{:,.0f}".format(c.revenu).replace(',', ' ') }}
+                        FCFA
+                    </td>
+                    <td>
+                        <span class="stars">★</span>
+                        {{ "%.1f"|format(c.note) }}
+                    </td>
+                    <td>
+                        {% if c.courses > 850 %}
+                            <span style="color:var(--vert)">
+                                ↑ Excellent
+                            </span>
+                        {% elif c.courses > 700 %}
+                            <span style="color:var(--orange)">
+                                → Correct
+                            </span>
+                        {% else %}
+                            <span style="color:var(--rouge)">
+                                ↓ À suivre
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="grid2">
+        <div class="card">
+            <div class="card-title">Distribution des courses</div>
+            <div class="card-sub">
+                Tous chauffeurs · 3 mois cumulés
+            </div>
+            <div class="chart-wrap" style="height:240px">
+                <canvas id="cChaufBar" role="img"
+                        aria-label="Courses par chauffeur">
+                </canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Notes moyennes</div>
+            <div class="card-sub">
+                Satisfaction clients · Yango
+            </div>
+            <div class="chart-wrap" style="height:240px">
+                <canvas id="cChaufNote" role="img"
+                        aria-label="Notes chauffeurs">
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ FLOTTE ══ -->
+<div id="tab-flotte" class="section">
+
+    <div class="kpi-grid">
+        {% for v in par_veh %}
+        <div class="kpi {% if loop.index == 1 %}bleu
+                         {% elif loop.index == 2 %}vert
+                         {% else %}orange{% endif %}">
+            <i class="ti ti-car kpi-icon"
+               style="color:{% if loop.index==1 %}var(--bleu)
+                             {% elif loop.index==2 %}var(--vert)
+                             {% else %}var(--orange){% endif %}">
+            </i>
+            <div class="kpi-val">
+                {{ v.courses }}
+            </div>
+            <div class="kpi-label">{{ v.vehicule }}</div>
+            <div class="kpi-sub" style="color:var(--gris)">
+                {{ "{:,.0f}".format(v.revenu).replace(',', ' ') }}
+                FCFA
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="grid2">
+        <div class="card">
+            <div class="card-title">Courses par modèle de véhicule</div>
+            <div class="card-sub">3 mois cumulés</div>
+            <div class="chart-wrap" style="height:220px">
+                <canvas id="cVehCourses" role="img"
+                        aria-label="Courses par véhicule">
+                </canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Revenus par modèle</div>
+            <div class="card-sub">En FCFA · 3 mois</div>
+            <div class="chart-wrap" style="height:220px">
+                <canvas id="cVehRevenu" role="img"
+                        aria-label="Revenus par véhicule">
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ REMBOURSEMENTS ══ -->
+<div id="tab-remboursements" class="section">
+
+    <div class="kpi-grid">
+        <div class="kpi vert">
+            <i class="ti ti-coin kpi-icon"
+               style="color:var(--vert)"></i>
+            <div class="kpi-val">
+                {{ kpi.rembourse[:4] }}
+            </div>
+            <div class="kpi-label">Total remboursé (FCFA)</div>
+        </div>
+        <div class="kpi bleu">
+            <i class="ti ti-users kpi-icon"
+               style="color:var(--bleu)"></i>
+            <div class="kpi-val">{{ kpi.chauffeurs }}</div>
+            <div class="kpi-label">Chauffeurs en programme</div>
+        </div>
+        <div class="kpi orange">
+            <i class="ti ti-chart-line kpi-icon"
+               style="color:var(--orange)"></i>
+            <div class="kpi-val">16,5%</div>
+            <div class="kpi-label">Progression moyenne</div>
+            <div class="kpi-sub" style="color:var(--orange)">
+                Sur valeur totale véhicule
+            </div>
+        </div>
+        <div class="kpi rouge">
+            <i class="ti ti-flag kpi-icon"
+               style="color:var(--rouge)"></i>
+            <div class="kpi-val">0</div>
+            <div class="kpi-label">Défauts de paiement</div>
+            <div class="kpi-sub" style="color:var(--vert)">
+                ✓ Tous à jour
+            </div>
+        </div>
+    </div>
+
+    <div class="tbl-card">
+        <div class="tbl-header">
+            <h3>Progression remboursement — par chauffeur</h3>
+            <span class="badge badge-vert">
+                Programme "Travaillez, payez"
+            </span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Chauffeur</th>
+                    <th>Véhicule</th>
+                    <th>Valeur</th>
+                    <th>Remboursé</th>
+                    <th>Restant</th>
+                    <th>Progression</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in chauffeurs
+                           |sort(attribute='pct_rembourse',
+                                 reverse=True) %}
+                <tr>
+                    <td><strong>{{ c.nom }}</strong></td>
+                    <td>{{ c.vehicule }}</td>
+                    <td>
+                        {{ "{:,.0f}".format(c.valeur_vehicule)
+                           .replace(',', ' ') }}
+                    </td>
+                    <td style="color:var(--vert);font-weight:600">
+                        {{ "{:,.0f}".format(c.total_rembourse)
+                           .replace(',', ' ') }}
+                    </td>
+                    <td style="color:var(--rouge)">
+                        {{ "{:,.0f}".format(c.restant)
+                           .replace(',', ' ') }}
+                    </td>
+                    <td style="min-width:140px">
+                        <div style="display:flex;
+                                    align-items:center;gap:8px">
+                            <div class="pbar" style="flex:1">
+                                <div class="pfill"
+                                     style="background:var(--vert);
+                                            width:{{ c.pct_rembourse }}%">
+                                </div>
+                            </div>
+                            <span style="font-size:11px;
+                                         font-weight:600;
+                                         color:var(--vert);
+                                         min-width:32px">
+                                {{ c.pct_rembourse }}%
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- ─── FOOTER ─── -->
+<div class="footer">
+    Dashboard produit par <strong>ILMYS</strong> ·
+    La science au service des solutions ·
+    <a href="https://ilmys.com"
+       style="color:var(--vert);text-decoration:none">
+        ilmys.com
+    </a>
+    · Données fictives à titre de démonstration
+</div>
+
+<!-- ─── JS ─── -->
+<script>
+const C = {
+    vert  : '#00d2b2',
+    bleu  : '#00213f',
+    rouge : '#ef4444',
+    orange: '#f59e0b',
+    gris  : '#aaa'
+};
+
+const gc = 'rgba(0,0,0,0.06)';
+const tc = 'rgba(0,0,0,0.45)';
+
+const charts = {};
+
+function showTab(id, btn) {
+    document.querySelectorAll('.section')
+            .forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab')
+            .forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+function mkChart(id, type, labels, datasets, opts={}) {
+    if (charts[id]) charts[id].destroy();
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    charts[id] = new Chart(ctx, {
+        type,
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: (type === 'doughnut' || type === 'pie')
+                ? {}
+                : {
+                    x: { grid: { color: gc },
+                         ticks: { color: tc, font: { size: 10 } } },
+                    y: { grid: { color: gc },
+                         ticks: { color: tc, font: { size: 10 } } }
+                  },
+            ...opts
+        }
+    });
+}
+
+// ─── DONNÉES DEPUIS FLASK ───
+const parMois = {{ par_mois | tojson }};
+const topChauf = {{ top | tojson }};
+const parVeh   = {{ par_veh | tojson }};
+
+function initCharts() {
+    const mois = parMois.map(m => m.mois.replace(' 2026',''));
+
+    // Courses par mois
+    mkChart('cCourses', 'bar', mois, [{
+        data: parMois.map(m => m.courses),
+        backgroundColor: [C.vert, C.bleu, C.orange],
+        borderRadius: 6,
+        borderSkipped: false
+    }]);
+
+    // Revenus vs Remboursements
+    mkChart('cRevenu', 'bar', mois, [
+        {
+            label: 'Revenus',
+            data: parMois.map(m => m.revenu_brut),
+            backgroundColor: C.bleu,
+            borderRadius: 4,
+            borderSkipped: false
+        },
+        {
+            label: 'Remboursements',
+            data: parMois.map(m => m.remboursement),
+            backgroundColor: C.vert,
+            borderRadius: 4,
+            borderSkipped: false
+        }
+    ], { plugins: { legend: { display: true,
+                               position: 'top',
+                               labels: { font: { size: 11 },
+                                         color: tc,
+                                         boxWidth: 10 } } } });
+
+    // Courses par chauffeur
+    const noms  = topChauf.map(c => c.nom.split(' ')[0]);
+    const cours = topChauf.map(c => c.courses);
+    mkChart('cChaufBar', 'bar', noms, [{
+        data: cours,
+        backgroundColor: cours.map(v =>
+            v > 850 ? C.vert : v > 700 ? C.orange : C.rouge),
+        borderRadius: 4,
+        borderSkipped: false
+    }], {
+        indexAxis: 'y',
+        scales: {
+            x: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 9 } } },
+            y: { grid: { display: false },
+                 ticks: { color: tc, font: { size: 9 } } }
+        }
+    });
+
+    // Notes chauffeurs
+    const notes = topChauf.map(c => c.note);
+    mkChart('cChaufNote', 'bar', noms, [{
+        data: notes,
+        backgroundColor: notes.map(n =>
+            n >= 4.5 ? C.vert : n >= 4.0 ? C.orange : C.rouge),
+        borderRadius: 4,
+        borderSkipped: false
+    }], {
+        scales: {
+            x: { grid: { display: false },
+                 ticks: { color: tc, font: { size: 9 },
+                          maxRotation: 35 } },
+            y: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 10 } },
+                 min: 3.5, max: 5.0 }
+        }
+    });
+
+    // Flotte — courses
+    mkChart('cVehCourses', 'doughnut',
+        parVeh.map(v => v.vehicule),
+        [{
+            data: parVeh.map(v => v.courses),
+            backgroundColor: [C.bleu, C.vert, C.orange],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }],
+        { cutout: '60%',
+          plugins: { legend: { display: true,
+                                position: 'bottom',
+                                labels: { font: { size: 10 },
+                                          color: tc } } } }
+    );
+
+    // Flotte — revenus
+    mkChart('cVehRevenu', 'bar',
+        parVeh.map(v => v.vehicule),
+        [{
+            data: parVeh.map(v => v.revenu),
+            backgroundColor: [C.bleu, C.vert, C.orange],
+            borderRadius: 6,
+            borderSkipped: false
+        }],
+        {
+            scales: {
+                x: { grid: { display: false },
+                     ticks: { color: tc, font: { size: 10 } } },
+                y: { grid: { color: gc },
+                     ticks: { color: tc, font: { size: 9 },
+                              callback: v => (v/1e6).toFixed(1)+'M' } }
+            }
+        }
+    );
+}
+
+setTimeout(initCharts, 100);
+</script>
+
+</body>
+</html>
