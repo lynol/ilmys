@@ -11,338 +11,354 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --vert  : #00d2b2;
-            --bleu  : #00213f;
-            --rouge : #ef4444;
-            --orange: #f59e0b;
-            --gris  : #6B7280;
-            --bg    : #f4f6f8;
-            --card  : #ffffff;
-            --border: #E5E7EB;
-            --noir  : #111827;
+            --vert   : #00b89c;
+            --vert2  : #009982;
+            --bleu   : #00213f;
+            --bleu2  : #003366;
+            --rouge  : #c0392b;
+            --orange : #d4850a;
+            --gris   : #4a5568;
+            --bg     : #edf2f7;
+            --card   : #ffffff;
+            --border : #c8d6e5;
+            --noir   : #1a202c;
+            --texte  : #2d3748;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont,
                          'Segoe UI', sans-serif;
             background: var(--bg);
-            color: var(--noir);
-            font-size: 14px;
+            color: var(--texte);
+            font-size: 15px;
+            line-height: 1.5;
         }
 
         /* ─── HEADER ─── */
         .header {
             background: var(--bleu);
-            padding: 14px 28px;
+            padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            border-bottom: 3px solid var(--vert);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
 
         .header-logo {
-            width: 42px; height: 42px;
+            width: 46px; height: 46px;
             background: var(--vert);
             border-radius: 10px;
-            display: flex; align-items: center;
-            justify-content: center;
-            font-weight: 700; font-size: 13px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px;
             color: var(--bleu);
             letter-spacing: 1px;
         }
 
-        .header h1 {
-            font-size: 17px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .header p {
-            font-size: 11px;
-            color: rgba(255,255,255,0.6);
-            margin-top: 1px;
-        }
+        .header h1 { font-size: 19px; font-weight: 700; color: #fff; }
+        .header p  { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
 
         .header-badge {
-            font-size: 11px;
-            padding: 5px 14px;
+            font-size: 12px; padding: 6px 16px;
             border-radius: 20px;
-            background: rgba(0,210,178,0.15);
-            color: var(--vert);
-            border: 1px solid rgba(0,210,178,0.3);
+            background: rgba(0,184,156,0.2);
+            color: #7ffff0;
+            border: 1px solid rgba(0,184,156,0.4);
+            font-weight: 600;
         }
 
         /* ─── TABS ─── */
         .tabs {
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 0 28px;
-            display: flex;
-            gap: 4px;
+            background: var(--bleu2);
+            padding: 0 32px;
+            display: flex; gap: 2px;
             overflow-x: auto;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .tab {
-            padding: 12px 16px;
-            font-size: 13px;
-            color: var(--gris);
-            cursor: pointer;
-            border: none;
-            background: none;
-            border-bottom: 2.5px solid transparent;
-            margin-bottom: -1px;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            padding: 14px 18px;
+            font-size: 14px; font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer; border: none; background: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px; white-space: nowrap;
+            display: flex; align-items: center; gap: 7px;
             transition: color 0.15s;
         }
 
-        .tab:hover { color: var(--noir); }
-        .tab.active {
-            color: var(--bleu);
-            border-bottom-color: var(--vert);
-            font-weight: 600;
-        }
+        .tab:hover { color: rgba(255,255,255,0.9); }
+        .tab.active { color: #fff; border-bottom-color: var(--vert); }
 
         /* ─── CONTENU ─── */
-        .content {
-            padding: 24px 28px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
+        .content { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
         .section { display: none; }
         .section.active { display: block; }
 
-        /* ─── FILTRE ─── */
+        /* ─── FILTER BAR ─── */
         .filter-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-            padding: 10px 16px;
+            display: flex; gap: 12px; align-items: center;
+            flex-wrap: wrap; margin-bottom: 24px;
+            padding: 12px 18px;
             background: var(--card);
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid var(--border);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
         }
 
         .filter-bar label {
-            font-size: 12px;
+            font-size: 13px; font-weight: 600;
             color: var(--gris);
         }
 
         .filter-bar select {
-            font-size: 12px;
-            padding: 5px 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--bg);
+            font-size: 13px; font-weight: 500;
+            padding: 7px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: #f8fafc;
             color: var(--noir);
+            cursor: pointer;
         }
 
-        /* ─── KPI GRID ─── */
+        .filter-bar select:focus {
+            outline: none;
+            border-color: var(--vert);
+        }
+
+        /* ─── KPI ─── */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px; margin-bottom: 28px;
         }
 
         .kpi {
             background: var(--card);
-            border-radius: 10px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 20px;
             border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
 
         .kpi::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 3px;
-            border-radius: 10px 10px 0 0;
+            height: 4px;
+            border-radius: 12px 12px 0 0;
         }
 
-        .kpi.vert::before  { background: var(--vert); }
-        .kpi.bleu::before  { background: var(--bleu); }
-        .kpi.rouge::before { background: var(--rouge); }
-        .kpi.orange::before{ background: var(--orange); }
+        .kpi.vert::before   { background: var(--vert); }
+        .kpi.bleu::before   { background: var(--bleu); }
+        .kpi.rouge::before  { background: var(--rouge); }
+        .kpi.orange::before { background: var(--orange); }
 
         .kpi-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-            display: block;
+            font-size: 26px; margin-bottom: 10px; display: block;
         }
 
         .kpi-val {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--noir);
-            line-height: 1.1;
+            font-size: 26px; font-weight: 800;
+            color: var(--noir); line-height: 1.1;
         }
 
         .kpi-label {
-            font-size: 12px;
-            color: var(--gris);
-            margin-top: 4px;
-            line-height: 1.4;
+            font-size: 13px; font-weight: 500;
+            color: var(--gris); margin-top: 5px; line-height: 1.4;
         }
 
-        .kpi-sub {
-            font-size: 11px;
-            margin-top: 4px;
-        }
+        .kpi-sub { font-size: 12px; margin-top: 5px; font-weight: 500; }
 
-        /* ─── CARDS GRID ─── */
+        /* ─── CARDS ─── */
         .grid2 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px; margin-bottom: 24px;
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px; margin-bottom: 24px;
         }
 
         .card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 12px; padding: 22px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
 
         .card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--noir);
-            margin-bottom: 4px;
+            font-size: 15px; font-weight: 700;
+            color: var(--noir); margin-bottom: 4px;
         }
 
         .card-sub {
-            font-size: 11px;
-            color: var(--gris);
-            margin-bottom: 16px;
+            font-size: 12px; color: var(--gris);
+            margin-bottom: 18px; font-weight: 500;
         }
 
-        .chart-wrap {
-            position: relative;
-            width: 100%;
-        }
+        .chart-wrap { position: relative; width: 100%; }
 
         /* ─── TABLE ─── */
         .tbl-card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
+            border-radius: 12px; overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         }
 
         .tbl-header {
-            padding: 14px 20px;
+            padding: 16px 22px;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
+            display: flex; justify-content: space-between;
             align-items: center;
+            background: #f8fafc;
         }
 
         .tbl-header h3 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--noir);
+            font-size: 15px; font-weight: 700; color: var(--noir);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
         th {
-            background: #f9fafb;
-            color: var(--gris);
-            font-weight: 600;
-            padding: 10px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
+            background: #f1f5f9;
+            color: var(--bleu); font-weight: 700;
+            padding: 12px 18px; text-align: left;
+            border-bottom: 2px solid var(--border);
             white-space: nowrap;
         }
 
         td {
-            padding: 10px 16px;
+            padding: 12px 18px;
             border-bottom: 1px solid var(--border);
-            color: var(--noir);
+            color: var(--texte); font-weight: 500;
         }
 
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f9fafb; }
+        tr:hover td { background: #f8fafc; }
 
         /* ─── BADGE ─── */
         .badge {
             display: inline-block;
-            padding: 2px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
         }
 
-        .badge-vert   { background: rgba(0,210,178,0.12); color: #00a88f; }
-        .badge-bleu   { background: rgba(0,33,63,0.1);   color: var(--bleu); }
-        .badge-rouge  { background: rgba(239,68,68,0.1); color: #b91c1c; }
-        .badge-orange { background: rgba(245,158,11,0.1);color: #92400e; }
+        .badge-vert   { background: #c6f6f0; color: #00776a; }
+        .badge-bleu   { background: #bee3f8; color: #1a365d; }
+        .badge-rouge  { background: #fed7d7; color: #742a2a; }
+        .badge-orange { background: #feebc8; color: #7b341e; }
 
         /* ─── PROGRESS ─── */
         .pbar {
-            background: #f3f4f6;
-            border-radius: 4px;
-            height: 8px;
-            width: 100%;
-            overflow: hidden;
+            background: #e2e8f0;
+            border-radius: 6px; height: 10px;
+            width: 100%; overflow: hidden;
         }
 
-        .pfill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.6s ease;
+        .pfill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+
+        /* ─── ALERT ─── */
+        .alert {
+            padding: 14px 18px; border-radius: 10px;
+            margin-bottom: 16px; font-size: 14px;
+            font-weight: 500; display: flex;
+            align-items: flex-start; gap: 10px;
         }
 
-        /* ─── STARS ─── */
-        .stars { color: var(--orange); font-size: 13px; }
+        .alert-rouge  { background: #fff5f5; border-left: 4px solid var(--rouge); color: #742a2a; }
+        .alert-orange { background: #fffaf0; border-left: 4px solid var(--orange); color: #7b341e; }
+        .alert-vert   { background: #f0fff4; border-left: 4px solid var(--vert); color: #22543d; }
 
-        /* ─── FOOTER ─── */
-        .footer {
+        /* ─── PREVISION ─── */
+        .prev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px; margin-bottom: 20px;
+        }
+
+        .prev-card {
+            background: var(--bleu);
+            border-radius: 10px; padding: 16px;
             text-align: center;
-            padding: 20px;
-            font-size: 11px;
-            color: var(--gris);
-            border-top: 1px solid var(--border);
-            margin-top: 20px;
         }
 
-        .footer strong { color: var(--vert); }
+        .prev-card.light { background: var(--bleu2); }
 
-        /* ─── POWERED ─── */
-        .powered {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--gris);
-            padding: 4px 12px;
-            border-radius: 20px;
+        .prev-mois { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 6px; font-weight: 600; }
+        .prev-val  { font-size: 20px; font-weight: 800; color: #fff; }
+        .prev-sub  { font-size: 11px; color: var(--vert); margin-top: 4px; font-weight: 600; }
+
+        /* ─── DIGITAL PROPOSAL ─── */
+        .proposal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+
+        .proposal-card {
+            border-radius: 12px; padding: 20px;
             border: 1px solid var(--border);
             background: var(--card);
         }
 
-        .powered span { color: var(--vert); font-weight: 600; }
+        .proposal-card h4 {
+            font-size: 14px; font-weight: 700;
+            color: var(--noir); margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .proposal-card p {
+            font-size: 13px; color: var(--gris);
+            line-height: 1.6;
+        }
+
+        .proposal-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+
+        /* ─── EXPORT BTN ─── */
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 13px; font-weight: 700;
+            cursor: pointer; border: none;
+            transition: opacity 0.15s;
+        }
+
+        .btn:hover { opacity: 0.85; }
+        .btn-vert  { background: var(--vert); color: #fff; }
+        .btn-bleu  { background: var(--bleu); color: #fff; }
+        .btn-ghost {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--texte);
+        }
+
+        /* ─── STARS ─── */
+        .stars { color: var(--orange); }
+
+        /* ─── FOOTER ─── */
+        .footer {
+            text-align: center; padding: 24px;
+            font-size: 13px; color: var(--gris);
+            border-top: 1px solid var(--border); margin-top: 24px;
+            font-weight: 500;
+        }
+
+        .footer strong { color: var(--vert2); }
 
         @media (max-width: 600px) {
             .content { padding: 16px; }
@@ -359,13 +375,13 @@
         <div class="header-logo">BDA</div>
         <div>
             <h1>Bolli Drive Africa</h1>
-            <p>Tableau de bord · Données fictives à titre de démonstration</p>
+            <p>Tableau de bord · Données de démonstration · Propulsé par ILMYS</p>
         </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-        <div class="powered">
-            Propulsé par <span>ILMYS</span>
-        </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-vert" onclick="exportCSV()">
+            <i class="ti ti-download"></i> Exporter CSV
+        </button>
         <div class="header-badge">
             <i class="ti ti-refresh"></i> Fév — Avr 2026
         </div>
@@ -386,6 +402,12 @@
     <button class="tab" onclick="showTab('remboursements',this)">
         <i class="ti ti-coin"></i> Remboursements
     </button>
+    <button class="tab" onclick="showTab('prevision',this)">
+        <i class="ti ti-chart-line"></i> Prévisions
+    </button>
+    <button class="tab" onclick="showTab('digital',this)">
+        <i class="ti ti-bulb"></i> Digitalisation
+    </button>
 </div>
 
 <!-- ─── CONTENU ─── -->
@@ -399,56 +421,42 @@
         <select id="vueMonth" onchange="updateVue()">
             <option value="all">Fév — Avr 2026 (3 mois)</option>
             {% for m in par_mois %}
-            <option value="{{ m.mois }}">{{ m.mois }}</option>
+            <option value="{{ loop.index0 }}">{{ m.mois }}</option>
+            {% endfor %}
+        </select>
+        <label style="margin-left:8px">Véhicule :</label>
+        <select id="vueVeh" onchange="updateVue()">
+            <option value="all">Tous les véhicules</option>
+            {% for v in par_veh %}
+            <option value="{{ v.vehicule }}">{{ v.vehicule }}</option>
             {% endfor %}
         </select>
     </div>
 
     <div class="kpi-grid">
         <div class="kpi vert">
-            <i class="ti ti-steering-wheel kpi-icon"
-               style="color:var(--vert)"></i>
-            <div class="kpi-val" id="kpi-courses">
-                {{ kpi.courses }}
-            </div>
+            <i class="ti ti-steering-wheel kpi-icon" style="color:var(--vert)"></i>
+            <div class="kpi-val" id="kpi-courses">{{ kpi.courses }}</div>
             <div class="kpi-label">Courses effectuées</div>
-            <div class="kpi-sub" style="color:var(--vert)">
-                3 mois cumulés
-            </div>
+            <div class="kpi-sub" style="color:var(--vert)">3 mois cumulés</div>
         </div>
-
         <div class="kpi bleu">
-            <i class="ti ti-cash kpi-icon"
-               style="color:var(--bleu)"></i>
-            <div class="kpi-val" id="kpi-revenu">
-                {{ kpi.revenu[:4] }} Mds
-            </div>
+            <i class="ti ti-cash kpi-icon" style="color:var(--bleu)"></i>
+            <div class="kpi-val" id="kpi-revenu">23,1 M</div>
             <div class="kpi-label">Revenus bruts (FCFA)</div>
-            <div class="kpi-sub" style="color:var(--bleu)">
-                {{ kpi.revenu }} FCFA
-            </div>
+            <div class="kpi-sub" style="color:var(--bleu)">{{ kpi.revenu }} FCFA</div>
         </div>
-
         <div class="kpi orange">
-            <i class="ti ti-trending-up kpi-icon"
-               style="color:var(--orange)"></i>
-            <div class="kpi-val" id="kpi-rembourse">
-                {{ kpi.rembourse[:4] }}
-            </div>
+            <i class="ti ti-trending-up kpi-icon" style="color:var(--orange)"></i>
+            <div class="kpi-val" id="kpi-rembourse">15,2 M</div>
             <div class="kpi-label">Total remboursé (FCFA)</div>
-            <div class="kpi-sub" style="color:var(--orange)">
-                {{ kpi.rembourse }} FCFA
-            </div>
+            <div class="kpi-sub" style="color:var(--orange)">{{ kpi.rembourse }} FCFA</div>
         </div>
-
         <div class="kpi vert">
-            <i class="ti ti-users kpi-icon"
-               style="color:var(--vert)"></i>
+            <i class="ti ti-users kpi-icon" style="color:var(--vert)"></i>
             <div class="kpi-val">{{ kpi.chauffeurs }}</div>
             <div class="kpi-label">Chauffeurs actifs</div>
-            <div class="kpi-sub" style="color:var(--vert)">
-                ★ {{ kpi.note }} note moyenne
-            </div>
+            <div class="kpi-sub" style="color:var(--vert)">★ {{ kpi.note }} note moy.</div>
         </div>
     </div>
 
@@ -456,20 +464,15 @@
         <div class="card">
             <div class="card-title">Courses par mois</div>
             <div class="card-sub">Volume d'activité · 3 mois</div>
-            <div class="chart-wrap" style="height:200px">
-                <canvas id="cCourses" role="img"
-                        aria-label="Courses par mois">
-                </canvas>
+            <div class="chart-wrap" style="height:220px">
+                <canvas id="cCourses"></canvas>
             </div>
         </div>
-
         <div class="card">
             <div class="card-title">Revenus vs Remboursements</div>
-            <div class="card-sub">En FCFA · par mois</div>
-            <div class="chart-wrap" style="height:200px">
-                <canvas id="cRevenu" role="img"
-                        aria-label="Revenus et remboursements">
-                </canvas>
+            <div class="card-sub">En FCFA · comparaison mensuelle</div>
+            <div class="chart-wrap" style="height:220px">
+                <canvas id="cRevenu"></canvas>
             </div>
         </div>
     </div>
@@ -482,34 +485,20 @@
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Chauffeur</th>
-                    <th>Véhicule</th>
-                    <th>Courses</th>
-                    <th>Note</th>
-                    <th>Statut</th>
+                    <th>#</th><th>Chauffeur</th>
+                    <th>Courses</th><th>Revenus</th>
+                    <th>Note</th><th>Statut</th>
                 </tr>
             </thead>
             <tbody>
                 {% for c in top[:5] %}
                 <tr>
-                    <td>
-                        <strong style="color:var(--vert)">
-                            {{ loop.index }}
-                        </strong>
-                    </td>
-                    <td><strong>{{ c.nom }}</strong></td>
-                    <td>{{ c.vehicule if c.vehicule else '—' }}</td>
-                    <td>
-                        <strong>{{ c.courses }}</strong>
-                    </td>
-                    <td>
-                        <span class="stars">★</span>
-                        {{ "%.1f"|format(c.note) }}
-                    </td>
-                    <td>
-                        <span class="badge badge-vert">Actif</span>
-                    </td>
+                    <td><strong style="color:var(--vert)">{{ loop.index }}</strong></td>
+                    <td><strong style="color:var(--noir)">{{ c.nom }}</strong></td>
+                    <td><strong>{{ c.courses }}</strong></td>
+                    <td>{{ "{:,.0f}".format(c.revenu).replace(',', ' ') }} FCFA</td>
+                    <td><span class="stars">★</span> {{ "%.1f"|format(c.note) }}</td>
+                    <td><span class="badge badge-vert">Actif</span></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -527,29 +516,37 @@
             <option value="revenu">Revenus</option>
             <option value="note">Note</option>
         </select>
+        <label style="margin-left:8px">Statut :</label>
+        <select id="chaufStatut" onchange="sortChauffeurs()">
+            <option value="all">Tous</option>
+            <option value="excellent">Excellent (>850)</option>
+            <option value="correct">Correct (700-850)</option>
+            <option value="risque">À suivre (<700)</option>
+        </select>
+        <button class="btn btn-ghost" onclick="exportTableCSV('chaufTable','chauffeurs')"
+                style="margin-left:auto">
+            <i class="ti ti-download"></i> Export
+        </button>
     </div>
 
     <div class="tbl-card">
         <div class="tbl-header">
-            <h3>Performance individuelle — tous chauffeurs</h3>
-            <span class="badge badge-bleu">
-                {{ top|length }} chauffeurs
-            </span>
+            <h3>Performance individuelle</h3>
+            <span class="badge badge-bleu">{{ top|length }} chauffeurs</span>
         </div>
         <table id="chaufTable">
             <thead>
                 <tr>
-                    <th>Rang</th>
-                    <th>Chauffeur</th>
-                    <th>Courses</th>
-                    <th>Revenus bruts</th>
-                    <th>Note moy.</th>
-                    <th>Tendance</th>
+                    <th>Rang</th><th>Chauffeur</th>
+                    <th>Courses</th><th>Revenus bruts</th>
+                    <th>Note</th><th>Performance</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="chaufBody">
                 {% for c in top %}
-                <tr>
+                <tr data-courses="{{ c.courses }}"
+                    data-revenu="{{ c.revenu }}"
+                    data-note="{{ c.note }}">
                     <td>
                         {% if loop.index == 1 %}
                             <span class="badge badge-orange">🥇 1er</span>
@@ -558,32 +555,20 @@
                         {% elif loop.index == 3 %}
                             <span class="badge badge-vert">3e</span>
                         {% else %}
-                            {{ loop.index }}e
+                            <strong>{{ loop.index }}e</strong>
                         {% endif %}
                     </td>
-                    <td><strong>{{ c.nom }}</strong></td>
-                    <td>{{ c.courses }}</td>
-                    <td>
-                        {{ "{:,.0f}".format(c.revenu).replace(',', ' ') }}
-                        FCFA
-                    </td>
-                    <td>
-                        <span class="stars">★</span>
-                        {{ "%.1f"|format(c.note) }}
-                    </td>
+                    <td><strong style="color:var(--noir)">{{ c.nom }}</strong></td>
+                    <td><strong>{{ c.courses }}</strong></td>
+                    <td>{{ "{:,.0f}".format(c.revenu).replace(',', ' ') }} FCFA</td>
+                    <td><span class="stars">★</span> {{ "%.1f"|format(c.note) }}</td>
                     <td>
                         {% if c.courses > 850 %}
-                            <span style="color:var(--vert)">
-                                ↑ Excellent
-                            </span>
+                            <span style="color:var(--vert);font-weight:700">↑ Excellent</span>
                         {% elif c.courses > 700 %}
-                            <span style="color:var(--orange)">
-                                → Correct
-                            </span>
+                            <span style="color:var(--orange);font-weight:700">→ Correct</span>
                         {% else %}
-                            <span style="color:var(--rouge)">
-                                ↓ À suivre
-                            </span>
+                            <span style="color:var(--rouge);font-weight:700">↓ À suivre</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -595,25 +580,16 @@
     <div class="grid2">
         <div class="card">
             <div class="card-title">Distribution des courses</div>
-            <div class="card-sub">
-                Tous chauffeurs · 3 mois cumulés
-            </div>
-            <div class="chart-wrap" style="height:240px">
-                <canvas id="cChaufBar" role="img"
-                        aria-label="Courses par chauffeur">
-                </canvas>
+            <div class="card-sub">Tous chauffeurs · 3 mois cumulés</div>
+            <div class="chart-wrap" style="height:260px">
+                <canvas id="cChaufBar"></canvas>
             </div>
         </div>
-
         <div class="card">
             <div class="card-title">Notes moyennes</div>
-            <div class="card-sub">
-                Satisfaction clients · Yango
-            </div>
-            <div class="chart-wrap" style="height:240px">
-                <canvas id="cChaufNote" role="img"
-                        aria-label="Notes chauffeurs">
-                </canvas>
+            <div class="card-sub">Satisfaction clients · Yango</div>
+            <div class="chart-wrap" style="height:260px">
+                <canvas id="cChaufNote"></canvas>
             </div>
         </div>
     </div>
@@ -622,23 +598,25 @@
 <!-- ══ FLOTTE ══ -->
 <div id="tab-flotte" class="section">
 
+    <div class="filter-bar">
+        <label>Modèle :</label>
+        <select id="flotteFilter" onchange="updateFlotte()">
+            <option value="all">Tous les modèles</option>
+            {% for v in par_veh %}
+            <option value="{{ loop.index0 }}">{{ v.vehicule }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
     <div class="kpi-grid">
         {% for v in par_veh %}
-        <div class="kpi {% if loop.index == 1 %}bleu
-                         {% elif loop.index == 2 %}vert
-                         {% else %}orange{% endif %}">
+        <div class="kpi {% if loop.index==1 %}bleu{% elif loop.index==2 %}vert{% else %}orange{% endif %}">
             <i class="ti ti-car kpi-icon"
-               style="color:{% if loop.index==1 %}var(--bleu)
-                             {% elif loop.index==2 %}var(--vert)
-                             {% else %}var(--orange){% endif %}">
-            </i>
-            <div class="kpi-val">
-                {{ v.courses }}
-            </div>
+               style="color:{% if loop.index==1 %}var(--bleu){% elif loop.index==2 %}var(--vert){% else %}var(--orange){% endif %}"></i>
+            <div class="kpi-val">{{ v.courses }}</div>
             <div class="kpi-label">{{ v.vehicule }}</div>
             <div class="kpi-sub" style="color:var(--gris)">
-                {{ "{:,.0f}".format(v.revenu).replace(',', ' ') }}
-                FCFA
+                {{ "{:,.0f}".format(v.revenu).replace(',', ' ') }} FCFA
             </div>
         </div>
         {% endfor %}
@@ -646,23 +624,26 @@
 
     <div class="grid2">
         <div class="card">
-            <div class="card-title">Courses par modèle de véhicule</div>
+            <div class="card-title">Courses par modèle</div>
             <div class="card-sub">3 mois cumulés</div>
-            <div class="chart-wrap" style="height:220px">
-                <canvas id="cVehCourses" role="img"
-                        aria-label="Courses par véhicule">
-                </canvas>
+            <div class="chart-wrap" style="height:240px">
+                <canvas id="cVehCourses"></canvas>
             </div>
         </div>
-
         <div class="card">
             <div class="card-title">Revenus par modèle</div>
             <div class="card-sub">En FCFA · 3 mois</div>
-            <div class="chart-wrap" style="height:220px">
-                <canvas id="cVehRevenu" role="img"
-                        aria-label="Revenus par véhicule">
-                </canvas>
+            <div class="chart-wrap" style="height:240px">
+                <canvas id="cVehRevenu"></canvas>
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Rentabilité par modèle</div>
+        <div class="card-sub">Revenu moyen par course · comparaison</div>
+        <div class="chart-wrap" style="height:200px">
+            <canvas id="cVehRenta"></canvas>
         </div>
     </div>
 </div>
@@ -670,91 +651,80 @@
 <!-- ══ REMBOURSEMENTS ══ -->
 <div id="tab-remboursements" class="section">
 
+    <div class="filter-bar">
+        <label>Trier par :</label>
+        <select id="rembSort" onchange="sortRemb()">
+            <option value="pct">Progression %</option>
+            <option value="restant">Montant restant</option>
+            <option value="nom">Nom</option>
+        </select>
+        <button class="btn btn-ghost"
+                onclick="exportTableCSV('rembTable','remboursements')"
+                style="margin-left:auto">
+            <i class="ti ti-download"></i> Export
+        </button>
+    </div>
+
     <div class="kpi-grid">
         <div class="kpi vert">
-            <i class="ti ti-coin kpi-icon"
-               style="color:var(--vert)"></i>
-            <div class="kpi-val">
-                {{ kpi.rembourse[:4] }}
-            </div>
+            <i class="ti ti-coin kpi-icon" style="color:var(--vert)"></i>
+            <div class="kpi-val">15,2 M</div>
             <div class="kpi-label">Total remboursé (FCFA)</div>
         </div>
         <div class="kpi bleu">
-            <i class="ti ti-users kpi-icon"
-               style="color:var(--bleu)"></i>
+            <i class="ti ti-users kpi-icon" style="color:var(--bleu)"></i>
             <div class="kpi-val">{{ kpi.chauffeurs }}</div>
             <div class="kpi-label">Chauffeurs en programme</div>
         </div>
         <div class="kpi orange">
-            <i class="ti ti-chart-line kpi-icon"
-               style="color:var(--orange)"></i>
+            <i class="ti ti-chart-pie kpi-icon" style="color:var(--orange)"></i>
             <div class="kpi-val">16,5%</div>
             <div class="kpi-label">Progression moyenne</div>
-            <div class="kpi-sub" style="color:var(--orange)">
-                Sur valeur totale véhicule
-            </div>
         </div>
-        <div class="kpi rouge">
-            <i class="ti ti-flag kpi-icon"
-               style="color:var(--rouge)"></i>
+        <div class="kpi vert">
+            <i class="ti ti-flag kpi-icon" style="color:var(--vert)"></i>
             <div class="kpi-val">0</div>
             <div class="kpi-label">Défauts de paiement</div>
-            <div class="kpi-sub" style="color:var(--vert)">
-                ✓ Tous à jour
-            </div>
+            <div class="kpi-sub" style="color:var(--vert)">✓ Tous à jour</div>
         </div>
     </div>
 
     <div class="tbl-card">
         <div class="tbl-header">
-            <h3>Progression remboursement — par chauffeur</h3>
-            <span class="badge badge-vert">
-                Programme "Travaillez, payez"
-            </span>
+            <h3>Progression remboursement par chauffeur</h3>
+            <span class="badge badge-vert">Programme "Travaillez, payez"</span>
         </div>
-        <table>
+        <table id="rembTable">
             <thead>
                 <tr>
-                    <th>Chauffeur</th>
-                    <th>Véhicule</th>
-                    <th>Valeur</th>
-                    <th>Remboursé</th>
-                    <th>Restant</th>
-                    <th>Progression</th>
+                    <th>Chauffeur</th><th>Véhicule</th>
+                    <th>Valeur</th><th>Remboursé</th>
+                    <th>Restant</th><th>Progression</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for c in chauffeurs
-                           |sort(attribute='pct_rembourse',
-                                 reverse=True) %}
-                <tr>
-                    <td><strong>{{ c.nom }}</strong></td>
+            <tbody id="rembBody">
+                {% for c in chauffeurs|sort(attribute='pct_rembourse', reverse=True) %}
+                <tr data-pct="{{ c.pct_rembourse }}"
+                    data-restant="{{ c.restant }}"
+                    data-nom="{{ c.nom }}">
+                    <td><strong style="color:var(--noir)">{{ c.nom }}</strong></td>
                     <td>{{ c.vehicule }}</td>
-                    <td>
-                        {{ "{:,.0f}".format(c.valeur_vehicule)
-                           .replace(',', ' ') }}
+                    <td>{{ "{:,.0f}".format(c.valeur_vehicule).replace(',', ' ') }}</td>
+                    <td style="color:var(--vert);font-weight:700">
+                        {{ "{:,.0f}".format(c.total_rembourse).replace(',', ' ') }}
                     </td>
-                    <td style="color:var(--vert);font-weight:600">
-                        {{ "{:,.0f}".format(c.total_rembourse)
-                           .replace(',', ' ') }}
+                    <td style="color:var(--rouge);font-weight:600">
+                        {{ "{:,.0f}".format(c.restant).replace(',', ' ') }}
                     </td>
-                    <td style="color:var(--rouge)">
-                        {{ "{:,.0f}".format(c.restant)
-                           .replace(',', ' ') }}
-                    </td>
-                    <td style="min-width:140px">
-                        <div style="display:flex;
-                                    align-items:center;gap:8px">
+                    <td style="min-width:160px">
+                        <div style="display:flex;align-items:center;gap:10px">
                             <div class="pbar" style="flex:1">
                                 <div class="pfill"
-                                     style="background:var(--vert);
-                                            width:{{ c.pct_rembourse }}%">
+                                     style="background:{% if c.pct_rembourse > 18 %}var(--vert){% elif c.pct_rembourse > 15 %}var(--orange){% else %}var(--bleu){% endif %};width:{{ c.pct_rembourse }}%">
                                 </div>
                             </div>
-                            <span style="font-size:11px;
-                                         font-weight:600;
-                                         color:var(--vert);
-                                         min-width:32px">
+                            <span style="font-size:13px;font-weight:800;
+                                         color:var(--noir);min-width:38px">
                                 {{ c.pct_rembourse }}%
                             </span>
                         </div>
@@ -766,6 +736,231 @@
     </div>
 </div>
 
+<!-- ══ PRÉVISIONS ══ -->
+<div id="tab-prevision" class="section">
+
+    <div class="filter-bar">
+        <label>Horizon :</label>
+        <select id="prevHorizon" onchange="updatePrev()">
+            <option value="3">3 mois</option>
+            <option value="6">6 mois</option>
+        </select>
+        <label style="margin-left:8px">Scénario :</label>
+        <select id="prevScenario" onchange="updatePrev()">
+            <option value="base">Base (tendance actuelle)</option>
+            <option value="optimiste">Optimiste (+10%)</option>
+            <option value="pessimiste">Pessimiste (-10%)</option>
+        </select>
+    </div>
+
+    <div class="alert alert-vert">
+        <i class="ti ti-info-circle" style="font-size:18px;flex-shrink:0"></i>
+        <span>Prévisions calculées sur la base de la moyenne des 3 derniers mois.
+        Les données réelles peuvent varier selon l'activité terrain.</span>
+    </div>
+
+    <div id="prevCards" class="prev-grid"></div>
+
+    <div class="grid2">
+        <div class="card">
+            <div class="card-title">Projection des revenus</div>
+            <div class="card-sub">Historique + prévisions · FCFA</div>
+            <div class="chart-wrap" style="height:240px">
+                <canvas id="cPrevRevenu"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-title">Projection des remboursements</div>
+            <div class="card-sub">Entrées attendues · FCFA</div>
+            <div class="chart-wrap" style="height:240px">
+                <canvas id="cPrevRemb"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Chauffeurs proches de la propriété</div>
+        <div class="card-sub">Estimation basée sur le rythme actuel de remboursement</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Chauffeur</th><th>Véhicule</th>
+                    <th>Progression</th><th>Restant (FCFA)</th>
+                    <th>Estimation propriété</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in chauffeurs|sort(attribute='pct_rembourse', reverse=True)[:5] %}
+                <tr>
+                    <td><strong style="color:var(--noir)">{{ c.nom }}</strong></td>
+                    <td>{{ c.vehicule }}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <div class="pbar" style="width:80px">
+                                <div class="pfill"
+                                     style="background:var(--vert);width:{{ c.pct_rembourse }}%">
+                                </div>
+                            </div>
+                            <strong>{{ c.pct_rembourse }}%</strong>
+                        </div>
+                    </td>
+                    <td style="color:var(--rouge);font-weight:600">
+                        {{ "{:,.0f}".format(c.restant).replace(',', ' ') }}
+                    </td>
+                    <td>
+                        {% set mois_restants = ((100 - c.pct_rembourse) / (c.pct_rembourse / 3))|int %}
+                        {% if mois_restants <= 12 %}
+                            <span class="badge badge-vert">~{{ mois_restants }} mois</span>
+                        {% elif mois_restants <= 24 %}
+                            <span class="badge badge-orange">~{{ mois_restants }} mois</span>
+                        {% else %}
+                            <span class="badge badge-bleu">~{{ mois_restants }} mois</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ══ DIGITALISATION ══ -->
+<div id="tab-digital" class="section">
+
+    <div class="alert alert-vert">
+        <i class="ti ti-bulb" style="font-size:18px;flex-shrink:0"></i>
+        <div>
+            <strong>Proposition ILMYS</strong> — Au-delà du tableau de bord,
+            ILMYS peut accompagner Bolli Drive Africa dans sa transformation
+            numérique complète. Voici ce que cela représente concrètement.
+        </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;color:var(--noir);
+               margin-bottom:16px">
+        Ce qu'on peut digitaliser
+    </h3>
+
+    <div class="proposal-grid">
+
+        <div class="proposal-card">
+            <h4>
+                <div class="proposal-icon"
+                     style="background:#e6f7ff">
+                    <i class="ti ti-device-mobile"
+                       style="color:var(--bleu)"></i>
+                </div>
+                Application mobile chauffeurs
+            </h4>
+            <p>Une app simple pour que chaque chauffeur suive
+            ses propres performances, courses, et progression
+            de remboursement en temps réel depuis son téléphone.</p>
+        </div>
+
+        <div class="proposal-card">
+            <h4>
+                <div class="proposal-icon"
+                     style="background:#f0fff4">
+                    <i class="ti ti-file-invoice"
+                       style="color:var(--vert2)"></i>
+                </div>
+                Gestion des contrats
+            </h4>
+            <p>Digitalisation des contrats chauffeurs,
+            signatures électroniques, archivage automatique.
+            Fini les papiers perdus.</p>
+        </div>
+
+        <div class="proposal-card">
+            <h4>
+                <div class="proposal-icon"
+                     style="background:#fffaf0">
+                    <i class="ti ti-bell"
+                       style="color:var(--orange)"></i>
+                </div>
+                Alertes automatiques
+            </h4>
+            <p>Notifications automatiques par SMS ou WhatsApp
+            pour les retards de paiement, les chauffeurs inactifs,
+            les échéances importantes.</p>
+        </div>
+
+        <div class="proposal-card">
+            <h4>
+                <div class="proposal-icon"
+                     style="background:#fff5f5">
+                    <i class="ti ti-report-money"
+                       style="color:var(--rouge)"></i>
+                </div>
+                Comptabilité simplifiée
+            </h4>
+            <p>Suivi automatique des encaissements, des charges,
+            et génération de rapports financiers mensuels
+            prêts pour la comptabilité.</p>
+        </div>
+
+        <div class="proposal-card">
+            <h4>
+                <div class="proposal-icon"
+                     style="background:#f8f0ff">
+                    <i class="ti ti-map-pin"
+                       style="color:#7c3aed"></i>
+                </div>
+                Géolocalisation flotte
+            </h4>
+            <p>Carte en temps réel de l'activité des chauffeurs.
+            Voir les zones les plus actives d'Abidjan
+            pour optimiser le déploiement.</p>
+        </div>
+
+        <div class="proposal-card">
+            <h4>
+                <div class="proposal-icon"
+                     style="background:#e6f7ff">
+                    <i class="ti ti-robot"
+                       style="color:var(--bleu)"></i>
+                </div>
+                IA prédictive
+            </h4>
+            <p>Modèle de prédiction des défauts de paiement
+            avant qu'ils arrivent. Identifier les chauffeurs
+            à risque 2 mois à l'avance.</p>
+        </div>
+
+    </div>
+
+    <div style="background:var(--bleu);border-radius:12px;
+                padding:24px;text-align:center">
+        <div style="font-size:18px;font-weight:800;color:#fff;
+                    margin-bottom:8px">
+            Intéressé par la digitalisation complète ?
+        </div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.7);
+                    margin-bottom:16px">
+            ILMYS accompagne Bolli Drive Africa de A à Z
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <a href="mailto:contact@ilmys.com"
+               style="display:inline-flex;align-items:center;gap:6px;
+                      padding:10px 20px;border-radius:8px;
+                      background:var(--vert);color:var(--bleu);
+                      font-weight:700;font-size:14px;
+                      text-decoration:none">
+                <i class="ti ti-mail"></i> contact@ilmys.com
+            </a>
+            <a href="https://ilmys.com"
+               style="display:inline-flex;align-items:center;gap:6px;
+                      padding:10px 20px;border-radius:8px;
+                      background:rgba(255,255,255,0.1);
+                      color:#fff;font-weight:700;font-size:14px;
+                      text-decoration:none;border:1px solid rgba(255,255,255,0.2)">
+                <i class="ti ti-world"></i> ilmys.com
+            </a>
+        </div>
+    </div>
+
+</div>
+
 </div><!-- /content -->
 
 <!-- ─── FOOTER ─── -->
@@ -773,27 +968,35 @@
     Dashboard produit par <strong>ILMYS</strong> ·
     La science au service des solutions ·
     <a href="https://ilmys.com"
-       style="color:var(--vert);text-decoration:none">
+       style="color:var(--vert2);text-decoration:none;font-weight:600">
         ilmys.com
-    </a>
-    · Données fictives à titre de démonstration
+    </a> ·
+    <em>Données fictives à titre de démonstration</em>
 </div>
 
 <!-- ─── JS ─── -->
 <script>
 const C = {
-    vert  : '#00d2b2',
+    vert  : '#00b89c',
     bleu  : '#00213f',
-    rouge : '#ef4444',
-    orange: '#f59e0b',
-    gris  : '#aaa'
+    rouge : '#c0392b',
+    orange: '#d4850a',
+    gris  : '#718096',
+    bleu2 : '#2b6cb0'
 };
 
-const gc = 'rgba(0,0,0,0.06)';
-const tc = 'rgba(0,0,0,0.45)';
+const gc = 'rgba(0,0,0,0.08)';
+const tc = '#4a5568';
 
 const charts = {};
 
+// ─── DONNÉES FLASK ───
+const parMois  = {{ par_mois  | tojson }};
+const topChauf = {{ top       | tojson }};
+const parVeh   = {{ par_veh   | tojson }};
+const chauffeurs = {{ chauffeurs | tojson }};
+
+// ─── TABS ───
 function showTab(id, btn) {
     document.querySelectorAll('.section')
             .forEach(s => s.classList.remove('active'));
@@ -801,146 +1004,400 @@ function showTab(id, btn) {
             .forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
+
+    // Init graphiques selon onglet
+    setTimeout(() => {
+        if (id === 'vue')         initVue();
+        if (id === 'chauffeurs')  initChauffeurs();
+        if (id === 'flotte')      initFlotte();
+        if (id === 'prevision')   updatePrev();
+    }, 50);
 }
 
+// ─── CHART FACTORY ───
 function mkChart(id, type, labels, datasets, opts={}) {
     if (charts[id]) charts[id].destroy();
     const ctx = document.getElementById(id);
     if (!ctx) return;
+
+    const isDoughnut = type === 'doughnut' || type === 'pie';
+
     charts[id] = new Chart(ctx, {
         type,
         data: { labels, datasets },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: (type === 'doughnut' || type === 'pie')
-                ? {}
-                : {
-                    x: { grid: { color: gc },
-                         ticks: { color: tc, font: { size: 10 } } },
-                    y: { grid: { color: gc },
-                         ticks: { color: tc, font: { size: 10 } } }
-                  },
+            plugins: {
+                legend: {
+                    display: isDoughnut,
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 12, weight: '600' },
+                        color: tc, padding: 12,
+                        boxWidth: 12
+                    }
+                },
+                tooltip: {
+                    bodyFont: { size: 13 },
+                    titleFont: { size: 13, weight: '700' },
+                    padding: 10
+                }
+            },
+            scales: isDoughnut ? {} : {
+                x: {
+                    grid: { color: gc },
+                    ticks: { color: tc, font: { size: 12, weight: '600' } }
+                },
+                y: {
+                    grid: { color: gc },
+                    ticks: { color: tc, font: { size: 12, weight: '600' } }
+                }
+            },
             ...opts
         }
     });
 }
 
-// ─── DONNÉES DEPUIS FLASK ───
-const parMois = {{ par_mois | tojson }};
-const topChauf = {{ top | tojson }};
-const parVeh   = {{ par_veh | tojson }};
-
-function initCharts() {
+// ─── VUE GÉNÉRALE ───
+function initVue() {
     const mois = parMois.map(m => m.mois.replace(' 2026',''));
 
-    // Courses par mois
     mkChart('cCourses', 'bar', mois, [{
         data: parMois.map(m => m.courses),
         backgroundColor: [C.vert, C.bleu, C.orange],
-        borderRadius: 6,
-        borderSkipped: false
+        borderRadius: 8, borderSkipped: false
     }]);
 
-    // Revenus vs Remboursements
     mkChart('cRevenu', 'bar', mois, [
         {
-            label: 'Revenus',
+            label: 'Revenus bruts',
             data: parMois.map(m => m.revenu_brut),
             backgroundColor: C.bleu,
-            borderRadius: 4,
-            borderSkipped: false
+            borderRadius: 6, borderSkipped: false
         },
         {
             label: 'Remboursements',
             data: parMois.map(m => m.remboursement),
             backgroundColor: C.vert,
-            borderRadius: 4,
-            borderSkipped: false
+            borderRadius: 6, borderSkipped: false
         }
-    ], { plugins: { legend: { display: true,
-                               position: 'top',
-                               labels: { font: { size: 11 },
-                                         color: tc,
-                                         boxWidth: 10 } } } });
+    ], {
+        plugins: {
+            legend: {
+                display: true, position: 'top',
+                labels: { font: { size: 12, weight: '600' },
+                          color: tc, boxWidth: 12 }
+            }
+        }
+    });
+}
 
-    // Courses par chauffeur
+function updateVue() {
+    // Filtre par mois
+    const mSel = document.getElementById('vueMonth').value;
+    const vSel = document.getElementById('vueVeh').value;
+
+    // Pour l'instant on recharge juste les graphiques
+    // (avec données réelles, on ferait un appel API)
+    initVue();
+}
+
+// ─── CHAUFFEURS ───
+function initChauffeurs() {
     const noms  = topChauf.map(c => c.nom.split(' ')[0]);
     const cours = topChauf.map(c => c.courses);
+    const notes = topChauf.map(c => parseFloat(c.note));
+
     mkChart('cChaufBar', 'bar', noms, [{
         data: cours,
         backgroundColor: cours.map(v =>
             v > 850 ? C.vert : v > 700 ? C.orange : C.rouge),
-        borderRadius: 4,
-        borderSkipped: false
+        borderRadius: 6, borderSkipped: false
     }], {
         indexAxis: 'y',
         scales: {
             x: { grid: { color: gc },
-                 ticks: { color: tc, font: { size: 9 } } },
+                 ticks: { color: tc, font: { size: 12, weight: '600' } } },
             y: { grid: { display: false },
-                 ticks: { color: tc, font: { size: 9 } } }
+                 ticks: { color: tc, font: { size: 11, weight: '600' } } }
         }
     });
 
-    // Notes chauffeurs
-    const notes = topChauf.map(c => c.note);
     mkChart('cChaufNote', 'bar', noms, [{
         data: notes,
         backgroundColor: notes.map(n =>
             n >= 4.5 ? C.vert : n >= 4.0 ? C.orange : C.rouge),
-        borderRadius: 4,
-        borderSkipped: false
+        borderRadius: 6, borderSkipped: false
     }], {
         scales: {
             x: { grid: { display: false },
-                 ticks: { color: tc, font: { size: 9 },
+                 ticks: { color: tc, font: { size: 11, weight: '600' },
                           maxRotation: 35 } },
             y: { grid: { color: gc },
-                 ticks: { color: tc, font: { size: 10 } },
+                 ticks: { color: tc, font: { size: 12, weight: '600' } },
                  min: 3.5, max: 5.0 }
         }
     });
-
-    // Flotte — courses
-    mkChart('cVehCourses', 'doughnut',
-        parVeh.map(v => v.vehicule),
-        [{
-            data: parVeh.map(v => v.courses),
-            backgroundColor: [C.bleu, C.vert, C.orange],
-            borderWidth: 2,
-            borderColor: '#fff'
-        }],
-        { cutout: '60%',
-          plugins: { legend: { display: true,
-                                position: 'bottom',
-                                labels: { font: { size: 10 },
-                                          color: tc } } } }
-    );
-
-    // Flotte — revenus
-    mkChart('cVehRevenu', 'bar',
-        parVeh.map(v => v.vehicule),
-        [{
-            data: parVeh.map(v => v.revenu),
-            backgroundColor: [C.bleu, C.vert, C.orange],
-            borderRadius: 6,
-            borderSkipped: false
-        }],
-        {
-            scales: {
-                x: { grid: { display: false },
-                     ticks: { color: tc, font: { size: 10 } } },
-                y: { grid: { color: gc },
-                     ticks: { color: tc, font: { size: 9 },
-                              callback: v => (v/1e6).toFixed(1)+'M' } }
-            }
-        }
-    );
 }
 
-setTimeout(initCharts, 100);
+function sortChauffeurs() {
+    const sortBy  = document.getElementById('chaufSort').value;
+    const statut  = document.getElementById('chaufStatut').value;
+    const tbody   = document.getElementById('chaufBody');
+    const rows    = Array.from(tbody.querySelectorAll('tr'));
+
+    rows.sort((a, b) => {
+        const va = parseFloat(a.dataset[sortBy]);
+        const vb = parseFloat(b.dataset[sortBy]);
+        return vb - va;
+    });
+
+    rows.forEach(r => {
+        const c = parseInt(r.dataset.courses);
+        let show = true;
+        if (statut === 'excellent' && c <= 850) show = false;
+        if (statut === 'correct'   && (c <= 700 || c > 850)) show = false;
+        if (statut === 'risque'    && c >= 700) show = false;
+        r.style.display = show ? '' : 'none';
+        tbody.appendChild(r);
+    });
+}
+
+// ─── FLOTTE ───
+function initFlotte() {
+    const veh = parVeh.map(v => v.vehicule);
+    const colors = [C.bleu, C.vert, C.orange];
+
+    mkChart('cVehCourses', 'doughnut', veh, [{
+        data: parVeh.map(v => v.courses),
+        backgroundColor: colors,
+        borderWidth: 3, borderColor: '#fff'
+    }], { cutout: '60%' });
+
+    mkChart('cVehRevenu', 'bar', veh, [{
+        data: parVeh.map(v => v.revenu),
+        backgroundColor: colors,
+        borderRadius: 8, borderSkipped: false
+    }], {
+        scales: {
+            x: { grid: { display: false },
+                 ticks: { color: tc, font: { size: 12, weight: '600' } } },
+            y: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 12, weight: '600' },
+                          callback: v => (v/1e6).toFixed(1)+'M' } }
+        }
+    });
+
+    const renta = parVeh.map(v =>
+        Math.round(v.revenu / v.courses));
+    mkChart('cVehRenta', 'bar', veh, [{
+        data: renta,
+        backgroundColor: colors,
+        borderRadius: 8, borderSkipped: false
+    }], {
+        scales: {
+            x: { grid: { display: false },
+                 ticks: { color: tc, font: { size: 12, weight: '600' } } },
+            y: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 12, weight: '600' },
+                          callback: v => v.toLocaleString()+' F' } }
+        }
+    });
+}
+
+function updateFlotte() { initFlotte(); }
+
+// ─── PRÉVISIONS ───
+function updatePrev() {
+    const horizon  = parseInt(document.getElementById('prevHorizon').value);
+    const scenario = document.getElementById('prevScenario').value;
+
+    const facteur = scenario === 'optimiste' ? 1.10
+                  : scenario === 'pessimiste' ? 0.90 : 1.0;
+
+    // Moyennes historiques
+    const moyRevenu  = parMois.reduce((s,m) => s + m.revenu_brut, 0) / parMois.length;
+    const moyRemb    = parMois.reduce((s,m) => s + m.remboursement, 0) / parMois.length;
+    const moyCourses = parMois.reduce((s,m) => s + m.courses, 0) / parMois.length;
+
+    const moisFuturs = ['Mai 2026','Jun 2026','Jul 2026',
+                        'Aoû 2026','Sep 2026','Oct 2026'];
+
+    // Cartes prévision
+    const cards = document.getElementById('prevCards');
+    cards.innerHTML = '';
+    for (let i = 0; i < horizon; i++) {
+        const rev  = Math.round(moyRevenu  * facteur * (1 + i*0.02));
+        const remb = Math.round(moyRemb    * facteur * (1 + i*0.01));
+        const div  = document.createElement('div');
+        div.className = 'prev-card' + (i % 2 === 1 ? ' light' : '');
+        div.innerHTML = `
+            <div class="prev-mois">${moisFuturs[i]}</div>
+            <div class="prev-val">${(rev/1e6).toFixed(1)} M</div>
+            <div class="prev-sub">Revenus prévus</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);
+                        margin-top:4px">
+                Remb. : ${(remb/1e6).toFixed(1)} M FCFA
+            </div>`;
+        cards.appendChild(div);
+    }
+
+    // Graphiques prévision
+    const labelsHist = parMois.map(m => m.mois.replace(' 2026',''));
+    const labelsPrev = moisFuturs.slice(0, horizon)
+                                 .map(m => m.replace(' 2026',''));
+    const allLabels  = [...labelsHist, ...labelsPrev];
+
+    const revHist = parMois.map(m => m.revenu_brut);
+    const revPrev = Array.from({length: horizon},
+        (_, i) => Math.round(moyRevenu * facteur * (1 + i*0.02)));
+
+    const rembHist = parMois.map(m => m.remboursement);
+    const rembPrev = Array.from({length: horizon},
+        (_, i) => Math.round(moyRemb * facteur * (1 + i*0.01)));
+
+    mkChart('cPrevRevenu', 'line', allLabels, [
+        {
+            label: 'Historique',
+            data: [...revHist, ...Array(horizon).fill(null)],
+            borderColor: C.bleu, backgroundColor: 'rgba(0,33,63,0.1)',
+            fill: true, tension: 0.3,
+            pointRadius: 5, pointBackgroundColor: C.bleu,
+            borderWidth: 2
+        },
+        {
+            label: 'Prévision',
+            data: [...Array(revHist.length - 1).fill(null),
+                   revHist[revHist.length-1], ...revPrev],
+            borderColor: C.vert,
+            backgroundColor: 'rgba(0,184,156,0.1)',
+            fill: true, tension: 0.3,
+            pointRadius: 5, pointBackgroundColor: C.vert,
+            borderDash: [6, 3], borderWidth: 2
+        }
+    ], {
+        plugins: {
+            legend: {
+                display: true, position: 'top',
+                labels: { font: { size: 12, weight: '600' },
+                          color: tc, boxWidth: 12 }
+            }
+        },
+        scales: {
+            x: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 12, weight: '600' } } },
+            y: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 12, weight: '600' },
+                          callback: v => (v/1e6).toFixed(1)+'M' } }
+        }
+    });
+
+    mkChart('cPrevRemb', 'line', allLabels, [
+        {
+            label: 'Historique',
+            data: [...rembHist, ...Array(horizon).fill(null)],
+            borderColor: C.bleu,
+            backgroundColor: 'rgba(0,33,63,0.1)',
+            fill: true, tension: 0.3,
+            pointRadius: 5, pointBackgroundColor: C.bleu,
+            borderWidth: 2
+        },
+        {
+            label: 'Prévision',
+            data: [...Array(rembHist.length - 1).fill(null),
+                   rembHist[rembHist.length-1], ...rembPrev],
+            borderColor: C.orange,
+            backgroundColor: 'rgba(212,133,10,0.1)',
+            fill: true, tension: 0.3,
+            pointRadius: 5, pointBackgroundColor: C.orange,
+            borderDash: [6, 3], borderWidth: 2
+        }
+    ], {
+        plugins: {
+            legend: {
+                display: true, position: 'top',
+                labels: { font: { size: 12, weight: '600' },
+                          color: tc, boxWidth: 12 }
+            }
+        },
+        scales: {
+            x: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 12, weight: '600' } } },
+            y: { grid: { color: gc },
+                 ticks: { color: tc, font: { size: 12, weight: '600' },
+                          callback: v => (v/1e6).toFixed(1)+'M' } }
+        }
+    });
+}
+
+// ─── SORT REMBOURSEMENTS ───
+function sortRemb() {
+    const by   = document.getElementById('rembSort').value;
+    const tbody = document.getElementById('rembBody');
+    const rows  = Array.from(tbody.querySelectorAll('tr'));
+
+    rows.sort((a, b) => {
+        if (by === 'nom') {
+            return a.dataset.nom.localeCompare(b.dataset.nom);
+        }
+        const va = parseFloat(a.dataset[by]);
+        const vb = parseFloat(b.dataset[by]);
+        return by === 'restant' ? va - vb : vb - va;
+    });
+
+    rows.forEach(r => tbody.appendChild(r));
+}
+
+// ─── EXPORT CSV ───
+function exportCSV() {
+    const rows = [
+        ['Chauffeur', 'Courses', 'Revenus bruts',
+         'Remboursements', 'Note moyenne']
+    ];
+
+    topChauf.forEach(c => {
+        rows.push([
+            c.nom, c.courses,
+            c.revenu.toFixed(0),
+            '',
+            c.note.toFixed(1)
+        ]);
+    });
+
+    const csv = rows.map(r => r.join(';')).join('\n');
+    const blob = new Blob(['\ufeff' + csv],
+                          { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'bolli_drive_africa_export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function exportTableCSV(tableId, filename) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+    const rows  = Array.from(table.querySelectorAll('tr'));
+    const csv   = rows.map(r =>
+        Array.from(r.querySelectorAll('th,td'))
+             .map(c => '"' + c.innerText.trim() + '"')
+             .join(';')
+    ).join('\n');
+
+    const blob = new Blob(['\ufeff' + csv],
+                          { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = filename + '_bolli.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ─── INIT ───
+setTimeout(() => { initVue(); }, 100);
 </script>
 
 </body>
