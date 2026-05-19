@@ -658,6 +658,10 @@ def demo_bolli():
         remboursement=('remboursement','sum')
     ).reset_index()
 
+    top5_remb = sorted(chauf.to_dict('records'),
+                   key=lambda x: x['pct_rembourse'],
+                   reverse=True)[:5]
+
     return render_template('demo_bolli.html',
         kpi={
             'courses'    : f"{total_courses:,}".replace(',', ' '),
@@ -666,6 +670,7 @@ def demo_bolli():
             'chauffeurs' : nb_chauffeurs,
             'note'       : moy_note,
         },
+        top5_remb=top5_remb,
         par_mois=par_mois.to_dict('records'),
         top=top.head(10).to_dict('records'),
         par_veh=par_veh.to_dict('records'),
