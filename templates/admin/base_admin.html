@@ -9,6 +9,53 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
+<!-- MODALE HTML BRUT -->
+<div id="html-modal"
+     style="display:none;position:fixed;
+            top:0;left:0;width:100%;height:100%;
+            background:rgba(0,0,0,0.5);
+            z-index:9999;align-items:center;
+            justify-content:center">
+    <div style="background:#fff;border-radius:10px;
+                padding:24px;width:80%;max-width:900px;
+                max-height:80vh;display:flex;
+                flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center">
+            <h3 style="font-size:15px;font-weight:700;
+                       color:#00213f;margin:0">
+                Éditer le HTML brut
+            </h3>
+            <span style="font-size:11px;color:#6B7280">
+                Insère tes iframes de figures ici
+            </span>
+        </div>
+        <textarea id="html-textarea"
+                  style="flex:1;min-height:400px;
+                         font-family:monospace;font-size:12px;
+                         border:1px solid #c8d6e5;
+                         border-radius:6px;padding:12px;
+                         resize:vertical">
+        </textarea>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button id="btn-modal-cancel"
+                    class="btn btn-sm"
+                    style="background:#f1f5f9;
+                           color:#6B7280;border:none;
+                           padding:8px 16px;border-radius:6px;
+                           cursor:pointer">
+                Annuler
+            </button>
+            <button id="btn-modal-ok"
+                    class="btn btn-sm"
+                    style="background:#00213f;color:#fff;
+                           border:none;padding:8px 16px;
+                           border-radius:6px;cursor:pointer">
+                Appliquer
+            </button>
+        </div>
+    </div>
+</div>
 <body class="admin-body">
 
     <!-- SIDEBAR -->

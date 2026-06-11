@@ -84,6 +84,15 @@
                         <span class="ql-formats">
                             <button class="ql-clean"></button>
                         </span>
+                        <span class="ql-formats">
+                            <button id="btn-html"
+                                    title="Éditer le HTML brut"
+                                    style="width:auto;padding:0 8px;
+                                        font-size:11px;font-weight:700;
+                                        color:#00213f">
+                                &lt;/&gt;
+                            </button>
+                        </span>
                     </div>
 
                     <!-- Zone d'édition -->
@@ -257,8 +266,43 @@
 </div>
 </form>
 
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
+    const quill = new Quill('#editor', {
+        theme  : 'snow',
+        modules: { toolbar: '#toolbar' },
+    });
 
+    // ─── CHARGER CONTENU EXISTANT ───
+    const contenuExistant = document.getElementById('contenu').value;
+    if (contenuExistant) {
+        quill.root.innerHTML = contenuExistant;
+    }
+
+    // ─── BOUTON HTML BRUT ───
+    document.getElementById('btn-html').addEventListener('click', function() {
+        const html = quill.root.innerHTML;
+        const modal = document.getElementById('html-modal');
+        document.getElementById('html-textarea').value = html;
+        modal.style.display = 'flex';
+    });
+
+    document.getElementById('btn-modal-ok').addEventListener('click', function() {
+        const newHtml = document.getElementById('html-textarea').value;
+        quill.root.innerHTML = newHtml;
+        document.getElementById('html-modal').style.display = 'none';
+    });
+
+    document.getElementById('btn-modal-cancel').addEventListener('click', function() {
+        document.getElementById('html-modal').style.display = 'none';
+    });
+
+    // ─── SAUVEGARDER AVANT SUBMIT ───
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+        document.getElementById('contenu').value =
+            quill.root.innerHTML;
+    });
 </script>
 
 {% endblock %}
