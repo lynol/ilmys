@@ -53,11 +53,48 @@
 
                 <div class="mb-3">
                     <label class="admin-label">Contenu *</label>
+
+                    <!-- Barre d'outils -->
+                    <div id="toolbar"
+                        style="border:1px solid #c8d6e5;border-bottom:none;
+                                border-radius:8px 8px 0 0;background:#f8fafc">
+                        <span class="ql-formats">
+                            <select class="ql-header">
+                                <option value="2">Titre 2</option>
+                                <option value="3">Titre 3</option>
+                                <option selected>Normal</option>
+                            </select>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-bold"></button>
+                            <button class="ql-italic"></button>
+                            <button class="ql-underline"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-align" value=""></button>
+                            <button class="ql-align" value="center"></button>
+                            <button class="ql-align" value="right"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-link"></button>
+                            <button class="ql-blockquote"></button>
+                            <button class="ql-list" value="ordered"></button>
+                            <button class="ql-list" value="bullet"></button>
+                        </span>
+                        <span class="ql-formats">
+                            <button class="ql-clean"></button>
+                        </span>
+                    </div>
+
+                    <!-- Zone d'édition -->
+                    <div id="editor"
+                        style="border:1px solid #c8d6e5;border-radius:0 0 8px 8px;
+                                min-height:400px;font-size:14px;background:#fff">
+                    </div>
+
+                    <!-- Champ caché pour le formulaire -->
                     <textarea name="contenu" id="contenu"
-                            class="admin-input"
-                            rows="30"
-                            style="font-family:monospace;font-size:13px;width:100%"
-                            placeholder="Contenu HTML de l'article...">{{ analyse[5] if analyse else '' }}</textarea>
+                            style="display:none">{{ analyse[5] if analyse else '' }}</textarea>
                 </div>
 
             </div>
