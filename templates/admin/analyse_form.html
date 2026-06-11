@@ -55,7 +55,9 @@
                     <label class="admin-label">Contenu *</label>
                     <textarea name="contenu" id="contenu"
                             class="admin-input"
-                            rows="20">{{ analyse[5] if analyse else '' }}</textarea>
+                            rows="30"
+                            style="font-family:monospace;font-size:13px;width:100%"
+                            placeholder="Contenu HTML de l'article...">{{ analyse[5] if analyse else '' }}</textarea>
                 </div>
 
             </div>
@@ -219,73 +221,7 @@
 </form>
 
 <script>
-    tinymce.init({
-        selector: '#contenu',
-        language: 'fr_FR',
-        height: 600,
-        plugins: [
-            'anchor', 'autolink', 'charmap', 'codesample',
-            'link', 'lists', 'media', 'searchreplace',
-            'table', 'visualblocks', 'wordcount', 'image'
-        ],
-        toolbar: 'undo redo | blocks | bold italic underline | ' +
-                'alignleft aligncenter alignright | ' +
-                'bullist numlist | link image media table | ' +
-                'removeformat code',
-        // Upload images vers le serveur
-        images_upload_url: '/admin/upload-image',
-        images_upload_handler: function (blobInfo, progress) {
-            return new Promise(function (resolve, reject) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/admin/upload-image');
-                xhr.upload.onprogress = function (e) {
-                    progress(e.loaded / e.total * 100);
-                };
-                xhr.onload = function () {
-                    if (xhr.status < 200 || xhr.status >= 300) {
-                        reject('Erreur HTTP: ' + xhr.status);
-                        return;
-                    }
-                    var json = JSON.parse(xhr.responseText);
-                    if (!json || typeof json.location !== 'string') {
-                        reject('Réponse invalide');
-                        return;
-                    }
-                    resolve(json.location);
-                };
-                xhr.onerror = function () {
-                    reject('Upload échoué');
-                };
-                var formData = new FormData();
-                formData.append('file', blobInfo.blob(),
-                                blobInfo.filename());
-                xhr.send(formData);
-            });
-        },
-        content_style: `
-            body {
-                font-family: sans-serif;
-                font-size: 15px;
-                line-height: 1.8;
-                color: #374151;
-                max-width: 800px;
-                margin: 20px auto;
-                padding: 0 20px;
-            }
-            h2 {
-                font-size: 22px;
-                color: #111827;
-                border-bottom: 1px solid #E5E7EB;
-                padding-bottom: 10px;
-            }
-            img { max-width: 100%; border-radius: 6px; }
-            blockquote {
-                border-left: 3px solid #16A34A;
-                padding: 16px 20px;
-                background: #F0FDF4;
-            }
-        `
-    });
+
 </script>
 
 {% endblock %}

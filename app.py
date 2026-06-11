@@ -619,64 +619,6 @@ def collaborer():
 
     return render_template('collaborer.html')
 
-@app.route('/demo/bolli')
-def demo_bolli():
-    import pandas as pd
-    import os
-
-    perf_path = os.path.join(app.root_path, 'data/bolli/performances.csv')
-    chauf_path = os.path.join(app.root_path, 'data/bolli/chauffeurs.csv')
-
-    df   = pd.read_csv(perf_path)
-    chauf = pd.read_csv(chauf_path)
-
-    # KPI globaux
-    total_courses     = int(df['courses'].sum())
-    total_revenu      = int(df['revenu_brut'].sum())
-    total_rembourse   = int(df['remboursement'].sum())
-    nb_chauffeurs     = int(df['id'].nunique())
-    moy_note          = round(df['note'].mean(), 1)
-
-    # Par mois
-    par_mois = df.groupby('mois').agg(
-        courses=('courses','sum'),
-        revenu_brut=('revenu_brut','sum'),
-        remboursement=('remboursement','sum')
-    ).reset_index()
-
-    # Top chauffeurs
-    top = df.groupby('nom').agg(
-        courses=('courses','sum'),
-        revenu=('revenu_brut','sum'),
-        note=('note','mean')
-    ).sort_values('courses', ascending=False).reset_index()
-
-    # Par véhicule
-    par_veh = df.groupby('vehicule').agg(
-        courses=('courses','sum'),
-        revenu=('revenu_brut','sum'),
-        remboursement=('remboursement','sum')
-    ).reset_index()
-
-    top5_remb = sorted(chauf.to_dict('records'),
-                   key=lambda x: x['pct_rembourse'],
-                   reverse=True)[:5]
-
-    return render_template('demo_bolli.html',
-        kpi={
-            'courses'    : f"{total_courses:,}".replace(',', ' '),
-            'revenu'     : f"{total_revenu:,}".replace(',', ' '),
-            'rembourse'  : f"{total_rembourse:,}".replace(',', ' '),
-            'chauffeurs' : nb_chauffeurs,
-            'note'       : moy_note,
-        },
-        top5_remb=top5_remb,
-        par_mois=par_mois.to_dict('records'),
-        top=top.head(10).to_dict('records'),
-        par_veh=par_veh.to_dict('records'),
-        chauffeurs=chauf.to_dict('records'),
-    )
-
 # ─── ERREURS ───
 @app.errorhandler(404)
 def page_not_found(e):
