@@ -725,13 +725,20 @@ def login_required(f):
 @app.route('/admin/upload-image', methods=['POST'])
 @login_required
 def admin_upload_image():
-    if 'file' not in request.files:
-        return jsonify({'error': 'Pas de fichier'}), 400
-    fichier = request.files['file']
-    if fichier and allowed_image(fichier.filename):
-        url = sauvegarder_fichier(fichier, 'images')
-        return jsonify({'location': url})
-    return jsonify({'error': 'Format non autorisé'}), 400
+    if 'image' not in request.files:
+        return jsonify({'error': 'Aucun fichier'}), 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'Nom de fichier vide'}), 400
+
+    filename = secure_filename(file.filename)
+    upload_path = os.path.join(
+        app.root_path, 'static', 'uploads', 'images', filename
+    )
+    file.save(upload_path)
+
+    return jsonify({'url': f'/static/uploads/images/{filename}'})
 
 def generer_slug(titre):
     slug = titre.lower()

@@ -338,9 +338,41 @@
     Quill.register(StyledImage, true);
 
     const quill = new Quill('#editor', {
-        theme  : 'snow',
-        modules: { toolbar: '#toolbar' },
-    });
+    theme  : 'snow',
+    modules: {
+        toolbar: {
+            container: '#toolbar',
+            handlers: {
+                image: function() {
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+                    input.click();
+
+                    input.onchange = () => {
+                        const file = input.files[0];
+                        const formData = new FormData();
+                        formData.append('image', file);
+
+                        fetch('/admin/upload-image', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.url) {
+                                const range = quill.getSelection(true);
+                                quill.insertEmbed(range.index, 'image', data.url);
+                            } else {
+                                alert('Erreur upload : ' + data.error);
+                            }
+                        });
+                    };
+                }
+            }
+        }
+    },
+});
 
     // ─── CHARGER CONTENU EXISTANT ───
     const contenuExistant = document.getElementById('contenu').value;
