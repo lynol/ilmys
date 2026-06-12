@@ -297,6 +297,43 @@
 
     Quill.register(IframeBlot);
 
+    // ─── AUTORISER FIGURE / FIGCAPTION / STYLE SUR IMG ───
+    const Block = Quill.import('blots/block');
+
+    class FigureBlot extends Block {}
+    FigureBlot.blotName = 'figure';
+    FigureBlot.tagName  = 'figure';
+
+    class FigCaptionBlot extends Block {}
+    FigCaptionBlot.blotName = 'figcaption';
+    FigCaptionBlot.tagName  = 'figcaption';
+
+    Quill.register(FigureBlot);
+    Quill.register(FigCaptionBlot);
+
+    // ─── AUTORISER L'ATTRIBUT STYLE SUR LES IMAGES ───
+    const Image = Quill.import('formats/image');
+    Image.sanitize = function(url) { return url; };
+
+    class StyledImage extends Image {
+        static formats(domNode) {
+            return {
+                alt   : domNode.getAttribute('alt'),
+                style : domNode.getAttribute('style'),
+            };
+        }
+        format(name, value) {
+            if (name === 'style' || name === 'alt') {
+                if (value) this.domNode.setAttribute(name, value);
+                else this.domNode.removeAttribute(name);
+            } else {
+                super.format(name, value);
+            }
+        }
+    }
+
+    Quill.register(StyledImage, true);
+
     const quill = new Quill('#editor', {
         theme  : 'snow',
         modules: { toolbar: '#toolbar' },
