@@ -98,6 +98,11 @@
     background: rgba(255,255,255,0.1);
     color: #FFF;
 }
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
 
 .sidebar-link.active {
     background: rgba(255,255,255,0.15);
