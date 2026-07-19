@@ -115,6 +115,33 @@ def sitemap():
     response.headers['Content-Type'] = 'application/xml'
     return response
 
+@app.route('/llms.txt')
+def llms():
+    content = """# ILMYS — Données · Analyses · Afrique
+# https://ilmys.com
+
+> ILMYS est une plateforme indépendante d'analyses de données publiques africaines.
+
+## Pages principales
+
+- /analyses : Toutes les analyses publiées
+- /donnees : Données téléchargeables
+- /about : À propos d'ILMYS
+- /dashboard : Tableau de bord des indicateurs CI
+
+## Analyses disponibles
+
+- Budget 2025 Côte d'Ivoire
+- Législatives 2025 Côte d'Ivoire
+- BAC 2025 Côte d'Ivoire
+- VBG en Côte d'Ivoire 2025
+- Démographie RGPH 2021
+
+## Contact
+
+contact@ilmys.com
+"""
+    return app.response_class(content, mimetype='text/plain')
 
 limiter = Limiter(
     app=app,
