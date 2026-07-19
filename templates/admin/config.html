@@ -1,0 +1,143 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Configuration — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+    <h4 class="admin-page-title mb-4">Configuration du site</h4>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-success py-2 px-3 mb-3"
+             style="font-size:13px">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+    <div class="admin-card p-4" style="display:flex;flex-direction:column;gap:28px">
+
+        <!-- BANDEAU -->
+        <div>
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:14px;font-size:14px">
+                Bandeau défilant
+            </h6>
+            <label class="admin-label">
+                Textes
+                <small style="color:#6B7280;font-weight:400">
+                    — séparer chaque actu par un |
+                </small>
+            </label>
+            <textarea name="bandeau_textes" class="admin-input"
+                      rows="3" style="font-size:13px">{{ rows.get('bandeau_textes','') }}</textarea>
+            <small style="color:#6B7280">
+                Exemple : Actu 1|Actu 2|Actu 3
+            </small>
+        </div>
+
+        <hr style="border-color:#E5E7EB;margin:0">
+
+        <!-- CHIFFRE MIS EN AVANT -->
+        <div>
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:14px;font-size:14px">
+                Chiffre mis en avant (page d'accueil)
+            </h6>
+
+            <div class="mb-3">
+                <label class="admin-label">Le chiffre</label>
+                <input type="text" name="home_chiffre"
+                       class="admin-input"
+                       placeholder="ex: 52,17%"
+                       value="{{ rows.get('home_chiffre','') }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="admin-label">Phrase principale</label>
+                <input type="text" name="home_titre"
+                       class="admin-input"
+                       value="{{ rows.get('home_titre','') }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="admin-label">Texte d'explication</label>
+                <textarea name="home_texte" class="admin-input"
+                          rows="3" style="font-size:13px">{{ rows.get('home_texte','') }}</textarea>
+            </div>
+
+            <div>
+                <label class="admin-label">Source</label>
+                <input type="text" name="home_source"
+                       class="admin-input"
+                       value="{{ rows.get('home_source','') }}">
+            </div>
+        </div>
+
+        <hr style="border-color:#E5E7EB;margin:0">
+
+        <!-- À PROPOS -->
+        <div>
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:14px;font-size:14px">
+                Page À propos
+            </h6>
+            <label class="admin-label">Contenu</label>
+            <textarea name="about_contenu" class="admin-input"
+                      rows="6" style="font-size:13px">{{ rows.get('about_contenu','') }}</textarea>
+        </div>
+
+        <hr style="border-color:#E5E7EB;margin:0">
+
+        <!-- RÉSEAUX SOCIAUX -->
+        <div>
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:14px;font-size:14px">
+                Réseaux sociaux
+            </h6>
+
+            <div class="mb-3">
+                <label class="admin-label">
+                    <svg viewBox="0 0 24 24" fill="#1877f2"
+                         style="width:14px;height:14px;
+                                vertical-align:middle;margin-right:4px">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Facebook
+                </label>
+                <input type="url" name="social_facebook"
+                       class="admin-input"
+                       placeholder="https://facebook.com/ilmys"
+                       value="{{ rows.get('social_facebook','') }}">
+            </div>
+
+            <div>
+                <label class="admin-label">
+                    <svg viewBox="0 0 24 24" fill="#000"
+                         style="width:14px;height:14px;
+                                vertical-align:middle;margin-right:4px">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    X (Twitter)
+                </label>
+                <input type="url" name="social_x"
+                       class="admin-input"
+                       placeholder="https://x.com/ilmys"
+                       value="{{ rows.get('social_x','') }}">
+            </div>
+        </div>
+
+        <div>
+            <button type="submit"
+                    style="background:#00213f;color:#fff;
+                           padding:10px 28px;border-radius:8px;
+                           font-size:13px;font-weight:600;
+                           border:none;cursor:pointer">
+                Sauvegarder les modifications
+            </button>
+        </div>
+
+    </div>
+    </form>
+</div>
+{% endblock %}

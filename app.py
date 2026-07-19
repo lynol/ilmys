@@ -94,6 +94,49 @@ def generer_slug(titre):
     slug = re.sub(r'[\s]+', '-', slug).strip('-')
     return slug
 
+# ─── UTILITAIRE CONFIG ───
+def get_config(cle, default=''):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute(
+            "SELECT valeur FROM ilmys_config WHERE cle=%s", (cle,)
+        )
+        row = cur.fetchone()
+        cur.close()
+        return row[0] if row else default
+    except:
+        return default
+
+def set_config(cle, valeur):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            INSERT INTO ilmys_config (cle, valeur)
+            VALUES (%s, %s)
+            ON DUPLICATE KEY UPDATE valeur=%s
+        """, (cle, valeur, valeur))
+        mysql.connection.commit()
+        cur.close()
+        return True
+    except:
+        return False
+
+
+@app.context_processor
+def inject_config():
+    return {
+        'config': {
+            'social_facebook': get_config('social_facebook', ''),
+            'social_x'       : get_config('social_x', ''),
+            'bandeau_textes' : get_config('bandeau_textes', '').split('|'),
+            'home_chiffre'   : get_config('home_chiffre', '41,5%'),
+            'home_titre'     : get_config('home_titre', ''),
+            'home_texte'     : get_config('home_texte', ''),
+            'home_source'    : get_config('home_source', ''),
+            'about_contenu'  : get_config('about_contenu', ''),
+        }
+    }
+
 
 @app.route('/')
 def index():
@@ -172,17 +215,22 @@ def index():
 
     # Fact du jour — statique pour l'instant
     fact = {
-        'chiffre': '41.5%',
-        'texte'  : 'C\'est le taux de réussite national au BAC 2025 '
-                'en Côte d\'Ivoire. Derrière cette moyenne, '
-                '20 régions sur 33 sont sous ce seuil — '
-                'et un écart de 28 points sépare Abidjan (52.7%) '
-                'du Bafing (24.7%).',
-        'source' : 'Source : Dataivoire — BAC 2025  ·  '
-                'Données vérifiées  ·  Hors candidats libres'
+        'chiffre': get_config('home_chiffre', '41,5%'),
+        'texte'  : get_config('home_titre', '') + ' ' + get_config('home_texte', ''),
+        'source' : get_config('home_source', ''),
     }
 
     stats = {'analyses': nb_analyses}
+
+    config = {
+        'bandeau_textes' : get_config('bandeau_textes', '').split('|'),
+        'home_chiffre'   : get_config('home_chiffre', '41,5%'),
+        'home_titre'     : get_config('home_titre', ''),
+        'home_texte'     : get_config('home_texte', ''),
+        'home_source'    : get_config('home_source', ''),
+        'social_facebook': get_config('social_facebook', ''),
+        'social_x'       : get_config('social_x', ''),
+    }
 
     return render_template('index.html',
         derniere_analyse  = derniere_analyse,
@@ -579,7 +627,13 @@ def donnees_telecharger(id):
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    config = {
+        'about_contenu'  : get_config('about_contenu', ''),
+        'social_facebook': get_config('social_facebook', ''),
+        'social_x'       : get_config('social_x', ''),
+    }
+    return render_template('about.html', config=config)
+
 
 @app.route('/collaborer', methods=['GET', 'POST'])
 def collaborer():
@@ -1510,6 +1564,31 @@ def admin_message_supprimer(id):
     return redirect(url_for('admin_messages'))
 
 
+# ─── ADMIN CONFIG ───
+@app.route('/admin/config', methods=['GET', 'POST'])
+@login_required
+def admin_config():
+    if request.method == 'POST':
+        champs = [
+            'bandeau_textes', 'home_chiffre', 'home_titre',
+            'home_texte', 'home_source', 'about_contenu',
+            'social_facebook', 'social_x'
+        ]
+        for c in champs:
+            val = request.form.get(c, '').strip()
+            set_config(c, val)
+        flash('Configuration mise à jour.', 'success')
+
+    rows = {}
+    champs = [
+        'bandeau_textes', 'home_chiffre', 'home_titre',
+        'home_texte', 'home_source', 'about_contenu',
+        'social_facebook', 'social_x'
+    ]
+    for c in champs:
+        rows[c] = get_config(c, '')
+
+    return render_template('admin/config.html', rows=rows)
 
 
 if __name__ == '__main__':

@@ -16,9 +16,16 @@
                     Sourcé.
                 </p>
                 <div class="footer-socials">
-                    <a href="#" class="footer-social-link">LinkedIn</a>
-                    <a href="#" class="footer-social-link">Twitter/X</a>
-                    <a href="#" class="footer-social-link">GitHub</a>
+                    {% if site_config.social_facebook %}
+                    <a href="{{ site_config.social_facebook }}"
+                    target="_blank" rel="noopener"
+                    class="footer-social-link">Facebook</a>
+                    {% endif %}
+                    {% if site_config.social_x %}
+                    <a href="{{ site_config.social_x }}"
+                    target="_blank" rel="noopener"
+                    class="footer-social-link">X</a>
+                    {% endif %}
                 </div>
             </div>
 
