@@ -122,6 +122,15 @@
                 Dashboard KPI
             </a>
 
+            <a href="{{ url_for('admin_ticker') }}"
+                class="sidebar-link {% if request.endpoint == 'admin_ticker' %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    Ticker
+            </a>
+
             <div class="sidebar-section-label">Interactions</div>
 
             <a href="{{ url_for('admin_messages') }}"

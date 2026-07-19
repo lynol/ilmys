@@ -1,0 +1,177 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Ticker — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+    <h4 class="admin-page-title mb-4">Bandeau défilant</h4>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-success py-2 px-3 mb-3"
+             style="font-size:13px">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- AJOUTER UNE ACTU -->
+    <div class="admin-card p-4 mb-4">
+        <h6 style="color:#00213f;font-weight:700;margin-bottom:16px">
+            Ajouter une actualité
+        </h6>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="admin-label">Texte</label>
+                    <input type="text" name="texte"
+                           class="admin-input"
+                           placeholder="Ex: BEPC 2026 — 52,17% de réussite"
+                           required>
+                </div>
+                <div class="col-md-4">
+                    <label class="admin-label">Lien</label>
+                    <input type="text" name="url"
+                           class="admin-input"
+                           placeholder="/analyses/bepc-2026"
+                           value="/">
+                </div>
+                <div class="col-md-2">
+                    <label class="admin-label">Ordre</label>
+                    <input type="number" name="ordre"
+                           class="admin-input"
+                           value="0" min="0">
+                </div>
+            </div>
+            <button type="submit"
+                    style="margin-top:14px;background:#00213f;
+                           color:#fff;padding:8px 20px;
+                           border-radius:8px;font-size:13px;
+                           font-weight:600;border:none;cursor:pointer">
+                + Ajouter
+            </button>
+        </form>
+    </div>
+
+    <!-- LISTE DES ACTUS -->
+    <div class="tbl-card">
+        <div style="padding:14px 20px;border-bottom:1px solid #E5E7EB;
+                    display:flex;justify-content:space-between;
+                    align-items:center">
+            <h3 style="font-size:14px;font-weight:700;color:#111827">
+                Actualités du bandeau
+            </h3>
+            <span style="font-size:11px;padding:2px 8px;
+                         border-radius:20px;background:#e6faf8;
+                         color:#00776a;font-weight:600">
+                {{ news|length }} actu(s)
+            </span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead>
+                <tr>
+                    <th style="background:#f1f5f9;color:#00213f;
+                               font-weight:700;padding:10px 16px;
+                               text-align:left;border-bottom:2px solid #E5E7EB">
+                        Ordre
+                    </th>
+                    <th style="background:#f1f5f9;color:#00213f;
+                               font-weight:700;padding:10px 16px;
+                               text-align:left;border-bottom:2px solid #E5E7EB">
+                        Texte
+                    </th>
+                    <th style="background:#f1f5f9;color:#00213f;
+                               font-weight:700;padding:10px 16px;
+                               text-align:left;border-bottom:2px solid #E5E7EB">
+                        Lien
+                    </th>
+                    <th style="background:#f1f5f9;color:#00213f;
+                               font-weight:700;padding:10px 16px;
+                               text-align:left;border-bottom:2px solid #E5E7EB">
+                        Statut
+                    </th>
+                    <th style="background:#f1f5f9;color:#00213f;
+                               font-weight:700;padding:10px 16px;
+                               text-align:left;border-bottom:2px solid #E5E7EB">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in news %}
+                <tr style="{% if not n[3] %}opacity:0.5{% endif %}">
+                    <td style="padding:10px 16px;
+                               border-bottom:1px solid #E5E7EB">
+                        {{ n[4] }}
+                    </td>
+                    <td style="padding:10px 16px;
+                               border-bottom:1px solid #E5E7EB;
+                               max-width:300px">
+                        <!-- Édition inline -->
+                        <form method="POST" style="display:flex;gap:6px">
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="id" value="{{ n[0] }}">
+                            <input type="text" name="texte"
+                                   value="{{ n[1] }}"
+                                   style="flex:1;font-size:12px;
+                                          padding:4px 8px;
+                                          border:1px solid #E5E7EB;
+                                          border-radius:6px">
+                            <input type="text" name="url"
+                                   value="{{ n[2] }}"
+                                   style="width:160px;font-size:12px;
+                                          padding:4px 8px;
+                                          border:1px solid #E5E7EB;
+                                          border-radius:6px">
+                            <button type="submit"
+                                    style="background:#00213f;color:#fff;
+                                           border:none;border-radius:6px;
+                                           padding:4px 10px;font-size:11px;
+                                           cursor:pointer">
+                                ✓
+                            </button>
+                        </form>
+                    </td>
+                    <td style="padding:10px 16px;
+                               border-bottom:1px solid #E5E7EB;
+                               font-size:11px;color:#6B7280">
+                        {{ n[2] }}
+                    </td>
+                    <td style="padding:10px 16px;
+                               border-bottom:1px solid #E5E7EB">
+                        <form method="POST">
+                            <input type="hidden" name="action" value="toggle">
+                            <input type="hidden" name="id" value="{{ n[0] }}">
+                            <button type="submit"
+                                    style="border:none;cursor:pointer;
+                                           padding:3px 10px;border-radius:20px;
+                                           font-size:11px;font-weight:600;
+                                           background:{% if n[3] %}#e6faf8{% else %}#fee2e2{% endif %};
+                                           color:{% if n[3] %}#00776a{% else %}#991b1b{% endif %}">
+                                {% if n[3] %}Actif{% else %}Inactif{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td style="padding:10px 16px;
+                               border-bottom:1px solid #E5E7EB">
+                        <form method="POST"
+                              onsubmit="return confirm('Supprimer ?')">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="{{ n[0] }}">
+                            <button type="submit"
+                                    style="background:#fee2e2;color:#991b1b;
+                                           border:none;border-radius:6px;
+                                           padding:4px 10px;font-size:11px;
+                                           cursor:pointer">
+                                Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

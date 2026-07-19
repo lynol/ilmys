@@ -47,9 +47,19 @@ TICKER_NEWS = [
 
 @app.context_processor
 def inject_breaking():
-    return {
-        'ticker_news': TICKER_NEWS
-    }
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT texte, url FROM ticker_news
+            WHERE actif = 1
+            ORDER BY ordre ASC
+        """)
+        rows = cur.fetchall()
+        cur.close()
+        ticker = [{"texte": r[0], "url": r[1]} for r in rows]
+    except:
+        ticker = []
+    return {'ticker_news': ticker}
 
 # ─── UPLOADS ───
 UPLOAD_FOLDER    = os.path.join(
@@ -1138,6 +1148,63 @@ def admin_dashboard():
         derniers_messages = derniers_messages
     )
 
+@app.route('/admin/ticker', methods=['GET', 'POST'])
+@login_required
+def admin_ticker():
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            texte = request.form.get('texte', '').strip()
+            url   = request.form.get('url', '/').strip()
+            ordre = request.form.get('ordre', 0)
+            if texte:
+                cur.execute("""
+                    INSERT INTO ticker_news (texte, url, ordre)
+                    VALUES (%s, %s, %s)
+                """, (texte, url, ordre))
+                mysql.connection.commit()
+                flash('Actu ajoutée.', 'success')
+
+        elif action == 'toggle':
+            news_id = request.form.get('id')
+            cur.execute("""
+                UPDATE ticker_news
+                SET actif = 1 - actif
+                WHERE id = %s
+            """, (news_id,))
+            mysql.connection.commit()
+
+        elif action == 'delete':
+            news_id = request.form.get('id')
+            cur.execute(
+                "DELETE FROM ticker_news WHERE id=%s", (news_id,)
+            )
+            mysql.connection.commit()
+            flash('Actu supprimée.', 'success')
+
+        elif action == 'edit':
+            news_id = request.form.get('id')
+            texte   = request.form.get('texte', '').strip()
+            url     = request.form.get('url', '/').strip()
+            cur.execute("""
+                UPDATE ticker_news
+                SET texte=%s, url=%s
+                WHERE id=%s
+            """, (texte, url, news_id))
+            mysql.connection.commit()
+            flash('Actu mise à jour.', 'success')
+
+    cur.execute("""
+        SELECT id, texte, url, actif, ordre
+        FROM ticker_news
+        ORDER BY ordre ASC
+    """)
+    news = cur.fetchall()
+    cur.close()
+    return render_template('admin/ticker.html', news=news)
 
 # ════════════════════════════════════
 # ADMIN — ANALYSES
