@@ -5,14 +5,17 @@ from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
-import re
-import time
-import os
 import pandas as pd
 
 from flask_mail import Mail, Message
 import secrets
 from datetime import datetime, timedelta
+from collections import Counter
+
+import re
+import time
+import os
+
 
 load_dotenv()
 
@@ -1657,6 +1660,129 @@ def admin_config():
 
     return render_template('admin/config.html', rows=rows)
 
+
+@app.route('/admin/stats')
+@login_required
+def admin_stats():
+    log_path = '/var/log/apache2/domains/ilmys.com.log'
+    
+    # ─── PARSER LES LOGS ───
+    pattern = re.compile(
+        r'(\d+\.\d+\.\d+\.\d+) - - \[(.+?)\] '
+        r'"(\w+) (.+?) HTTP.+?" (\d+) (\d+)'
+        r'(?:\s+"(.+?)")?' 
+        r'(?:\s+"(.+?)")?'
+    )
+    
+    visits       = []
+    pages_count  = Counter()
+    ip_count     = Counter()
+    status_count = Counter()
+    jour_count   = Counter()
+    heure_count  = Counter()
+
+    try:
+        with open(log_path, 'r') as f:
+            for line in f:
+                m = pattern.match(line)
+                if not m:
+                    continue
+                ip, date_str, method, path, status, size = (
+                    m.group(1), m.group(2), m.group(3),
+                    m.group(4), m.group(5), m.group(6)
+                )
+
+                # Ignorer les assets statiques et admin
+                if any(x in path for x in [
+                    '/static/', '/admin', '/favicon',
+                    '.css', '.js', '.png', '.jpg',
+                    '.ico', '.woff'
+                ]):
+                    continue
+
+                # Parser la date
+                try:
+                    dt = datetime.strptime(
+                        date_str[:20], '%d/%b/%Y:%H:%M:%S'
+                    )
+                except:
+                    continue
+
+                visits.append({
+                    'ip'    : ip,
+                    'date'  : dt,
+                    'path'  : path,
+                    'status': status,
+                    'size'  : int(size) if size else 0
+                })
+
+                pages_count[path]          += 1
+                ip_count[ip]               += 1
+                status_count[status]       += 1
+                jour_count[dt.strftime('%d/%m')] += 1
+                heure_count[dt.hour]       += 1
+
+    except Exception as e:
+        visits = []
+
+    # ─── KPI ───
+    now       = datetime.now()
+    today     = now.date()
+    yesterday = today - timedelta(days=1)
+    week_ago  = today - timedelta(days=7)
+
+    visits_today = [
+        v for v in visits if v['date'].date() == today
+    ]
+    visits_yesterday = [
+        v for v in visits if v['date'].date() == yesterday
+    ]
+    visits_week = [
+        v for v in visits if v['date'].date() >= week_ago
+    ]
+
+    # Pages uniques par jour (approximation visiteurs)
+    ips_today = len(set(v['ip'] for v in visits_today))
+    ips_week  = len(set(v['ip'] for v in visits_week))
+
+    # Top 10 pages
+    top_pages = pages_count.most_common(10)
+
+    # Top IPs (visiteurs fréquents)
+    top_ips = ip_count.most_common(5)
+
+    # Évolution par jour (7 derniers jours)
+    evolution = []
+    for i in range(6, -1, -1):
+        d = today - timedelta(days=i)
+        nb = sum(
+            1 for v in visits
+            if v['date'].date() == d
+        )
+        evolution.append({
+            'date': d.strftime('%d/%m'),
+            'nb'  : nb
+        })
+
+    # Heures de pointe
+    heures = [
+        {'heure': f"{h}h", 'nb': heure_count.get(h, 0)}
+        for h in range(24)
+    ]
+
+    return render_template('admin/stats.html',
+        total_visites   = len(visits),
+        visites_today   = len(visits_today),
+        visites_hier    = len(visits_yesterday),
+        visites_semaine = len(visits_week),
+        ips_today       = ips_today,
+        ips_week        = ips_week,
+        top_pages       = top_pages,
+        top_ips         = top_ips,
+        evolution       = evolution,
+        heures          = heures,
+        status_count    = dict(status_count),
+    )
 
 if __name__ == '__main__':
     app.run(debug=False)

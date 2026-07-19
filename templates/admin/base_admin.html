@@ -141,6 +141,15 @@
                     Configuration
             </a>
 
+            <a href="{{ url_for('admin_stats') }}"
+                class="sidebar-link {% if request.endpoint == 'admin_stats' %}active{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path d="M18 20V10M12 20V4M6 20v-6"/>
+                    </svg>
+                    Statistiques
+            </a>
+
             <div class="sidebar-section-label">Interactions</div>
 
             <a href="{{ url_for('admin_messages') }}"

@@ -1,0 +1,196 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Statistiques — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+    <h4 class="admin-page-title mb-4">Statistiques de trafic</h4>
+
+    <!-- KPI -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+                gap:14px;margin-bottom:24px">
+
+        <div class="admin-card p-3 text-center">
+            <div style="font-size:28px;font-weight:800;color:#00213f">
+                {{ visites_today }}
+            </div>
+            <div style="font-size:12px;color:#6B7280;margin-top:4px">
+                Visites aujourd'hui
+            </div>
+            <div style="font-size:11px;color:#00d2b2;margin-top:2px">
+                {{ ips_today }} IP uniques
+            </div>
+        </div>
+
+        <div class="admin-card p-3 text-center">
+            <div style="font-size:28px;font-weight:800;color:#00213f">
+                {{ visites_hier }}
+            </div>
+            <div style="font-size:12px;color:#6B7280;margin-top:4px">
+                Visites hier
+            </div>
+        </div>
+
+        <div class="admin-card p-3 text-center">
+            <div style="font-size:28px;font-weight:800;color:#00213f">
+                {{ visites_semaine }}
+            </div>
+            <div style="font-size:12px;color:#6B7280;margin-top:4px">
+                Visites cette semaine
+            </div>
+            <div style="font-size:11px;color:#00d2b2;margin-top:2px">
+                {{ ips_week }} IP uniques
+            </div>
+        </div>
+
+        <div class="admin-card p-3 text-center">
+            <div style="font-size:28px;font-weight:800;color:#00213f">
+                {{ total_visites }}
+            </div>
+            <div style="font-size:12px;color:#6B7280;margin-top:4px">
+                Total dans les logs
+            </div>
+        </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;
+                gap:16px;margin-bottom:20px">
+
+        <!-- ÉVOLUTION 7 JOURS -->
+        <div class="admin-card p-4">
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:16px;font-size:14px">
+                Évolution — 7 derniers jours
+            </h6>
+            <div style="display:flex;align-items:flex-end;
+                        gap:6px;height:120px">
+                {% set max_nb = evolution|map(attribute='nb')|max %}
+                {% for e in evolution %}
+                <div style="flex:1;display:flex;
+                            flex-direction:column;align-items:center;
+                            gap:4px">
+                    <div style="font-size:10px;color:#6B7280">
+                        {{ e.nb }}
+                    </div>
+                    <div style="width:100%;
+                                height:{{ (e.nb / (max_nb + 1) * 90)|int }}px;
+                                background:{% if loop.last %}#00d2b2{% else %}#00213f{% endif %};
+                                border-radius:4px 4px 0 0;
+                                min-height:4px">
+                    </div>
+                    <div style="font-size:9px;color:#6B7280">
+                        {{ e.date }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- HEURES DE POINTE -->
+        <div class="admin-card p-4">
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:16px;font-size:14px">
+                Heures de pointe
+            </h6>
+            <div style="display:flex;align-items:flex-end;
+                        gap:2px;height:120px">
+                {% set max_h = heures|map(attribute='nb')|max %}
+                {% for h in heures %}
+                <div style="flex:1;display:flex;
+                            flex-direction:column;align-items:center">
+                    <div style="width:100%;
+                                height:{{ (h.nb / (max_h + 1) * 100)|int }}px;
+                                background:#00213f;
+                                border-radius:2px 2px 0 0;
+                                min-height:{% if h.nb > 0 %}3px{% else %}0{% endif %}">
+                    </div>
+                    {% if loop.index0 % 6 == 0 %}
+                    <div style="font-size:8px;color:#6B7280;
+                                margin-top:2px">
+                        {{ h.heure }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;
+                gap:16px;margin-bottom:20px">
+
+        <!-- TOP PAGES -->
+        <div class="admin-card p-4">
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:16px;font-size:14px">
+                Pages les plus visitées
+            </h6>
+            <table style="width:100%;font-size:12px;
+                          border-collapse:collapse">
+                {% for page, nb in top_pages %}
+                <tr>
+                    <td style="padding:6px 0;color:#2d3748;
+                               border-bottom:1px solid #f1f5f9;
+                               max-width:200px;overflow:hidden;
+                               text-overflow:ellipsis;
+                               white-space:nowrap">
+                        {{ page }}
+                    </td>
+                    <td style="padding:6px 0;text-align:right;
+                               border-bottom:1px solid #f1f5f9;
+                               color:#00213f;font-weight:700;
+                               width:50px">
+                        {{ nb }}
+                    </td>
+                    <td style="padding:6px 0 6px 10px;
+                               border-bottom:1px solid #f1f5f9;
+                               width:80px">
+                        {% set max_p = top_pages[0][1] %}
+                        <div style="background:#f1f5f9;
+                                    border-radius:4px;height:6px">
+                            <div style="background:#00d2b2;
+                                        height:100%;border-radius:4px;
+                                        width:{{ (nb/max_p*100)|int }}%">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- STATUTS HTTP -->
+        <div class="admin-card p-4">
+            <h6 style="color:#00213f;font-weight:700;
+                       margin-bottom:16px;font-size:14px">
+                Codes HTTP
+            </h6>
+            {% for status, nb in status_count.items()|sort %}
+            <div style="display:flex;justify-content:space-between;
+                        align-items:center;padding:6px 0;
+                        border-bottom:1px solid #f1f5f9;
+                        font-size:12px">
+                <span style="color:{% if status == '200' %}#00776a
+                             {% elif status == '404' %}#991b1b
+                             {% else %}#92400e{% endif %};
+                             font-weight:700">
+                    {{ status }}
+                </span>
+                <span style="color:#2d3748">{{ nb }} requêtes</span>
+            </div>
+            {% endfor %}
+
+            <div style="margin-top:16px;padding:10px;
+                        background:#f8fafc;border-radius:8px;
+                        font-size:11px;color:#6B7280;
+                        border-left:3px solid #00d2b2">
+                Les logs n'incluent pas les fichiers statiques
+                (CSS, JS, images) — uniquement les pages.
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
