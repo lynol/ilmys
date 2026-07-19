@@ -117,31 +117,27 @@ def sitemap():
 
 @app.route('/llms.txt')
 def llms():
-    content = """# ILMYS — Données · Analyses · Afrique
-# https://ilmys.com
-
+    content = """# ILMYS
 > ILMYS est une plateforme indépendante d'analyses de données publiques africaines.
+> URL: https://ilmys.com
 
-## Pages principales
+## Docs
 
-- /analyses : Toutes les analyses publiées
-- /donnees : Données téléchargeables
-- /about : À propos d'ILMYS
-- /dashboard : Tableau de bord des indicateurs CI
+- [Analyses](https://ilmys.com/analyses): Toutes les analyses publiées
+- [Données](https://ilmys.com/donnees): Données téléchargeables
+- [À propos](https://ilmys.com/about): À propos d'ILMYS
+- [Dashboard](https://ilmys.com/dashboard): Tableau de bord CI
 
-## Analyses disponibles
+## Articles récents
 
-- Budget 2025 Côte d'Ivoire
-- Législatives 2025 Côte d'Ivoire
-- BAC 2025 Côte d'Ivoire
-- VBG en Côte d'Ivoire 2025
-- Démographie RGPH 2021
-
-## Contact
-
-contact@ilmys.com
+- [Budget 2025 CI](https://ilmys.com/analyses/decryptage-du-budget-2025-de-la-cote-d-ivoire)
+- [Législatives 2025](https://ilmys.com/analyses/legislatives-2025-en-cote-d-ivoire-ce-que-les-donnees-revelent-sur-le-vote-et-la-representation)
+- [BAC 2025](https://ilmys.com/analyses/bac-2025-en-cote-d-ivoire-ce-que-les-donnees-revelent-sur-les-inegalites-educatives)
+- [VBG 2025](https://ilmys.com/analyses/vbg-en-cote-d-ivoire-ce-que-les-chiffres-de-2025-revelent)
+- [RGPH 2021](https://ilmys.com/analyses/la-cote-d-ivoire-de-29-4-millions-d-habitants-ce-que-le-rgph-2021-revele-sur-notre-territoire)
 """
     return app.response_class(content, mimetype='text/plain')
+
 
 limiter = Limiter(
     app=app,
