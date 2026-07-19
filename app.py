@@ -78,10 +78,10 @@ def sitemap():
     try:
         cur = mysql.connection.cursor()
         cur.execute("""
-            SELECT slug, updated_at
+            SELECT slug, date_publication
             FROM analyses
             WHERE actif = 1
-            ORDER BY updated_at DESC
+            ORDER BY date_publication DESC
         """)
         analyses = cur.fetchall()
         cur.close()
@@ -99,9 +99,9 @@ def sitemap():
         xml.append(f'    <priority>{page["priority"]}</priority>')
         xml.append('  </url>')
 
-    for slug, updated_at in analyses:
+    for slug, date_publication in analyses:
         url = f'/analyses/{slug}'
-        date = updated_at.strftime('%Y-%m-%d') if updated_at else '2025-01-01'
+        date = date_publication.strftime('%Y-%m-%d') if date_publication else '2025-01-01'
         xml.append('  <url>')
         xml.append(f'    <loc>https://ilmys.com{url}</loc>')
         xml.append(f'    <lastmod>{date}</lastmod>')
