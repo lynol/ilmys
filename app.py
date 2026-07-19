@@ -1,6 +1,9 @@
-from flask import (Flask, render_template, request, redirect, url_for, flash, session, jsonify)
+from flask import (Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response)
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -39,14 +42,85 @@ app.config['MAIL_DEFAULT_SENDER'] = ('ILMYS', os.getenv('MAIL_USERNAME'))
 
 mail = Mail(app)
 
-# ─── BREAKING NEWS ─── 
-# None pour désactiver
-# ─── TICKER ACTUALITÉS ───
-TICKER_NEWS = [
-    {"texte": "Lancement des épreuves du CEPE 2026 en Côte d'Ivoire", "url": "/"},
-    {"texte": "Budget 2026 de la CI décrypté — 17 350 Mds FCFA", "url": "/analyses/budget-2025-cote-divoire"},
-    {"texte": "Législatives 2025 — RHDP remporte 196 sièges sur 255", "url": "/analyses/legislatives-2025"},
-]
+@app.route('/robots.txt')
+def robots():
+    content = """User-agent: *
+Allow: /
+Allow: /analyses
+Allow: /donnees
+Allow: /about
+Allow: /dashboard
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://ilmys.com/sitemap.xml
+"""
+    return app.response_class(
+        content,
+        mimetype='text/plain'
+    )
+
+
+@app.route('/sitemap.xml')
+def sitemap():
+    # ─── Pages statiques ───
+    pages_statiques = [
+        {'url': '/',          'priority': '1.0', 'changefreq': 'daily'},
+        {'url': '/analyses',  'priority': '0.9', 'changefreq': 'weekly'},
+        {'url': '/donnees',   'priority': '0.8', 'changefreq': 'weekly'},
+        {'url': '/about',     'priority': '0.7', 'changefreq': 'monthly'},
+        {'url': '/dashboard', 'priority': '0.8', 'changefreq': 'weekly'},
+    ]
+
+    # ─── Pages analyses dynamiques ───
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT slug, updated_at
+            FROM analyses
+            WHERE actif = 1
+            ORDER BY updated_at DESC
+        """)
+        analyses = cur.fetchall()
+        cur.close()
+    except:
+        analyses = []
+
+    # ─── Générer le XML ───
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+    for page in pages_statiques:
+        xml.append('  <url>')
+        xml.append(f'    <loc>https://ilmys.com{page["url"]}</loc>')
+        xml.append(f'    <changefreq>{page["changefreq"]}</changefreq>')
+        xml.append(f'    <priority>{page["priority"]}</priority>')
+        xml.append('  </url>')
+
+    for slug, updated_at in analyses:
+        url = f'/analyses/{slug}'
+        date = updated_at.strftime('%Y-%m-%d') if updated_at else '2025-01-01'
+        xml.append('  <url>')
+        xml.append(f'    <loc>https://ilmys.com{url}</loc>')
+        xml.append(f'    <lastmod>{date}</lastmod>')
+        xml.append(f'    <changefreq>monthly</changefreq>')
+        xml.append(f'    <priority>0.8</priority>')
+        xml.append('  </url>')
+
+    xml.append('</urlset>')
+
+    response = make_response('\n'.join(xml))
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 @app.context_processor
 def inject_breaking():
@@ -696,7 +770,6 @@ def server_error(e):
     return render_template('500.html'), 500
 
 
-
 # ─── UPLOADS ───
 UPLOAD_FOLDER    = os.path.join(
     os.path.dirname(__file__), 'static', 'uploads'
@@ -833,6 +906,7 @@ def login_required(f):
 # ════════════════════════════════════
 
 @app.route('/admin/login', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
 def admin_login():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -1696,7 +1770,10 @@ def admin_stats():
                 if any(x in path for x in [
                     '/static/', '/admin', '/favicon',
                     '.css', '.js', '.png', '.jpg',
-                    '.ico', '.woff'
+                    '.ico', '.woff', '/robots.txt',
+                    '/sitemap.xml', '/wp-admin',
+                    '/wp-login', '/.env', '/phpmyadmin',
+                    '/.git', '/xmlrpc.php'
                 ]):
                     continue
 
