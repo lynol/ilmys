@@ -123,9 +123,9 @@ def set_config(cle, valeur):
 
 
 @app.context_processor
-def inject_config():
+def inject_site_config():
     return {
-        'config': {
+        'site_config': {
             'social_facebook': get_config('social_facebook', ''),
             'social_x'       : get_config('social_x', ''),
             'bandeau_textes' : get_config('bandeau_textes', '').split('|'),
