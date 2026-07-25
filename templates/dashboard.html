@@ -833,50 +833,42 @@ fetch('/api/dashboard')
 
 <script>
     // ─── DONNÉES ÉDUCATION ───
-const educData = {
-    bac: {
-        national: {2024: 34.17, 2025: 40.15, 2026: 40.60},
-        admis:    {2024: null,  2025: 133518, 2026: 122360},
-        presents: {2024: null,  2025: 332515, 2026: 301364},
-        genre: {
-            2025: {filles: null,  garcons: null,
-                   filles_n: 68883, garcons_n: 64635},
-            2026: {filles: 42.24, garcons: 38.90,
-                   filles_n: 64853, garcons_n: 57507}
+// ─── CHARGER DONNÉES ÉDUCATION DEPUIS API ───
+let educData = {};
+
+fetch('/api/education')
+    .then(r => r.json())
+    .then(data => {
+        // Restructurer pour correspondre au format attendu
+        educData = {};
+        for (const [examen, annees] of Object.entries(data)) {
+            const key = examen.toLowerCase();
+            educData[key] = { national: {}, admis: {}, presents: {},
+                              genre: {} };
+            for (const [annee, indicateurs] of Object.entries(annees)) {
+                const a = parseInt(annee);
+                if (indicateurs.taux_national)
+                    educData[key].national[a] = indicateurs.taux_national;
+                if (indicateurs.admis)
+                    educData[key].admis[a]    = indicateurs.admis;
+                if (indicateurs.presents)
+                    educData[key].presents[a] = indicateurs.presents;
+
+                // Genre
+                if (indicateurs.taux_filles || indicateurs.filles_admis) {
+                    educData[key].genre[a] = {
+                        filles   : indicateurs.taux_filles   || null,
+                        garcons  : indicateurs.taux_garcons  || null,
+                        filles_n : indicateurs.filles_admis  || null,
+                        garcons_n: indicateurs.garcons_admis || null,
+                    };
+                }
+            }
         }
-    },
-    bepc: {
-        national: {
-            2013:40.22, 2014:57.43, 2015:58.62,
-            2016:59.11, 2017:60.08, 2018:60.14,
-            2019:57.31, 2020:53.17, 2021:41.27,
-            2022:28.89, 2023:31.47, 2024:40.18,
-            2025:51.41, 2026:52.17
-        },
-        admis:    {2025: 312041, 2026: 306001},
-        presents: {2025: 606041, 2026: 586587},
-        genre: {
-            2025: {filles: 160967/306041*100,
-                   garcons: 151074/300000*100,
-                   filles_n: 160967, garcons_n: 151074},
-            2026: {filles: 51.96, garcons: 52.39,
-                   filles_n: 161268, garcons_n: 144733}
-        }
-    },
-    cepe: {
-        national: {2024: 83.46, 2025: 86.58, 2026: 85.76},
-        admis:    {2025: 498963, 2026: 512106},
-        presents: {2025: 576285, 2026: 597171},
-        genre: {
-            2025: {filles: 249838/298135*100,
-                   garcons: 249125/299036*100,
-                   filles_n: 249838, garcons_n: 249125},
-            2026: {filles: 257976/298135*100,
-                   garcons: 254130/299036*100,
-                   filles_n: 257976, garcons_n: 254130}
-        }
-    }
-};
+        // Initialiser l'onglet éducation si actif
+        updateEduc();
+    })
+    .catch(err => console.error('Education API error:', err));
 
 function updateEduc() {
     const exam  = document.getElementById('educExam').value;

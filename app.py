@@ -518,6 +518,30 @@ def api_dashboard():
     from flask import jsonify
     return jsonify(data)
 
+@app.route('/api/education')
+def api_education():
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT examen, annee, indicateur, valeur
+            FROM education_stats
+            ORDER BY examen, annee, indicateur
+        """)
+        rows = cur.fetchall()
+        cur.close()
+
+        # Structurer les données
+        data = {}
+        for examen, annee, indicateur, valeur in rows:
+            if examen not in data:
+                data[examen] = {}
+            if annee not in data[examen]:
+                data[examen][annee] = {}
+            data[examen][annee][indicateur] = float(valeur) if valeur else None
+
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/analyses')
 def analyses():
@@ -1672,6 +1696,47 @@ def admin_donnee_supprimer(id):
         flash('Erreur.', 'error')
     return redirect(url_for('admin_donnees'))
 
+
+### Dashboard/Education
+@app.route('/admin/education', methods=['GET', 'POST'])
+@login_required
+def admin_education():
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            examen     = request.form.get('examen').strip().upper()
+            annee      = int(request.form.get('annee'))
+            indicateur = request.form.get('indicateur').strip()
+            valeur     = float(request.form.get('valeur'))
+            cur.execute("""
+                INSERT INTO education_stats
+                    (examen, annee, indicateur, valeur)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE valeur=%s
+            """, (examen, annee, indicateur, valeur, valeur))
+            mysql.connection.commit()
+            flash('Donnée ajoutée.', 'success')
+
+        elif action == 'delete':
+            stat_id = request.form.get('id')
+            cur.execute(
+                "DELETE FROM education_stats WHERE id=%s",
+                (stat_id,)
+            )
+            mysql.connection.commit()
+            flash('Donnée supprimée.', 'success')
+
+    cur.execute("""
+        SELECT id, examen, annee, indicateur, valeur
+        FROM education_stats
+        ORDER BY examen, annee, indicateur
+    """)
+    stats = cur.fetchall()
+    cur.close()
+    return render_template('admin/education.html', stats=stats)
 
 # ════════════════════════════════════
 # ADMIN - MESSAGES
