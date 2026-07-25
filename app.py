@@ -247,6 +247,12 @@ def inject_site_config():
         }
     }
 
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(
+        url_for('static',
+                filename='assets/ilmys_favicon.png')
+    )
 
 @app.route('/')
 def index():
@@ -323,7 +329,7 @@ def index():
                                   'environnement']}
         nb_analyses = 0
 
-    # Fact du jour — statique pour l'instant
+    # Fact du jour - statique pour l'instant
     fact = {
         'chiffre': get_config('home_chiffre', '41,5%'),
         'texte'  : get_config('home_titre', '') + ' ' + get_config('home_texte', ''),
@@ -706,6 +712,7 @@ def donnees():
     )
 
 
+
 @app.route('/donnees/telecharger/<int:id>')
 def donnees_telecharger(id):
     try:
@@ -925,7 +932,7 @@ def login_required(f):
 
 
 # ════════════════════════════════════
-# ADMIN — AUTH
+# ADMIN - AUTH
 # ════════════════════════════════════
 
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -1088,7 +1095,7 @@ def admin_reset_request():
             reset_url = url_for('admin_reset_password',
                                 token=token, _external=True)
             msg = Message(
-                subject = 'Réinitialisation de mot de passe — ILMYS',
+                subject = 'Réinitialisation de mot de passe - ILMYS',
                 recipients = [email]
             )
             msg.html = f"""
@@ -1097,7 +1104,7 @@ def admin_reset_request():
                 <h2 style="color:#16A34A">ILMYS</h2>
                 <p>Bonjour {user[1]},</p>
                 <p>Vous avez demandé une réinitialisation de mot de passe.</p>
-                <p>Cliquez sur le bouton ci-dessous — 
+                <p>Cliquez sur le bouton ci-dessous - 
                    ce lien expire dans <strong>1 heure</strong>.</p>
                 <a href="{reset_url}"
                    style="display:inline-block;background:#16A34A;
@@ -1185,7 +1192,7 @@ def admin_logout():
 
 
 # ════════════════════════════════════
-# ADMIN — DASHBOARD
+# ADMIN - DASHBOARD
 # ════════════════════════════════════
 
 @app.route('/admin')
@@ -1307,7 +1314,7 @@ def admin_ticker():
     return render_template('admin/ticker.html', news=news)
 
 # ════════════════════════════════════
-# ADMIN — ANALYSES
+# ADMIN - ANALYSES
 # ════════════════════════════════════
 
 @app.route('/admin/analyses')
@@ -1406,7 +1413,7 @@ def admin_analyse_ajouter():
 
         except Exception as e:
             print(f"Erreur ajout analyse : {e}")
-            flash('Erreur — le titre existe peut-être déjà.', 'error')
+            flash('Erreur - le titre existe peut-être déjà.', 'error')
     return render_template('admin/analyse_form.html', analyse=analyses, action='ajouter')
 
 
@@ -1570,7 +1577,7 @@ def admin_analyse_toggle(id):
 
 
 # ════════════════════════════════════
-# ADMIN — DONNÉES
+# ADMIN - DONNÉES
 # ════════════════════════════════════
 
 @app.route('/admin/donnees')
@@ -1667,7 +1674,7 @@ def admin_donnee_supprimer(id):
 
 
 # ════════════════════════════════════
-# ADMIN — MESSAGES
+# ADMIN - MESSAGES
 # ════════════════════════════════════
 
 @app.route('/admin/messages')

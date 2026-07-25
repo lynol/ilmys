@@ -1,5 +1,5 @@
 {% extends 'admin/base_admin.html' %}
-{% block title %}Données — Admin ILMYS{% endblock %}
+{% block title %}Données - Admin ILMYS{% endblock %}
 {% block page_title %}Gestion des données{% endblock %}
 
 {% block header_action %}
@@ -48,7 +48,7 @@
                         {{ d[2]|capitalize }}
                     </span>
                 </td>
-                <td class="table-date">{{ d[3] or '—' }}</td>
+                <td class="table-date">{{ d[3] or '-' }}</td>
                 <td class="table-date">{{ d[6] }}</td>
                 <td>
                     {% if d[5] %}

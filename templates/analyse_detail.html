@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ analyse[1] }} — ILMYS{% endblock %}
+{% block title %}{{ analyse[1] }} - ILMYS{% endblock %}
 
 {% block meta_description %}{{ analyse[4][:160] if analyse[4] else analyse[1] }}{% endblock %}
 
 {% block og_type %}article{% endblock %}
-{% block og_title %}{{ analyse[1] }} — ILMYS{% endblock %}
+{% block og_title %}{{ analyse[1] }} - ILMYS{% endblock %}
 {% block og_description %}{{ analyse[4][:200] if analyse[4] else analyse[1] }}{% endblock %}
 {% block og_image %}{% if analyse[10] %}{{ request.host_url[:-1] }}{{ analyse[10] }}{% else %}{{ request.host_url }}static/assets/og-default.png{% endif %}{% endblock %}
 
-{% block twitter_title %}{{ analyse[1] }} — ILMYS{% endblock %}
+{% block twitter_title %}{{ analyse[1] }} - ILMYS{% endblock %}
 {% block twitter_description %}{{ analyse[4][:200] if analyse[4] else analyse[1] }}{% endblock %}
 {% block twitter_image %}{% if analyse[10] %}{{ request.host_url[:-1] }}{{ analyse[10] }}{% else %}{{ request.host_url }}static/assets/og-default.png{% endif %}{% endblock %}
 
@@ -172,7 +172,7 @@
                             Utiliser cette analyse ?
                         </div>
                         <p class="sidebar-card-text">
-                            Médias, institutions — vous pouvez 
+                            Médias, institutions - vous pouvez 
                             utiliser nos visualisations avec 
                             mention de la source ILMYS.
                         </p>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard — ILMYS{% endblock %}
+{% block title %}Dashboard - ILMYS{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:960px;margin:40px auto;padding:0 20px">
@@ -54,7 +54,7 @@
         </button>
     </div>
 
-    <!-- CONTENU — colle ici tout le HTML des sections -->
+    <!-- CONTENU - colle ici tout le HTML des sections -->
     <div id="dash-content">
 
         <!-- VUE GÉNÉRALE -->
@@ -133,7 +133,7 @@
                 </div>
 
                 <div class="dash-card">
-                    <div class="dash-card-title">BAC 2025 — top & flop régions</div>
+                    <div class="dash-card-title">BAC 2025 - top & flop régions</div>
                     <div class="dash-card-sub">Taux de réussite · Source : Dataivoire</div>
                     <div style="position:relative;width:100%;height:200px">
                         <canvas id="cVueBAC" role="img" aria-label="BAC 2025 par région">
@@ -148,7 +148,7 @@
             <div class="tbl-card" style="background:#fff;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem">
                 <div style="padding:12px 16px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
                     <h3 style="font-size:13px;font-weight:500;color:var(--noir)">
-                        Assemblée Nationale 2025 — résultats définitifs
+                        Assemblée Nationale 2025 - résultats définitifs
                     </h3>
                     <span style="font-size:10px;padding:2px 8px;border-radius:20px;background:#00213f;color:#00d2b2">
                         255 sièges · CEI
@@ -324,7 +324,118 @@
 
         <!-- ÉDUCATION -->
         <div id="tab-education" class="dash-section">
-            <!-- ... contenu éducation ... -->
+
+            <div class="filter-bar">
+                <label>Examen :</label>
+                <select id="educExam" onchange="updateEduc()">
+                    <option value="all">Tous les examens</option>
+                    <option value="bac">BAC</option>
+                    <option value="bepc">BEPC</option>
+                    <option value="cepe">CEPE</option>
+                </select>
+                <label style="margin-left:8px">Année :</label>
+                <select id="educAnnee" onchange="updateEduc()">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                </select>
+            </div>
+
+            <!-- KPI 3 EXAMENS -->
+            <div class="dash-kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+
+                <div class="dash-kpi vert">
+                    <div class="dash-kpi-stripe" style="background:#00213f"></div>
+                    <i class="ti ti-certificate kpi-icon" style="color:#00213f"></i>
+                    <div class="kpi-val" id="kpi-bac-taux">40,6%</div>
+                    <div class="kpi-label">BAC <span id="kpi-bac-annee">2026</span></div>
+                    <div class="kpi-sub" style="color:#00213f">
+                        <span id="kpi-bac-sub">122 360 reçus sur 301 364</span>
+                    </div>
+                </div>
+
+                <div class="dash-kpi vert">
+                    <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
+                    <i class="ti ti-school kpi-icon" style="color:#00d2b2"></i>
+                    <div class="kpi-val" id="kpi-bepc-taux">52,17%</div>
+                    <div class="kpi-label">BEPC <span id="kpi-bepc-annee">2026</span></div>
+                    <div class="kpi-sub" style="color:#00d2b2">
+                        <span id="kpi-bepc-sub">306 001 reçus sur 586 587</span>
+                    </div>
+                </div>
+
+                <div class="dash-kpi vert">
+                    <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
+                    <i class="ti ti-star kpi-icon" style="color:#f59e0b"></i>
+                    <div class="kpi-val" id="kpi-cepe-taux">85,76%</div>
+                    <div class="kpi-label">CEPE <span id="kpi-cepe-annee">2026</span></div>
+                    <div class="kpi-sub" style="color:#f59e0b">
+                        <span id="kpi-cepe-sub">512 106 reçus sur 597 171</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- GRAPHIQUES -->
+            <div class="dash-grid2">
+
+                <div class="dash-card">
+                    <div class="dash-card-title">Évolution des taux de réussite</div>
+                    <div class="dash-card-sub" id="educ-evo-sub">
+                        BAC · BEPC · CEPE — toutes années disponibles
+                    </div>
+                    <div style="position:relative;width:100%;height:280px">
+                        <canvas id="cEducEvo"></canvas>
+                    </div>
+                    <div style="display:flex;gap:14px;margin-top:10px;
+                                font-size:12px;flex-wrap:wrap">
+                        <span style="display:flex;align-items:center;gap:5px">
+                            <span style="width:20px;height:3px;background:#00213f;
+                                        display:inline-block;border-radius:2px"></span>
+                            BAC
+                        </span>
+                        <span style="display:flex;align-items:center;gap:5px">
+                            <span style="width:20px;height:3px;background:#00d2b2;
+                                        display:inline-block;border-radius:2px"></span>
+                            BEPC
+                        </span>
+                        <span style="display:flex;align-items:center;gap:5px">
+                            <span style="width:20px;height:3px;background:#f59e0b;
+                                        display:inline-block;border-radius:2px"></span>
+                            CEPE
+                        </span>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <div class="dash-card-title">Réussite par genre</div>
+                    <div class="dash-card-sub">
+                        Filles vs Garçons · 2025–2026
+                    </div>
+                    <div style="position:relative;width:100%;height:280px">
+                        <canvas id="cEducGenre"></canvas>
+                    </div>
+                    <div style="margin-top:10px;padding:10px;
+                                background:#f9fafb;border-radius:8px;
+                                font-size:11px;color:var(--muted)">
+                        ⚠️ BAC 2025 : taux par sexe non disponibles (admis uniquement).
+                        CEPE : calculé sur présents par sexe.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- BAC TOP/FLOP RÉGIONS -->
+            <div class="dash-card" id="educ-region-card">
+                <div class="dash-card-title">BAC 2025 — Top & Flop régions</div>
+                <div class="dash-card-sub">
+                    Taux de réussite par région · Source : Dataivoire
+                </div>
+                <div style="position:relative;width:100%;height:240px">
+                    <canvas id="cEducReg"></canvas>
+                </div>
+            </div>
+
         </div>
 
         <!-- GOUVERNANCE -->
@@ -337,7 +448,7 @@
             <div class="dash-soon">
                 <i class="ti ti-heart" style="font-size:32px;color:#00d2b2;
                    display:block;margin-bottom:8px"></i>
-                <strong>Données Santé — à venir</strong><br>
+                <strong>Données Santé - à venir</strong><br>
                 Indicateurs WHO · Mortalité · Paludisme · VIH · CMU
             </div>
         </div>
@@ -347,7 +458,7 @@
             <div class="dash-soon">
                 <i class="ti ti-plant" style="font-size:32px;color:#00d2b2;
                    display:block;margin-bottom:8px"></i>
-                <strong>Données Agriculture — à venir</strong><br>
+                <strong>Données Agriculture - à venir</strong><br>
                 Production cacao · Café · Cultures vivrières
             </div>
         </div>
@@ -479,6 +590,13 @@ function showTab(id, btn) {
     document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
+
+    // Init graphiques selon onglet
+    setTimeout(() => {
+        if (id === 'vue')       initVue();
+        if (id === 'education') updateEduc();
+        if (id === 'finances')  updateFin();
+    }, 50);
 }
 
 const C = {
@@ -711,5 +829,276 @@ fetch('/api/dashboard')
         }
     })
     .catch(err => console.error('Dashboard API error:', err));
+</script>
+
+<script>
+    // ─── DONNÉES ÉDUCATION ───
+const educData = {
+    bac: {
+        national: {2024: 34.17, 2025: 40.15, 2026: 40.60},
+        admis:    {2024: null,  2025: 133518, 2026: 122360},
+        presents: {2024: null,  2025: 332515, 2026: 301364},
+        genre: {
+            2025: {filles: null,  garcons: null,
+                   filles_n: 68883, garcons_n: 64635},
+            2026: {filles: 42.24, garcons: 38.90,
+                   filles_n: 64853, garcons_n: 57507}
+        }
+    },
+    bepc: {
+        national: {
+            2013:40.22, 2014:57.43, 2015:58.62,
+            2016:59.11, 2017:60.08, 2018:60.14,
+            2019:57.31, 2020:53.17, 2021:41.27,
+            2022:28.89, 2023:31.47, 2024:40.18,
+            2025:51.41, 2026:52.17
+        },
+        admis:    {2025: 312041, 2026: 306001},
+        presents: {2025: 606041, 2026: 586587},
+        genre: {
+            2025: {filles: 160967/306041*100,
+                   garcons: 151074/300000*100,
+                   filles_n: 160967, garcons_n: 151074},
+            2026: {filles: 51.96, garcons: 52.39,
+                   filles_n: 161268, garcons_n: 144733}
+        }
+    },
+    cepe: {
+        national: {2024: 83.46, 2025: 86.58, 2026: 85.76},
+        admis:    {2025: 498963, 2026: 512106},
+        presents: {2025: 576285, 2026: 597171},
+        genre: {
+            2025: {filles: 249838/298135*100,
+                   garcons: 249125/299036*100,
+                   filles_n: 249838, garcons_n: 249125},
+            2026: {filles: 257976/298135*100,
+                   garcons: 254130/299036*100,
+                   filles_n: 257976, garcons_n: 254130}
+        }
+    }
+};
+
+function updateEduc() {
+    const exam  = document.getElementById('educExam').value;
+    const annee = parseInt(document.getElementById('educAnnee').value);
+
+    // ─── KPI ───
+    const bacN  = educData.bac.national[annee]  || '—';
+    const bepcN = educData.bepc.national[annee] || '—';
+    const cepeN = educData.cepe.national[annee] || '—';
+
+    document.getElementById('kpi-bac-taux').textContent =
+        bacN !== '—' ? bacN.toFixed(2) + '%' : '—';
+    document.getElementById('kpi-bepc-taux').textContent =
+        bepcN !== '—' ? bepcN.toFixed(2) + '%' : '—';
+    document.getElementById('kpi-cepe-taux').textContent =
+        cepeN !== '—' ? cepeN.toFixed(2) + '%' : '—';
+
+    document.getElementById('kpi-bac-annee').textContent  = annee;
+    document.getElementById('kpi-bepc-annee').textContent = annee;
+    document.getElementById('kpi-cepe-annee').textContent = annee;
+
+    // Sous-titres admis/présents
+    const bacA  = educData.bac.admis[annee];
+    const bacP  = educData.bac.presents[annee];
+    const bepcA = educData.bepc.admis[annee];
+    const bepcP = educData.bepc.presents[annee];
+    const cepeA = educData.cepe.admis[annee];
+    const cepeP = educData.cepe.presents[annee];
+
+    document.getElementById('kpi-bac-sub').textContent =
+        bacA ? bacA.toLocaleString('fr-FR') +
+               ' reçus sur ' + bacP.toLocaleString('fr-FR') : '—';
+    document.getElementById('kpi-bepc-sub').textContent =
+        bepcA ? bepcA.toLocaleString('fr-FR') +
+                ' reçus sur ' + bepcP.toLocaleString('fr-FR') : '—';
+    document.getElementById('kpi-cepe-sub').textContent =
+        cepeA ? cepeA.toLocaleString('fr-FR') +
+                ' reçus sur ' + cepeP.toLocaleString('fr-FR') : '—';
+
+    initEducCharts(exam, annee);
+}
+
+function initEducCharts(exam, annee) {
+    // ─── GRAPHIQUE ÉVOLUTION ───
+    const gc = 'rgba(0,0,0,0.06)';
+    const tc = '#4a5568';
+
+    // BEPC — série longue
+    const bepcAnnees = Object.keys(educData.bepc.national).map(Number);
+    const bepcVals   = bepcAnnees.map(
+        a => educData.bepc.national[a]
+    );
+
+    // BAC — série courte
+    const bacAnnees = Object.keys(educData.bac.national).map(Number);
+    const bacVals   = bacAnnees.map(a => educData.bac.national[a]);
+
+    // CEPE — série courte
+    const cepeAnnees = Object.keys(educData.cepe.national).map(Number);
+    const cepeVals   = cepeAnnees.map(a => educData.cepe.national[a]);
+
+    // Toutes les années
+    const allAnnees = [...new Set([
+        ...bepcAnnees, ...bacAnnees, ...cepeAnnees
+    ])].sort();
+
+    const datasets = [];
+
+    if (exam === 'all' || exam === 'bac') {
+        datasets.push({
+            label: 'BAC',
+            data: allAnnees.map(a =>
+                educData.bac.national[a] || null
+            ),
+            borderColor: '#00213f',
+            backgroundColor: 'rgba(0,33,63,0.08)',
+            fill: false,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: '#00213f',
+            borderWidth: 2,
+            spanGaps: false
+        });
+    }
+
+    if (exam === 'all' || exam === 'bepc') {
+        datasets.push({
+            label: 'BEPC',
+            data: allAnnees.map(a =>
+                educData.bepc.national[a] || null
+            ),
+            borderColor: '#00d2b2',
+            backgroundColor: 'rgba(0,210,178,0.08)',
+            fill: false,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: '#00d2b2',
+            borderWidth: 2,
+            spanGaps: false
+        });
+    }
+
+    if (exam === 'all' || exam === 'cepe') {
+        datasets.push({
+            label: 'CEPE',
+            data: allAnnees.map(a =>
+                educData.cepe.national[a] || null
+            ),
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245,158,11,0.08)',
+            fill: false,
+            tension: 0.3,
+            pointRadius: 5,
+            pointBackgroundColor: '#f59e0b',
+            borderWidth: 2,
+            spanGaps: false
+        });
+    }
+
+    if (charts['cEducEvo']) charts['cEducEvo'].destroy();
+    const ctx1 = document.getElementById('cEducEvo');
+    if (ctx1) {
+        charts['cEducEvo'] = new Chart(ctx1, {
+            type: 'line',
+            data: { labels: allAnnees, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true, position: 'top',
+                        labels: { font: { size: 11 }, color: tc,
+                                  boxWidth: 20 }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: gc },
+                         ticks: { color: tc, font: { size: 10 },
+                                  maxRotation: 45 } },
+                    y: { grid: { color: gc },
+                         ticks: { color: tc, font: { size: 10 },
+                                  callback: v => v + '%' },
+                         min: 0, max: 100 }
+                }
+            }
+        });
+    }
+
+    // ─── GRAPHIQUE GENRE ───
+    const examens  = exam === 'all'
+        ? ['BAC', 'BEPC', 'CEPE']
+        : [exam.toUpperCase()];
+    const anneeG   = annee in educData.bac.genre ? annee : 2026;
+    const labelsG  = [];
+    const fillsG   = [];
+    const garcsG   = [];
+    const colsF    = [];
+    const colsG    = [];
+
+    examens.forEach(e => {
+        const key  = e.toLowerCase();
+        const data = educData[key].genre[anneeG];
+        if (!data) return;
+
+        if (data.filles !== null && data.garcons !== null) {
+            labelsG.push(e + ' ' + anneeG);
+            fillsG.push(parseFloat(data.filles.toFixed(1)));
+            garcsG.push(parseFloat(data.garcons.toFixed(1)));
+            colsF.push('#00d2b2');
+            colsG.push('#00213f');
+        } else {
+            labelsG.push(e + ' ' + anneeG + ' *');
+            fillsG.push(null);
+            garcsG.push(null);
+        }
+    });
+
+    if (charts['cEducGenre']) charts['cEducGenre'].destroy();
+    const ctx2 = document.getElementById('cEducGenre');
+    if (ctx2 && labelsG.length > 0) {
+        charts['cEducGenre'] = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: labelsG,
+                datasets: [
+                    {
+                        label: 'Filles',
+                        data: fillsG,
+                        backgroundColor: '#00d2b2',
+                        borderRadius: 4,
+                        borderSkipped: false
+                    },
+                    {
+                        label: 'Garçons',
+                        data: garcsG,
+                        backgroundColor: '#00213f',
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true, position: 'top',
+                        labels: { font: { size: 11 }, color: tc,
+                                  boxWidth: 12 }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false },
+                         ticks: { color: tc, font: { size: 11 } } },
+                    y: { grid: { color: gc },
+                         ticks: { color: tc, font: { size: 10 },
+                                  callback: v => v + '%' },
+                         min: 0, max: 100 }
+                }
+            }
+        });
+    }
+}
 </script>
 {% endblock %}
