@@ -1720,6 +1720,16 @@ def admin_education():
             mysql.connection.commit()
             flash('Donnée ajoutée.', 'success')
 
+        elif action == 'edit':
+            stat_id = request.form.get('id')
+            valeur  = float(request.form.get('valeur'))
+            cur.execute("""
+                UPDATE education_stats
+                SET valeur=%s WHERE id=%s
+            """, (valeur, stat_id))
+            mysql.connection.commit()
+            flash('Donnée mise à jour.', 'success')
+
         elif action == 'delete':
             stat_id = request.form.get('id')
             cur.execute(
