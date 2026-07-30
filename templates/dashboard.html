@@ -779,12 +779,12 @@ function updateFin() {
         kpi.budget_total
             ? kpi.budget_total.toLocaleString('fr-FR') : '—';
     document.getElementById('fin-dette').textContent =
-        kpi.dette_total
-            ? kpi.dette_total.toLocaleString('fr-FR') : '—';
+        kpi.service_dette
+            ? kpi.service_dette.toLocaleString('fr-FR') : '—';
     document.getElementById('fin-dette-sub').textContent =
-        kpi.dette_total && kpi.budget_total
-            ? (kpi.dette_total/kpi.budget_total*100).toFixed(1) +
-              '% du budget' : '—';
+        kpi.service_dette && kpi.budget_total
+            ? (kpi.service_dette/kpi.budget_total*100).toFixed(1) +
+            '% du budget' : '—';
     document.getElementById('fin-sante').textContent =
         kpi.budget_sante || '—';
     document.getElementById('fin-educ').textContent =
