@@ -729,10 +729,20 @@ setTimeout(() => {
 }, 100);
 
 // Filtres
-const finData = {
-    2025:{ total:'15 339', dette:'5 636', detteS:'36,7% du budget', sante:'470', educ:'287' },
-    2026:{ total:'17 350', dette:'1 199', detteS:'-78,7% vs 2025', sante:'471', educ:'311' }
-};
+    // ─── CHARGER DONNÉES FINANCES DEPUIS API ───
+let finData = {};
+
+fetch('/api/finances')
+    .then(r => r.json())
+    .then(data => {
+        finData = data;
+        // Si l'onglet finances est actif initialiser
+        if (document.getElementById('tab-finances')
+                    .classList.contains('active')) {
+            updateFin();
+        }
+    })
+    .catch(err => console.error('Finances API error:', err));
 
 const finMin = {
     2025:{ vals:[973,468,442,470,437,329,216,287] },
@@ -754,14 +764,131 @@ function updateVue() {
 function updateFin() {
     const y = document.getElementById('finYear').value;
     const d = finData[y];
-    document.getElementById('fin-total').textContent = d.total;
-    document.getElementById('fin-dette').textContent = d.dette;
-    document.getElementById('fin-dette-sub').textContent = d.detteS;
-    document.getElementById('fin-sante').textContent = d.sante;
-    document.getElementById('fin-educ').textContent = d.educ;
-    if(charts['cFinMin']){
-        charts['cFinMin'].data.datasets[0].data = finMin[y].vals;
-        charts['cFinMin'].update();
+    if (!d) return;
+
+    const kpi = d.kpi || {};
+    const min = d.ministeres || {};
+    const rec = d.recettes || {};
+    const det = d.dette || {};
+
+    // KPI
+    document.getElementById('fin-total').textContent =
+        kpi.budget_total
+            ? kpi.budget_total.toLocaleString('fr-FR') : '—';
+    document.getElementById('fin-dette').textContent =
+        kpi.dette_total
+            ? kpi.dette_total.toLocaleString('fr-FR') : '—';
+    document.getElementById('fin-dette-sub').textContent =
+        kpi.dette_total && kpi.budget_total
+            ? (kpi.dette_total/kpi.budget_total*100).toFixed(1) +
+              '% du budget' : '—';
+    document.getElementById('fin-sante').textContent =
+        kpi.budget_sante || '—';
+    document.getElementById('fin-educ').textContent =
+        kpi.budget_education || '—';
+
+    // Top ministères
+    const minLabels = [
+        'Finances','Intérieur','Défense','Santé',
+        'Équip.','Ens.Sup','Mines','Éduc.'
+    ];
+    const minVals = [
+        min.min_finances, min.min_interieur, min.min_defense,
+        min.min_sante, min.min_equipement, min.min_ensup,
+        min.min_mines, min.min_education
+    ].map(v => v || 0);
+
+    if (charts['cFinMin']) charts['cFinMin'].destroy();
+    const ctx1 = document.getElementById('cFinMin');
+    if (ctx1) {
+        charts['cFinMin'] = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: minLabels,
+                datasets: [{
+                    data: minVals,
+                    backgroundColor: '#00213f',
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(0,0,0,0.06)' },
+                         ticks: { color: '#4a5568',
+                                  font: { size: 10 } } },
+                    y: { grid: { display: false },
+                         ticks: { color: '#4a5568',
+                                  font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    // Recettes fiscales
+    const recVals = [
+        rec.fisc_revenus, rec.fisc_importations,
+        rec.fisc_tva, rec.fisc_exportations, rec.fisc_autres
+    ].map(v => v || 0);
+
+    if (charts['cFinFisc']) charts['cFinFisc'].destroy();
+    const ctx2 = document.getElementById('cFinFisc');
+    if (ctx2) {
+        charts['cFinFisc'] = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Revenus','Importations','TVA',
+                         'Exportations','Autres'],
+                datasets: [{
+                    data: recVals,
+                    backgroundColor: [
+                        '#00213f','#00d2b2','#f59e0b',
+                        '#ef4444','#8b5cf6'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                cutout: '58%',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    // Dette
+    const detVals = [
+        det.dette_interieure || 0,
+        det.dette_exterieure || 0
+    ];
+
+    if (charts['cFinDette']) charts['cFinDette'].destroy();
+    const ctx3 = document.getElementById('cFinDette');
+    if (ctx3) {
+        charts['cFinDette'] = new Chart(ctx3, {
+            type: 'doughnut',
+            data: {
+                labels: ['Intérieure','Extérieure'],
+                datasets: [{
+                    data: detVals,
+                    backgroundColor: ['#00213f','#ef4444'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                cutout: '60%',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
     }
 }
 
@@ -1092,4 +1219,5 @@ function initEducCharts(exam, annee) {
     }
 }
 </script>
+
 {% endblock %}

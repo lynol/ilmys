@@ -543,6 +543,35 @@ def api_education():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/finances')
+def api_finances():
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            SELECT annee, indicateur, valeur, categorie
+            FROM finances_stats
+            ORDER BY annee, categorie, indicateur
+        """)
+        rows = cur.fetchall()
+        cur.close()
+
+        data = {}
+        for annee, indicateur, valeur, categorie in rows:
+            if annee not in data:
+                data[annee] = {}
+            if categorie not in data[annee]:
+                data[annee][categorie] = {}
+            data[annee][categorie][indicateur] = float(valeur) if valeur else 0
+
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
+
+
+
 @app.route('/analyses')
 def analyses():
     theme = request.args.get('theme', 'tous')
