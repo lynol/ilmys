@@ -7,7 +7,7 @@
     <!-- HEADER -->
     <div style="display:flex;align-items:center;justify-content:space-between;
                 padding-bottom:1rem;border-bottom:1px solid var(--d-border);
-                margin-bottom:1.5rem;flex-wrap:wrap;gap:12px">
+                margin-bottom:1.5rem;gap:12px">
         <div style="display:flex;align-items:center;gap:10px">
             <div style="width:40px;height:40px;background:#00213f;border-radius:8px;
                         display:flex;align-items:center;justify-content:center;
@@ -16,7 +16,7 @@
             </div>
             <div>
                 <h1 style="font-size:18px;font-weight:500;
-                           color:var(--d-noir);margin:0">
+                        color:var(--d-noir);margin:0">
                     Dashboard Côte d'Ivoire
                 </h1>
                 <p style="font-size:11px;color:var(--d-muted);margin:0">
@@ -24,15 +24,16 @@
                 </p>
             </div>
         </div>
-        <span style="font-size:11px;padding:4px 12px;border-radius:20px;
-                     background:#00213f;color:#00d2b2;letter-spacing:0.5px">
-            ilmys.com
-        </span>
-
-        <button class="theme-toggle" onclick="toggleTheme()"
-                id="themeBtn" title="Mode sombre/clair">
-            <i class="ti ti-moon"></i>
-        </button>
+        <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;padding:4px 12px;border-radius:20px;
+                        background:#00213f;color:#00d2b2;letter-spacing:0.5px">
+                ilmys.com
+            </span>
+            <button class="theme-toggle" onclick="toggleTheme()"
+                    id="themeBtn" title="Mode sombre/clair">
+                <i class="ti ti-moon"></i>
+            </button>
+        </div>
     </div>
 
     <!-- ONGLETS -->
