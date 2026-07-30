@@ -157,7 +157,7 @@
                             display:flex;justify-content:space-between;align-items:center;
                             background:var(--d-card)">
                     <h3 style="font-size:14px;font-weight:700;color:var(--d-noir);margin:0">
-                        Assemblée Nationale 2025 — résultats définitifs
+                        Assemblée Nationale 2025 - résultats définitifs
                     </h3>
                     <span style="font-size:11px;padding:3px 10px;border-radius:20px;
                                 background:#00213f;color:#00d2b2;font-weight:600">
@@ -452,7 +452,7 @@
                 <div class="dash-card">
                     <div class="dash-card-title">Évolution des taux de réussite</div>
                     <div class="dash-card-sub" id="educ-evo-sub">
-                        BAC · BEPC · CEPE — toutes années disponibles
+                        BAC · BEPC · CEPE - toutes années disponibles
                     </div>
                     <div style="position:relative;width:100%;height:280px">
                         <canvas id="cEducEvo"></canvas>
@@ -497,7 +497,7 @@
 
             <!-- BAC TOP/FLOP RÉGIONS -->
             <div class="dash-card" id="educ-region-card">
-                <div class="dash-card-title">BAC 2025 — Top & Flop régions</div>
+                <div class="dash-card-title">BAC 2025 - Top & Flop régions</div>
                 <div class="dash-card-sub">
                     Taux de réussite par région · Source : Dataivoire
                 </div>
@@ -618,7 +618,7 @@
                             display:flex;justify-content:space-between;
                             align-items:center;background:#f9fafb">
                     <h3 style="font-size:14px;font-weight:600;color:var(--d-noir)">
-                        Résultats définitifs — Assemblée Nationale 2025
+                        Résultats définitifs - Assemblée Nationale 2025
                     </h3>
                     <span style="font-size:10px;padding:2px 8px;
                                 border-radius:20px;background:#00213f;
@@ -713,7 +713,7 @@
                 Données issues des résultats officiels de la CEI.
                 Source : <a href="/analyses/legislatives-2025-en-cote-d-ivoire-ce-que-les-donnees-revelent-sur-le-vote-et-la-representation"
                             style="color:#00d2b2;text-decoration:none">
-                    Analyse ILMYS — Législatives 2025
+                    Analyse ILMYS - Législatives 2025
                 </a>
             </div>
         </div>
@@ -1362,18 +1362,18 @@ function updateFin() {
     // KPI
     document.getElementById('fin-total').textContent =
         kpi.budget_total
-            ? kpi.budget_total.toLocaleString('fr-FR') : '—';
+            ? kpi.budget_total.toLocaleString('fr-FR') : '-';
     document.getElementById('fin-dette').textContent =
         kpi.service_dette
-            ? kpi.service_dette.toLocaleString('fr-FR') : '—';
+            ? kpi.service_dette.toLocaleString('fr-FR') : '-';
     document.getElementById('fin-dette-sub').textContent =
         kpi.service_dette && kpi.budget_total
             ? (kpi.service_dette/kpi.budget_total*100).toFixed(1) +
-            '% du budget' : '—';
+            '% du budget' : '-';
     document.getElementById('fin-sante').textContent =
-        kpi.budget_sante || '—';
+        kpi.budget_sante || '-';
     document.getElementById('fin-educ').textContent =
-        kpi.budget_education || '—';
+        kpi.budget_education || '-';
 
     // Top ministères
     const minLabels = [
@@ -1589,16 +1589,16 @@ function updateEduc() {
     const annee = parseInt(document.getElementById('educAnnee').value);
 
     // ─── KPI ───
-    const bacN  = educData.bac.national[annee]  || '—';
-    const bepcN = educData.bepc.national[annee] || '—';
-    const cepeN = educData.cepe.national[annee] || '—';
+    const bacN  = educData.bac.national[annee]  || '-';
+    const bepcN = educData.bepc.national[annee] || '-';
+    const cepeN = educData.cepe.national[annee] || '-';
 
     document.getElementById('kpi-bac-taux').textContent =
-        bacN !== '—' ? bacN.toFixed(2) + '%' : '—';
+        bacN !== '-' ? bacN.toFixed(2) + '%' : '-';
     document.getElementById('kpi-bepc-taux').textContent =
-        bepcN !== '—' ? bepcN.toFixed(2) + '%' : '—';
+        bepcN !== '-' ? bepcN.toFixed(2) + '%' : '-';
     document.getElementById('kpi-cepe-taux').textContent =
-        cepeN !== '—' ? cepeN.toFixed(2) + '%' : '—';
+        cepeN !== '-' ? cepeN.toFixed(2) + '%' : '-';
 
     document.getElementById('kpi-bac-annee').textContent  = annee;
     document.getElementById('kpi-bepc-annee').textContent = annee;
@@ -1614,13 +1614,13 @@ function updateEduc() {
 
     document.getElementById('kpi-bac-sub').textContent =
         bacA ? bacA.toLocaleString('fr-FR') +
-               ' reçus sur ' + bacP.toLocaleString('fr-FR') : '—';
+               ' reçus sur ' + bacP.toLocaleString('fr-FR') : '-';
     document.getElementById('kpi-bepc-sub').textContent =
         bepcA ? bepcA.toLocaleString('fr-FR') +
-                ' reçus sur ' + bepcP.toLocaleString('fr-FR') : '—';
+                ' reçus sur ' + bepcP.toLocaleString('fr-FR') : '-';
     document.getElementById('kpi-cepe-sub').textContent =
         cepeA ? cepeA.toLocaleString('fr-FR') +
-                ' reçus sur ' + cepeP.toLocaleString('fr-FR') : '—';
+                ' reçus sur ' + cepeP.toLocaleString('fr-FR') : '-';
 
     initEducCharts(exam, annee);
 }
@@ -1630,17 +1630,17 @@ function initEducCharts(exam, annee) {
     const gc = 'rgba(0,0,0,0.06)';
     const tc = '#4a5568';
 
-    // BEPC — série longue
+    // BEPC - série longue
     const bepcAnnees = Object.keys(educData.bepc.national).map(Number);
     const bepcVals   = bepcAnnees.map(
         a => educData.bepc.national[a]
     );
 
-    // BAC — série courte
+    // BAC - série courte
     const bacAnnees = Object.keys(educData.bac.national).map(Number);
     const bacVals   = bacAnnees.map(a => educData.bac.national[a]);
 
-    // CEPE — série courte
+    // CEPE - série courte
     const cepeAnnees = Object.keys(educData.cepe.national).map(Number);
     const cepeVals   = cepeAnnees.map(a => educData.cepe.national[a]);
 
