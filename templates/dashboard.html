@@ -3,7 +3,7 @@
 {% block title %}Dashboard - ILMYS{% endblock %}
 
 {% block content %}
-<div style="max-width:100%;margin:0;padding:0 20px">
+<div class="dash-wrapper" id="dashWrapper">
     <!-- HEADER -->
     <div style="display:flex;align-items:center;justify-content:space-between;
                 padding-bottom:1rem;border-bottom:0.5px solid var(--border);
@@ -28,6 +28,11 @@
                      background:#00213f;color:#00d2b2;letter-spacing:0.5px">
             ilmys.com
         </span>
+
+        <button class="theme-toggle" onclick="toggleTheme()"
+                id="themeBtn" title="Mode sombre/clair">
+            <i class="ti ti-moon"></i>
+        </button>
     </div>
 
     <!-- ONGLETS -->
@@ -701,123 +706,297 @@
 
 <!-- CSS Dashboard -->
 <style>
+/* ─── VARIABLES ─── */
+:root {
+    --d-bleu    : #00213f;
+    --d-vert    : #00d2b2;
+    --d-rouge   : #ef4444;
+    --d-orange  : #f59e0b;
+    --d-gris    : #6B7280;
+    --d-bg      : #f0f4f8;
+    --d-card    : #ffffff;
+    --d-border  : #e2e8f0;
+    --d-noir    : #0f172a;
+    --d-texte   : #334155;
+    --d-muted   : #64748b;
+}
+
+[data-theme="dark"] {
+    --d-bg      : #0f172a;
+    --d-card    : #1e293b;
+    --d-border  : #334155;
+    --d-noir    : #f1f5f9;
+    --d-texte   : #cbd5e1;
+    --d-muted   : #94a3b8;
+}
+
+/* ─── BASE ─── */
+.dash-wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--d-bg);
+    min-height: 100vh;
+    color: var(--d-texte);
+    transition: background 0.2s, color 0.2s;
+    padding: 0;
+}
+
+/* ─── TABS ─── */
 .dash-tab {
-    padding: 9px 14px;
-    font-size: 12px;
-    color: var(--muted);
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--d-muted);
     cursor: pointer;
     border: none;
     background: none;
     border-bottom: 2.5px solid transparent;
-    margin-bottom: -0.5px;
+    margin-bottom: -1px;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     transition: color 0.15s;
-    font-family: sans-serif;
+    font-family: inherit;
 }
-.dash-tab:hover { color: var(--noir); }
-.dash-tab.active { color: #00213f; border-bottom-color: #00d2b2; font-weight: 500; }
+
+.dash-tab:hover { color: var(--d-noir); }
+
+.dash-tab.active {
+    color: var(--d-bleu);
+    border-bottom-color: var(--d-vert);
+    font-weight: 600;
+}
 
 .dash-section { display: none; }
 .dash-section.active { display: block; }
 
+/* ─── KPI GRID ─── */
 .dash-kpi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
 }
 
 .dash-kpi {
-    border-radius: 10px;
-    padding: 14px;
+    background: var(--d-card);
+    border-radius: 12px;
+    padding: 20px 18px;
     position: relative;
     overflow: hidden;
-    border: 0.5px solid var(--border);
-    background: #fff;
+    border: 1px solid var(--d-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s;
+}
+
+.dash-kpi:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .dash-kpi-stripe {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 10px 10px 0 0;
+    height: 4px;
+    border-radius: 12px 12px 0 0;
 }
 
+.kpi-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+    display: block;
+    opacity: 0.85;
+}
+
+.kpi-val {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--d-noir);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.kpi-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--d-muted);
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+.kpi-sub {
+    font-size: 11px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* ─── CARDS ─── */
 .dash-grid2 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 14px;
-    margin-bottom: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
 .dash-card {
-    background: #fff;
-    border: 0.5px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
+    background: var(--d-card);
+    border: 1px solid var(--d-border);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .dash-card-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--noir);
-    margin-bottom: 3px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--d-noir);
+    margin-bottom: 4px;
 }
 
 .dash-card-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 1rem;
+    font-size: 12px;
+    color: var(--d-muted);
+    margin-bottom: 18px;
 }
 
+/* ─── FILTER ─── */
 .dash-filter {
     display: flex;
-    gap: 10px;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
+    gap: 12px;
     align-items: center;
-    padding: 10px 14px;
-    background: #F9FAFB;
-    border-radius: 8px;
-    border: 0.5px solid var(--border);
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--d-card);
+    border-radius: 10px;
+    border: 1px solid var(--d-border);
 }
 
-.dash-filter label { font-size: 11px; color: var(--muted); }
-.dash-filter select { font-size: 12px; padding: 5px 10px; }
-
-.dash-soon {
+.dash-filter label {
     font-size: 12px;
-    color: var(--muted);
-    padding: 40px;
-    text-align: center;
-    background: #F9FAFB;
+    font-weight: 600;
+    color: var(--d-muted);
+}
+
+.dash-filter select {
+    font-size: 13px;
+    padding: 6px 10px;
+    border: 1px solid var(--d-border);
     border-radius: 8px;
-    border: 0.5px dashed var(--border);
+    background: var(--d-bg);
+    color: var(--d-noir);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* ─── SOON ─── */
+.dash-soon {
+    font-size: 13px;
+    color: var(--d-muted);
+    padding: 48px;
+    text-align: center;
+    background: var(--d-card);
+    border-radius: 12px;
+    border: 1px dashed var(--d-border);
     line-height: 1.8;
 }
 
+/* ─── NOTE ─── */
 .dash-note {
-    font-size: 11px;
-    color: var(--muted);
-    padding: 10px 14px;
-    background: #F9FAFB;
+    font-size: 12px;
+    color: var(--d-muted);
+    padding: 12px 16px;
+    background: var(--d-card);
     border-radius: 8px;
-    border-left: 3px solid #00d2b2;
-    margin-top: 1rem;
+    border-left: 3px solid var(--d-vert);
+    margin-top: 16px;
     line-height: 1.6;
 }
 
-.dash-pbar { background: #F3F4F6; border-radius: 4px; height: 8px; width: 100%; overflow: hidden; margin-top: 4px; }
-.dash-pfill { height: 100%; border-radius: 4px; }
+/* ─── TABLE ─── */
+.tbl-card {
+    background: var(--d-card);
+    border: 1px solid var(--d-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* ─── PBAR ─── */
+.dash-pbar {
+    background: #f1f5f9;
+    border-radius: 6px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.dash-pfill {
+    height: 100%;
+    border-radius: 6px;
+}
+
+/* ─── DARK MODE TOGGLE ─── */
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--d-border);
+    background: var(--d-card);
+    color: var(--d-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+    color: var(--d-noir);
+    border-color: var(--d-vert);
+}
+
+@media (max-width: 640px) {
+    .dash-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dash-grid2 {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 
 <!-- JS Dashboard -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <script>
+
+function toggleTheme() {
+    const w   = document.getElementById('dashWrapper');
+    const btn = document.getElementById('themeBtn');
+    const isDark = w.getAttribute('data-theme') === 'dark';
+    w.setAttribute('data-theme', isDark ? '' : 'dark');
+    btn.innerHTML = isDark
+        ? '<i class="ti ti-moon"></i>'
+        : '<i class="ti ti-sun"></i>';
+    localStorage.setItem('dashTheme', isDark ? 'light' : 'dark');
+}
+
+// Charger le thème sauvegardé
+(function() {
+    const saved = localStorage.getItem('dashTheme');
+    if (saved === 'dark') {
+        const w = document.getElementById('dashWrapper');
+        if (w) {
+            w.setAttribute('data-theme', 'dark');
+            const btn = document.getElementById('themeBtn');
+            if (btn) btn.innerHTML = '<i class="ti ti-sun"></i>';
+        }
+    }
+})();
+
 function showTab(id, btn) {
     document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
