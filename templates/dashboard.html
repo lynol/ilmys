@@ -6,7 +6,7 @@
 <div class="dash-wrapper" id="dashWrapper">
     <!-- HEADER -->
     <div style="display:flex;align-items:center;justify-content:space-between;
-                padding-bottom:1rem;border-bottom:0.5px solid var(--border);
+                padding-bottom:1rem;border-bottom:1px solid var(--d-border);
                 margin-bottom:1.5rem;flex-wrap:wrap;gap:12px">
         <div style="display:flex;align-items:center;gap:10px">
             <div style="width:40px;height:40px;background:#00213f;border-radius:8px;
@@ -16,10 +16,10 @@
             </div>
             <div>
                 <h1 style="font-size:18px;font-weight:500;
-                           color:var(--noir);margin:0">
+                           color:var(--d-noir);margin:0">
                     Dashboard Côte d'Ivoire
                 </h1>
-                <p style="font-size:11px;color:var(--muted);margin:0">
+                <p style="font-size:11px;color:var(--d-muted);margin:0">
                     Données publiques vérifiées · ILMYS
                 </p>
             </div>
@@ -37,7 +37,7 @@
 
     <!-- ONGLETS -->
     <div style="display:flex;gap:2px;margin-bottom:1.5rem;
-                border-bottom:0.5px solid var(--border);overflow-x:auto">
+                border-bottom:1px solid var(--d-border);overflow-x:auto">
         <button class="dash-tab active" onclick="showTab('vue',this)">
             <i class="ti ti-layout-dashboard"></i> Vue générale
         </button>
@@ -78,32 +78,32 @@
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
                     <i class="ti ti-users" style="font-size:22px;color:#00d2b2;margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)">29,4 M</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Population (RGPH 2021)</div>
+                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">29,4 M</div>
+                    <div style="font-size:11px;color:var(--d-muted);margin-top:3px">Population (RGPH 2021)</div>
                     <div style="font-size:10px;color:#00a88f;margin-top:5px">+2,6% / an</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00213f"></div>
                     <i class="ti ti-cash" style="font-size:22px;color:#00213f;margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)" id="kpi-budget">15 339</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:3px" id="vue-budget-lbl">Budget État 2025 (Mds FCFA)</div>
-                    <div style="font-size:10px;color:var(--muted);margin-top:5px" id="vue-budget-trend">sur 17 350 Mds en 2026</div>
+                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)" id="kpi-budget">15 339</div>
+                    <div style="font-size:11px;color:var(--d-muted);margin-top:3px" id="vue-budget-lbl">Budget État 2025 (Mds FCFA)</div>
+                    <div style="font-size:10px;color:var(--d-muted);margin-top:5px" id="vue-budget-trend">sur 17 350 Mds en 2026</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
                     <i class="ti ti-certificate" style="font-size:22px;color:#f59e0b;margin-bottom:8px;display:block"></i>
-                    <div id="kpi-bac-taux" style="font-size:20px;font-weight:500;color:var(--noir)">41,5%</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Réussite BAC 2025</div>
+                    <div id="kpi-bac-taux" style="font-size:20px;font-weight:500;color:var(--d-noir)">41,5%</div>
+                    <div style="font-size:11px;color:var(--d-muted);margin-top:3px">Réussite BAC 2025</div>
                     <div id="kpi-bac-etab" style="font-size:10px;color:#92400e;margin-top:5px">2 088 établissements</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#ef4444"></div>
                     <i class="ti ti-vote" style="font-size:22px;color:#ef4444;margin-bottom:8px;display:block"></i>
-                    <div id="kpi-elect-part" style="font-size:20px;font-weight:500;color:var(--noir)">35,1%</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:3px">Participation législatives 2025</div>
+                    <div id="kpi-elect-part" style="font-size:20px;font-weight:500;color:var(--d-noir)">35,1%</div>
+                    <div style="font-size:11px;color:var(--d-muted);margin-top:3px">Participation législatives 2025</div>
                     <div id="kpi-elect-inscrits" style="font-size:10px;color:#991b1b;margin-top:5px">8,6M inscrits · 255 sièges</div>
                 </div>
 
@@ -120,7 +120,7 @@
                             Ministères, dettes, CST, institutions
                         </canvas>
                     </div>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--muted)">
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--d-muted)">
                         <span style="display:flex;align-items:center;gap:4px">
                             <span style="width:10px;height:10px;border-radius:2px;background:#00213f;display:inline-block"></span>Ministères
                         </span>
@@ -150,8 +150,8 @@
 
             <!-- TABLEAU LÉGISLATIVES -->
             <div class="tbl-card" style="background:#fff;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem">
-                <div style="padding:12px 16px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-                    <h3 style="font-size:13px;font-weight:500;color:var(--noir)">
+                <div style="padding:12px 16px;border-bottom:1px solid var(--d-border);display:flex;justify-content:space-between;align-items:center">
+                    <h3 style="font-size:13px;font-weight:500;color:var(--d-noir)">
                         Assemblée Nationale 2025 - résultats définitifs
                     </h3>
                     <span style="font-size:10px;padding:2px 8px;border-radius:20px;background:#00213f;color:#00d2b2">
@@ -161,40 +161,40 @@
                 <table style="width:100%;border-collapse:collapse;font-size:12px">
                     <thead>
                         <tr>
-                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">Parti</th>
-                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">Sièges</th>
-                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">%</th>
-                            <th style="background:#F9FAFB;color:var(--muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:0.5px solid var(--border)">Représentation</th>
+                            <th style="background:#F9FAFB;color:var(--d-muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:1px solid var(--d-border)">Parti</th>
+                            <th style="background:#F9FAFB;color:var(--d-muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:1px solid var(--d-border)">Sièges</th>
+                            <th style="background:#F9FAFB;color:var(--d-muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:1px solid var(--d-border)">%</th>
+                            <th style="background:#F9FAFB;color:var(--d-muted);font-weight:500;padding:8px 14px;text-align:left;border-bottom:1px solid var(--d-border)">Représentation</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)"><strong>RHDP</strong></td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">196</td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)"><strong>RHDP</strong></td>
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">196</td>
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">
                                 <span style="background:#00213f;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px">76,9%</span>
                             </td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">
                                 <div class="dash-pbar"><div class="dash-pfill" style="background:#00213f;width:76.9%"></div></div>
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">PDCI-RDA</td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">32</td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">PDCI-RDA</td>
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">32</td>
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">
                                 <span style="background:#00d2b2;color:#003d35;padding:2px 8px;border-radius:20px;font-size:10px">12,5%</span>
                             </td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">
                                 <div class="dash-pbar"><div class="dash-pfill" style="background:#00d2b2;width:12.5%"></div></div>
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">Indépendants</td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">24</td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">Indépendants</td>
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">24</td>
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">
                                 <span style="background:#f59e0b;color:#451a03;padding:2px 8px;border-radius:20px;font-size:10px">9,4%</span>
                             </td>
-                            <td style="padding:9px 14px;border-bottom:0.5px solid var(--border)">
+                            <td style="padding:9px 14px;border-bottom:1px solid var(--d-border)">
                                 <div class="dash-pbar"><div class="dash-pfill" style="background:#f59e0b;width:9.4%"></div></div>
                             </td>
                         </tr>
@@ -202,7 +202,7 @@
                             <td style="padding:9px 14px">Autres</td>
                             <td style="padding:9px 14px">3</td>
                             <td style="padding:9px 14px">
-                                <span style="background:#F3F4F6;color:var(--muted);padding:2px 8px;border-radius:20px;font-size:10px">1,2%</span>
+                                <span style="background:#F3F4F6;color:var(--d-muted);padding:2px 8px;border-radius:20px;font-size:10px">1,2%</span>
                             </td>
                             <td style="padding:9px 14px">
                                 <div class="dash-pbar"><div class="dash-pfill" style="background:#aaa;width:1.2%"></div></div>
@@ -230,17 +230,17 @@
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00213f"></div>
                     <i class="ti ti-report-money" style="font-size:22px;color:#00213f;margin-bottom:8px;display:block"></i>
-                    <div id="fin-total" style="font-size:20px;font-weight:500;color:var(--noir)">15 339</div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">Budget total (Mds FCFA)</div>
+                    <div id="fin-total" style="font-size:20px;font-weight:500;color:var(--d-noir)">15 339</div>
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Budget total (Mds FCFA)</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#ef4444"></div>
                     <i class="ti ti-trending-down" style="font-size:22px;color:#ef4444;margin-bottom:8px;display:block"></i>
-                    <div id="fin-dette" style="font-size:20px;font-weight:500;color:var(--noir)">5 636</div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">Service de la dette (Mds)</div>
+                    <div id="fin-dette" style="font-size:20px;font-weight:500;color:var(--d-noir)">5 636</div>
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Service de la dette (Mds)</div>
                     <div id="fin-dette-sub" style="font-size:11px;color:#991b1b;margin-top:5px">36,7% du budget</div>
-                    <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">
+                    <div style="font-size:10px;color:var(--d-muted);margin-top:3px;font-style:italic">
                         Remboursements + intérêts prévus
                     </div>
                 </div>
@@ -248,16 +248,16 @@
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
                     <i class="ti ti-heart" style="font-size:22px;color:#00d2b2;margin-bottom:8px;display:block"></i>
-                    <div id="fin-sante" style="font-size:20px;font-weight:500;color:var(--noir)">470</div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">Budget Santé (Mds)</div>
+                    <div id="fin-sante" style="font-size:20px;font-weight:500;color:var(--d-noir)">470</div>
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Budget Santé (Mds)</div>
                     <div id="fin-sante-sub" style="font-size:11px;color:#00a88f;margin-top:5px">9,7% des ministères</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
                     <i class="ti ti-school" style="font-size:22px;color:#f59e0b;margin-bottom:8px;display:block"></i>
-                    <div id="fin-educ" style="font-size:20px;font-weight:500;color:var(--noir)">287</div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">Budget Éducation (Mds)</div>
+                    <div id="fin-educ" style="font-size:20px;font-weight:500;color:var(--d-noir)">287</div>
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Budget Éducation (Mds)</div>
                     <div id="fin-educ-sub" style="font-size:11px;color:#92400e;margin-top:5px">+8,5% en 2026</div>
                 </div>
 
@@ -298,7 +298,7 @@
                             Revenus, Importations, TVA, Exportations
                         </canvas>
                     </div>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--muted)">
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--d-muted)">
                         <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#00213f;display:inline-block"></span>Revenus 27,4%</span>
                         <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#00d2b2;display:inline-block"></span>Importations 27,2%</span>
                         <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>TVA 23,5%</span>
@@ -315,7 +315,7 @@
                             Intérieure 3341, Extérieure 2295
                         </canvas>
                     </div>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--muted)">
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:11px;color:var(--d-muted)">
                         <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#00213f;display:inline-block"></span>Intérieure 3 341 Mds (59,3%)</span>
                         <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#ef4444;display:inline-block"></span>Extérieure 2 295 Mds (40,7%)</span>
                     </div>
@@ -424,7 +424,7 @@
                     </div>
                     <div style="margin-top:10px;padding:10px;
                                 background:#f9fafb;border-radius:8px;
-                                font-size:11px;color:var(--muted)">
+                                font-size:11px;color:var(--d-muted)">
                         ⚠️ BAC 2025 : taux par sexe non disponibles (admis uniquement).
                         CEPE : calculé sur présents par sexe.
                     </div>
@@ -462,9 +462,9 @@
                     <div class="dash-kpi-stripe" style="background:#ef4444"></div>
                     <i class="ti ti-user-check" style="font-size:22px;color:#ef4444;
                     margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)"
+                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)"
                         id="kpi-elect-part">35,1%</div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
                         Participation nationale
                     </div>
                     <div style="font-size:11px;color:#991b1b;margin-top:5px"
@@ -477,10 +477,10 @@
                     <div class="dash-kpi-stripe" style="background:#00213f"></div>
                     <i class="ti ti-building-bank" style="font-size:22px;color:#00213f;
                     margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)">
+                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">
                         255
                     </div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
                         Sièges Assemblée Nationale
                     </div>
                     <div style="font-size:11px;color:#00213f;margin-top:5px">
@@ -492,10 +492,10 @@
                     <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
                     <i class="ti ti-trending-up" style="font-size:22px;color:#00d2b2;
                     margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)">
+                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">
                         79,1%
                     </div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
                         Participation max
                     </div>
                     <div style="font-size:11px;color:#00a88f;margin-top:5px">
@@ -507,10 +507,10 @@
                     <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
                     <i class="ti ti-trending-down" style="font-size:22px;color:#f59e0b;
                     margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--noir)">
+                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">
                         18,9%
                     </div>
-                    <div style="font-size:13px;color:var(--muted);margin-top:3px">
+                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
                         Participation min
                     </div>
                     <div style="font-size:11px;color:#92400e;margin-top:5px">
@@ -535,7 +535,7 @@
                     </div>
                     <div style="display:flex;flex-wrap:wrap;gap:10px;
                                 margin-top:10px;font-size:11px;
-                                color:var(--muted)">
+                                color:var(--d-muted)">
                         <span style="display:flex;align-items:center;gap:4px">
                             <span style="width:10px;height:10px;border-radius:2px;
                                         background:#00213f;display:inline-block">
@@ -577,10 +577,10 @@
                 border-radius:10px;overflow:hidden;
                 margin-bottom:1.5rem">
                 <div style="padding:12px 16px;
-                            border-bottom:0.5px solid var(--border);
+                            border-bottom:1px solid var(--d-border);
                             display:flex;justify-content:space-between;
                             align-items:center;background:#f9fafb">
-                    <h3 style="font-size:14px;font-weight:600;color:var(--noir)">
+                    <h3 style="font-size:14px;font-weight:600;color:var(--d-noir)">
                         Résultats définitifs — Assemblée Nationale 2025
                     </h3>
                     <span style="font-size:10px;padding:2px 8px;
@@ -627,17 +627,17 @@
                         ] %}
                         <tr>
                             <td style="padding:10px 16px;
-                                    border-bottom:0.5px solid var(--border);
+                                    border-bottom:1px solid var(--d-border);
                                     font-weight:600">
                                 {{ parti }}
                             </td>
                             <td style="padding:10px 16px;
-                                    border-bottom:0.5px solid var(--border);
+                                    border-bottom:1px solid var(--d-border);
                                     font-weight:700;color:#00213f">
                                 {{ sieges }}
                             </td>
                             <td style="padding:10px 16px;
-                                    border-bottom:0.5px solid var(--border)">
+                                    border-bottom:1px solid var(--d-border)">
                                 <span style="background:{{ badge_bg }};
                                             color:{{ badge_color }};
                                             padding:2px 8px;border-radius:20px;
@@ -646,7 +646,7 @@
                                 </span>
                             </td>
                             <td style="padding:10px 16px;
-                                    border-bottom:0.5px solid var(--border);
+                                    border-bottom:1px solid var(--d-border);
                                     min-width:120px">
                                 <div style="background:#f3f4f6;border-radius:4px;
                                             height:8px;width:100%;overflow:hidden">
@@ -661,7 +661,7 @@
                     </tbody>
                 </table>
                 <div style="padding:10px 16px;font-size:11px;
-                            color:var(--muted);background:#f9fafb;
+                            color:var(--d-muted);background:#f9fafb;
                             border-top:0.5px solid var(--border)">
                     Source : Commission Électorale Indépendante (CEI) · 
                     Résultats définitifs du 27 décembre 2025 · 
