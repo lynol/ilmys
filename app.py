@@ -543,6 +543,7 @@ def api_education():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ─── API FINANCES ───
 @app.route('/api/finances')
 def api_finances():
     try:
@@ -557,16 +558,70 @@ def api_finances():
 
         data = {}
         for annee, indicateur, valeur, categorie in rows:
-            if annee not in data:
-                data[annee] = {}
-            if categorie not in data[annee]:
-                data[annee][categorie] = {}
-            data[annee][categorie][indicateur] = float(valeur) if valeur else 0
+            a = str(annee)
+            if a not in data:
+                data[a] = {}
+            if categorie not in data[a]:
+                data[a][categorie] = {}
+            data[a][categorie][indicateur] = float(valeur) if valeur else 0
 
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+# ─── ADMIN FINANCES ───
+@app.route('/admin/finances', methods=['GET', 'POST'])
+@login_required
+def admin_finances():
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            annee      = int(request.form.get('annee'))
+            indicateur = request.form.get('indicateur', '').strip()
+            valeur     = float(request.form.get('valeur'))
+            categorie  = request.form.get('categorie', 'kpi').strip()
+            cur.execute("""
+                INSERT INTO finances_stats
+                    (annee, indicateur, valeur, categorie)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    valeur=%s, categorie=%s
+            """, (annee, indicateur, valeur, categorie,
+                  valeur, categorie))
+            mysql.connection.commit()
+            flash('Donnée ajoutée.', 'success')
+
+        elif action == 'edit':
+            stat_id = request.form.get('id')
+            valeur  = float(request.form.get('valeur'))
+            cur.execute("""
+                UPDATE finances_stats
+                SET valeur=%s WHERE id=%s
+            """, (valeur, stat_id))
+            mysql.connection.commit()
+            flash('Donnée mise à jour.', 'success')
+
+        elif action == 'delete':
+            stat_id = request.form.get('id')
+            cur.execute(
+                "DELETE FROM finances_stats WHERE id=%s",
+                (stat_id,)
+            )
+            mysql.connection.commit()
+            flash('Donnée supprimée.', 'success')
+
+    cur.execute("""
+        SELECT id, annee, categorie, indicateur, valeur
+        FROM finances_stats
+        ORDER BY annee DESC, categorie, indicateur
+    """)
+    stats = cur.fetchall()
+    cur.close()
+    return render_template('admin/finances.html', stats=stats)
 
 
 

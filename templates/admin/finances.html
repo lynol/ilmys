@@ -1,0 +1,282 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Finances — Admin{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+    <h4 class="admin-page-title mb-4">Données Finances</h4>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-success py-2 px-3 mb-3"
+             style="font-size:13px">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- AJOUTER -->
+    <div class="admin-card p-4 mb-4">
+        <h6 class="fw-bold mb-3" style="color:#00213f">
+            Ajouter / mettre à jour une donnée
+        </h6>
+        <form method="POST" class="row g-2 align-items-end">
+            <input type="hidden" name="action" value="add">
+            <div class="col-md-1">
+                <label class="admin-label">Année</label>
+                <input type="number" name="annee"
+                       class="form-control form-control-sm"
+                       value="2026" min="2020" max="2099">
+            </div>
+            <div class="col-md-2">
+                <label class="admin-label">Catégorie</label>
+                <select name="categorie" class="form-select form-select-sm">
+                    <option value="kpi">KPI</option>
+                    <option value="ministeres">Ministères</option>
+                    <option value="recettes">Recettes fiscales</option>
+                    <option value="dette">Dette</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="admin-label">Indicateur</label>
+                <input type="text" name="indicateur"
+                       class="form-control form-control-sm"
+                       placeholder="ex: budget_total, min_sante...">
+            </div>
+            <div class="col-md-2">
+                <label class="admin-label">Valeur (Mds FCFA)</label>
+                <input type="number" name="valeur" step="0.01"
+                       class="form-control form-control-sm"
+                       placeholder="ex: 470">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-sm w-100"
+                        style="background:#00213f;color:#fff">
+                    + Ajouter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLEAU -->
+    <div class="admin-card">
+        <div class="d-flex justify-content-between align-items-center
+                    flex-wrap gap-2 p-3 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <h6 class="mb-0 fw-bold" style="color:#111827">
+                    Toutes les données
+                </h6>
+                <span class="badge rounded-pill"
+                      style="background:#e6faf8;color:#00776a;
+                             font-size:11px">
+                    {{ stats|length }} entrées
+                </span>
+            </div>
+            <input type="text" id="searchInput"
+                   class="form-control form-control-sm"
+                   style="width:200px"
+                   placeholder="Rechercher..."
+                   onkeyup="filterTable()">
+        </div>
+
+        <!-- FILTRES -->
+        <div class="d-flex gap-2 p-3 border-bottom flex-wrap">
+            {% for f, label in [
+                ('all','Tous'),
+                ('kpi','KPI'),
+                ('ministeres','Ministères'),
+                ('recettes','Recettes'),
+                ('dette','Dette')
+            ] %}
+            <button onclick="filtrer('{{ f }}')"
+                    id="f-{{ f }}"
+                    class="btn btn-sm rounded-pill
+                    {% if f == 'all' %}btn-dark{% else %}btn-outline-secondary{% endif %}">
+                {{ label }}
+            </button>
+            {% endfor %}
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0"
+                   id="finTable">
+                <thead class="table-light">
+                    <tr>
+                        <th style="cursor:pointer"
+                            onclick="sortTable(0)">Année ↕</th>
+                        <th style="cursor:pointer"
+                            onclick="sortTable(1)">Catégorie ↕</th>
+                        <th style="cursor:pointer"
+                            onclick="sortTable(2)">Indicateur ↕</th>
+                        <th>Valeur (Mds)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="finBody">
+                    {% for s in stats %}
+                    <tr class="row-fin" data-cat="{{ s[2] }}">
+                        <td class="fw-semibold"
+                            style="color:#00213f">{{ s[1] }}</td>
+                        <td>
+                            <span class="badge rounded-pill
+                                {% if s[2]=='kpi' %}bg-primary
+                                {% elif s[2]=='ministeres' %}bg-success
+                                {% elif s[2]=='recettes' %}bg-warning text-dark
+                                {% else %}bg-danger{% endif %}">
+                                {{ s[2] }}
+                            </span>
+                        </td>
+                        <td>
+                            <code style="font-size:11px;
+                                         background:#f1f5f9;
+                                         padding:2px 6px;
+                                         border-radius:4px">
+                                {{ s[3] }}
+                            </code>
+                        </td>
+                        <td>
+                            <form method="POST"
+                                  class="d-flex gap-1 align-items-center">
+                                <input type="hidden" name="action" value="edit">
+                                <input type="hidden" name="id" value="{{ s[0] }}">
+                                <input type="number" name="valeur"
+                                       value="{{ s[4] }}" step="0.01"
+                                       class="form-control form-control-sm"
+                                       style="width:110px">
+                                <button type="submit"
+                                        class="btn btn-sm btn-success">
+                                    ✓
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST"
+                                  onsubmit="return confirm('Supprimer ?')">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="{{ s[0] }}">
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="d-flex justify-content-between align-items-center
+                    p-3 border-top flex-wrap gap-2">
+            <small class="text-muted" id="paginationInfo"></small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0"
+                    id="paginationBtns"></ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script>
+const PER_PAGE = 15;
+let page       = 1;
+let catFilter  = 'all';
+let sortCol    = 0;
+let sortAsc    = false;
+
+function getVisible() {
+    return [...document.querySelectorAll('#finBody tr.row-fin')]
+        .filter(r => r.style.display !== 'none');
+}
+
+function filtrer(cat) {
+    catFilter = cat;
+    page = 1;
+    document.querySelectorAll('[id^="f-"]').forEach(b => {
+        b.className = 'btn btn-sm rounded-pill btn-outline-secondary';
+    });
+    document.getElementById('f-' + cat).className =
+        'btn btn-sm rounded-pill btn-dark';
+    filterTable();
+}
+
+function filterTable() {
+    const q = document.getElementById('searchInput')
+                       .value.toLowerCase();
+    document.querySelectorAll('.row-fin').forEach(r => {
+        const catOk  = catFilter === 'all' ||
+                       r.dataset.cat === catFilter;
+        const textOk = r.textContent.toLowerCase().includes(q);
+        r.style.display = (catOk && textOk) ? '' : 'none';
+    });
+    page = 1;
+    paginate();
+}
+
+function sortTable(col) {
+    if (sortCol === col) sortAsc = !sortAsc;
+    else { sortCol = col; sortAsc = true; }
+    const tbody = document.getElementById('finBody');
+    [...tbody.querySelectorAll('tr')].sort((a, b) => {
+        const ta = a.cells[col].textContent.trim();
+        const tb = b.cells[col].textContent.trim();
+        const na = parseFloat(ta), nb = parseFloat(tb);
+        if (!isNaN(na) && !isNaN(nb))
+            return sortAsc ? na - nb : nb - na;
+        return sortAsc ? ta.localeCompare(tb) : tb.localeCompare(ta);
+    }).forEach(r => tbody.appendChild(r));
+    paginate();
+}
+
+function paginate() {
+    const rows  = getVisible();
+    const total = rows.length;
+    const pages = Math.ceil(total / PER_PAGE);
+
+    rows.forEach((r, i) => {
+        r.style.display =
+            Math.floor(i / PER_PAGE) + 1 === page ? '' : 'none';
+    });
+
+    const start = total ? (page - 1) * PER_PAGE + 1 : 0;
+    const end   = Math.min(page * PER_PAGE, total);
+    document.getElementById('paginationInfo').textContent =
+        `${start}–${end} sur ${total} entrées`;
+
+    const ul = document.getElementById('paginationBtns');
+    ul.innerHTML = '';
+
+    const mkLi = (label, p, disabled=false) => {
+        const li  = document.createElement('li');
+        li.className = 'page-item' +
+            (p === page ? ' active' : '') +
+            (disabled ? ' disabled' : '');
+        const btn = document.createElement('button');
+        btn.className   = 'page-link';
+        btn.textContent = label;
+        btn.onclick     = () => { page = p; paginate(); };
+        li.appendChild(btn);
+        return li;
+    };
+
+    ul.appendChild(mkLi('←', page - 1, page === 1));
+    for (let p = 1; p <= pages; p++) {
+        if (pages > 7 && p > 2 && p < pages - 1 &&
+            Math.abs(p - page) > 1) {
+            if (p === 3 || p === pages - 2) {
+                const li = document.createElement('li');
+                li.className = 'page-item disabled';
+                li.innerHTML = '<span class="page-link">…</span>';
+                ul.appendChild(li);
+            }
+            continue;
+        }
+        ul.appendChild(mkLi(p, p));
+    }
+    ul.appendChild(mkLi('→', page + 1, page === pages));
+}
+
+document.addEventListener('DOMContentLoaded', paginate);
+</script>
+{% endblock %}
