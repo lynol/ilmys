@@ -232,36 +232,36 @@
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00213f"></div>
-                    <i class="ti ti-report-money" style="font-size:22px;color:#00213f;margin-bottom:8px;display:block"></i>
-                    <div id="fin-total" style="font-size:20px;font-weight:500;color:var(--d-noir)">15 339</div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Budget total (Mds FCFA)</div>
+                    <i class="ti ti-report-money kpi-icon" style="color:#00213f" aria-hidden="true"></i>
+                    <div class="kpi-val" id="fin-total">15 339</div>
+                    <div class="kpi-label">Budget total (Mds FCFA)</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#ef4444"></div>
-                    <i class="ti ti-trending-down" style="font-size:22px;color:#ef4444;margin-bottom:8px;display:block"></i>
-                    <div id="fin-dette" style="font-size:20px;font-weight:500;color:var(--d-noir)">5 636</div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Service de la dette (Mds)</div>
-                    <div id="fin-dette-sub" style="font-size:11px;color:#991b1b;margin-top:5px">36,7% du budget</div>
-                    <div style="font-size:10px;color:var(--d-muted);margin-top:3px;font-style:italic">
+                    <i class="ti ti-trending-down kpi-icon" style="color:#ef4444" aria-hidden="true"></i>
+                    <div class="kpi-val" id="fin-dette">5 636</div>
+                    <div class="kpi-label">Service de la dette (Mds)</div>
+                    <div class="kpi-sub" style="color:#991b1b" id="fin-dette-sub">36,7% du budget</div>
+                    <div class="kpi-sub" style="color:var(--d-muted);font-style:italic">
                         Remboursements + intérêts prévus
                     </div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
-                    <i class="ti ti-heart" style="font-size:22px;color:#00d2b2;margin-bottom:8px;display:block"></i>
-                    <div id="fin-sante" style="font-size:20px;font-weight:500;color:var(--d-noir)">470</div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Budget Santé (Mds)</div>
-                    <div id="fin-sante-sub" style="font-size:11px;color:#00a88f;margin-top:5px">9,7% des ministères</div>
+                    <i class="ti ti-heart kpi-icon" style="color:#00d2b2" aria-hidden="true"></i>
+                    <div class="kpi-val" id="fin-sante">470</div>
+                    <div class="kpi-label">Budget Santé (Mds)</div>
+                    <div class="kpi-sub" style="color:#00a88f" id="fin-sante-sub">9,7% des ministères</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
-                    <i class="ti ti-school" style="font-size:22px;color:#f59e0b;margin-bottom:8px;display:block"></i>
-                    <div id="fin-educ" style="font-size:20px;font-weight:500;color:var(--d-noir)">287</div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">Budget Éducation (Mds)</div>
-                    <div id="fin-educ-sub" style="font-size:11px;color:#92400e;margin-top:5px">+8,5% en 2026</div>
+                    <i class="ti ti-school kpi-icon" style="color:#f59e0b" aria-hidden="true"></i>
+                    <div class="kpi-val" id="fin-educ">287</div>
+                    <div class="kpi-label">Budget Éducation (Mds)</div>
+                    <div class="kpi-sub" style="color:#92400e" id="fin-educ-sub">+8,5% en 2026</div>
                 </div>
 
             </div>
@@ -463,62 +463,36 @@
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#ef4444"></div>
-                    <i class="ti ti-user-check" style="font-size:22px;color:#ef4444;
-                    margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)"
-                        id="kpi-elect-part">35,1%</div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
-                        Participation nationale
-                    </div>
-                    <div style="font-size:11px;color:#991b1b;margin-top:5px"
-                        id="kpi-elect-inscrits">
+                    <i class="ti ti-user-check kpi-icon" style="color:#ef4444" aria-hidden="true"></i>
+                    <div class="kpi-val" id="kpi-elect-part">35,1%</div>
+                    <div class="kpi-label">Participation nationale</div>
+                    <div class="kpi-sub" style="color:#991b1b" id="kpi-elect-inscrits">
                         8,6M inscrits · 205 sièges
                     </div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00213f"></div>
-                    <i class="ti ti-building-bank" style="font-size:22px;color:#00213f;
-                    margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">
-                        255
-                    </div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
-                        Sièges Assemblée Nationale
-                    </div>
-                    <div style="font-size:11px;color:#00213f;margin-top:5px">
-                        27 décembre 2025
-                    </div>
+                    <i class="ti ti-building-bank kpi-icon" style="color:#00213f" aria-hidden="true"></i>
+                    <div class="kpi-val">255</div>
+                    <div class="kpi-label">Sièges Assemblée Nationale</div>
+                    <div class="kpi-sub" style="color:#00213f">27 décembre 2025</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#00d2b2"></div>
-                    <i class="ti ti-trending-up" style="font-size:22px;color:#00d2b2;
-                    margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">
-                        79,1%
-                    </div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
-                        Participation max
-                    </div>
-                    <div style="font-size:11px;color:#00a88f;margin-top:5px">
-                        Poro (Nord)
-                    </div>
+                    <i class="ti ti-trending-up kpi-icon" style="color:#00d2b2" aria-hidden="true"></i>
+                    <div class="kpi-val">79,1%</div>
+                    <div class="kpi-label">Participation max</div>
+                    <div class="kpi-sub" style="color:#00a88f">Poro (Nord)</div>
                 </div>
 
                 <div class="dash-kpi">
                     <div class="dash-kpi-stripe" style="background:#f59e0b"></div>
-                    <i class="ti ti-trending-down" style="font-size:22px;color:#f59e0b;
-                    margin-bottom:8px;display:block"></i>
-                    <div style="font-size:20px;font-weight:500;color:var(--d-noir)">
-                        18,9%
-                    </div>
-                    <div style="font-size:13px;color:var(--d-muted);margin-top:3px">
-                        Participation min
-                    </div>
-                    <div style="font-size:11px;color:#92400e;margin-top:5px">
-                        Abidjan
-                    </div>
+                    <i class="ti ti-trending-down kpi-icon" style="color:#f59e0b" aria-hidden="true"></i>
+                    <div class="kpi-val">18,9%</div>
+                    <div class="kpi-label">Participation min</div>
+                    <div class="kpi-sub" style="color:#92400e">Abidjan</div>
                 </div>
 
             </div>
