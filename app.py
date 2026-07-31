@@ -2103,6 +2103,80 @@ def sana_logout():
 @app.route('/sana/dashboard')
 @sana_login_required
 def sana_dashboard():
+    try:
+        cur = mysql.connection.cursor()
+
+        # Stats
+        stats = {}
+        for table, key in [
+            ('sana_biblio',       'biblio'),
+            ('sana_glossaire',    'glossaire'),
+            ('sana_techniques',   'techniques'),
+            ('sana_labo',         'labo'),
+            ('sana_reseau',       'reseau'),
+        ]:
+            cur.execute(f"SELECT COUNT(*) FROM {table}")
+            stats[key] = cur.fetchone()[0]
+
+        cur.execute("""
+            SELECT COUNT(*) FROM sana_taches
+            WHERE statut != 'termine'
+        """)
+        stats['taches_actives'] = cur.fetchone()[0]
+
+        # Tâches prioritaires
+        cur.execute("""
+            SELECT id, titre, categorie, priorite, date_echeance
+            FROM sana_taches
+            WHERE statut != 'termine'
+            ORDER BY
+                CASE priorite
+                    WHEN 'haute'   THEN 1
+                    WHEN 'normale' THEN 2
+                    ELSE 3
+                END,
+                date_echeance ASC
+            LIMIT 5
+        """)
+        taches = cur.fetchall()
+
+        # Entrées labo récentes
+        cur.execute("""
+            SELECT id, date_entree, titre, type_entree
+            FROM sana_labo
+            ORDER BY date_entree DESC, created_at DESC
+            LIMIT 4
+        """)
+        labo_recent = cur.fetchall()
+
+        # Jalons
+        cur.execute("""
+            SELECT id, titre, description, date_prevue, statut
+            FROM sana_jalons
+            ORDER BY date_prevue ASC
+        """)
+        jalons = cur.fetchall()
+
+        cur.close()
+    except Exception as e:
+        stats = {k: 0 for k in [
+            'biblio','glossaire','techniques',
+            'labo','reseau','taches_actives'
+        ]}
+        taches = []
+        labo_recent = []
+        jalons = []
+
+    return render_template('sana/dashboard.html',
+        stats=stats,
+        taches=taches,
+        labo_recent=labo_recent,
+        jalons=jalons
+    )
+
+
+@sana_login_required
+def sana_dashboard():
     return render_template('sana/dashboard.html')
 
 if __name__ == '__main__':

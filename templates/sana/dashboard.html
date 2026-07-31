@@ -1,0 +1,160 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Tableau de bord — SanaThèse{% endblock %}
+{% block page_title %}Tableau de bord{% endblock %}
+{% block page_sub %}PhD Animal Sciences · ULaval · Oct. 2026{% endblock %}
+
+{% block content %}
+
+<!-- STATS RAPIDES -->
+<div class="sana-stat-grid">
+    <div class="sana-stat" style="border-top-color:#00d2b2">
+        <div class="sana-stat-val">{{ stats.biblio }}</div>
+        <div class="sana-stat-label">Références</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#f59e0b">
+        <div class="sana-stat-val">{{ stats.glossaire }}</div>
+        <div class="sana-stat-label">Termes glossaire</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#8b5cf6">
+        <div class="sana-stat-val">{{ stats.techniques }}</div>
+        <div class="sana-stat-label">Techniques</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#ef4444">
+        <div class="sana-stat-val">{{ stats.taches_actives }}</div>
+        <div class="sana-stat-label">Tâches actives</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#00213f">
+        <div class="sana-stat-val">{{ stats.labo }}</div>
+        <div class="sana-stat-label">Entrées labo</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#10b981">
+        <div class="sana-stat-val">{{ stats.reseau }}</div>
+        <div class="sana-stat-label">Contacts réseau</div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+    <!-- TÂCHES RÉCENTES -->
+    <div class="sana-card">
+        <div class="sana-card-title">
+            <i class="ti ti-checklist" style="color:#00d2b2"></i>
+            Tâches prioritaires
+        </div>
+        {% if taches %}
+        <table class="sana-table">
+            <thead>
+                <tr>
+                    <th>Tâche</th>
+                    <th>Priorité</th>
+                    <th>Échéance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in taches %}
+                <tr>
+                    <td style="color:#f1f5f9;font-weight:500">{{ t[1] }}</td>
+                    <td>
+                        <span class="sana-badge
+                            {% if t[3]=='haute' %}sana-badge-red
+                            {% elif t[3]=='normale' %}sana-badge-blue
+                            {% else %}sana-badge-gray{% endif %}">
+                            {{ t[3] }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b;font-size:12px">
+                        {{ t[4].strftime('%d/%m/%Y') if t[4] else '—' }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="text-align:center;padding:24px;color:#475569;font-size:13px">
+            Aucune tâche active
+        </div>
+        {% endif %}
+        <a href="{{ url_for('sana_taches') }}"
+           style="display:block;text-align:center;margin-top:12px;
+                  font-size:12px;color:#00d2b2;text-decoration:none">
+            Voir toutes les tâches →
+        </a>
+    </div>
+
+    <!-- ENTRÉES LABO RÉCENTES -->
+    <div class="sana-card">
+        <div class="sana-card-title">
+            <i class="ti ti-notebook" style="color:#f59e0b"></i>
+            Carnet de labo — récent
+        </div>
+        {% if labo_recent %}
+        {% for e in labo_recent %}
+        <div style="padding:10px 0;border-bottom:1px solid #334155">
+            <div style="font-size:12px;color:#64748b;margin-bottom:3px">
+                {{ e[1].strftime('%d/%m/%Y') if e[1] else '—' }}
+                <span class="sana-badge sana-badge-gray"
+                      style="margin-left:6px">{{ e[3] }}</span>
+            </div>
+            <div style="font-size:13px;color:#f1f5f9;font-weight:500">
+                {{ e[2] }}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div style="text-align:center;padding:24px;color:#475569;font-size:13px">
+            Aucune entrée récente
+        </div>
+        {% endif %}
+        <a href="{{ url_for('sana_labo') }}"
+           style="display:block;text-align:center;margin-top:12px;
+                  font-size:12px;color:#00d2b2;text-decoration:none">
+            Ouvrir le carnet →
+        </a>
+    </div>
+
+</div>
+
+<!-- JALONS THÈSE -->
+<div class="sana-card" style="margin-top:4px">
+    <div class="sana-card-title">
+        <i class="ti ti-timeline" style="color:#8b5cf6"></i>
+        Jalons de la thèse
+    </div>
+    {% if jalons %}
+    <div style="display:flex;flex-direction:column;gap:12px">
+        {% for j in jalons %}
+        <div style="display:flex;align-items:center;gap:14px">
+            <div style="width:10px;height:10px;border-radius:50%;flex-shrink:0;
+                        background:{% if j[4]=='termine' %}#00d2b2
+                        {% elif j[4]=='en_cours' %}#f59e0b
+                        {% else %}#334155{% endif %}">
+            </div>
+            <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:#f1f5f9">
+                    {{ j[1] }}
+                </div>
+                <div style="font-size:11px;color:#64748b;margin-top:2px">
+                    {{ j[3].strftime('%B %Y') if j[3] else '—' }}
+                </div>
+            </div>
+            <span class="sana-badge
+                {% if j[4]=='termine' %}sana-badge-green
+                {% elif j[4]=='en_cours' %}sana-badge-orange
+                {% else %}sana-badge-gray{% endif %}">
+                {{ j[4].replace('_',' ') }}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:24px;color:#475569;font-size:13px">
+        Aucun jalon défini —
+        <a href="{{ url_for('sana_taches') }}"
+           style="color:#00d2b2;text-decoration:none">
+            Ajouter des jalons →
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

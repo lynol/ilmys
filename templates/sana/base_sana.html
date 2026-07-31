@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SanaThèse{% endblock %}</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont,
+                         'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #cbd5e1;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sana-sidebar {
+            width: 240px;
+            min-height: 100vh;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+
+        .sana-logo {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sana-logo-circle {
+            width: 36px;
+            height: 36px;
+            background: #00d2b2;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #00213f;
+            flex-shrink: 0;
+        }
+
+        .sana-logo-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .sana-logo-sub {
+            font-size: 10px;
+            color: #64748b;
+            margin-top: 1px;
+        }
+
+        /* ─── NAV ─── */
+        .sana-nav {
+            flex: 1;
+            padding: 12px 8px;
+            overflow-y: auto;
+        }
+
+        .sana-nav-section {
+            font-size: 10px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 12px 12px 6px;
+        }
+
+        .sana-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.15s;
+            margin-bottom: 2px;
+        }
+
+        .sana-nav-link:hover {
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .sana-nav-link.active {
+            background: #00213f;
+            color: #00d2b2;
+            font-weight: 600;
+        }
+
+        .sana-nav-link i {
+            font-size: 17px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sana-nav-badge {
+            margin-left: auto;
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: #334155;
+            color: #64748b;
+        }
+
+        /* ─── FOOTER SIDEBAR ─── */
+        .sana-sidebar-footer {
+            padding: 14px 16px;
+            border-top: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sana-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sana-user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #00213f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #00d2b2;
+            flex-shrink: 0;
+        }
+
+        .sana-user-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .sana-user-role {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .sana-logout {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.15s;
+        }
+
+        .sana-logout:hover { color: #ef4444; }
+
+        /* ─── MAIN ─── */
+        .sana-main {
+            margin-left: 240px;
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sana-topbar {
+            padding: 16px 28px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .sana-page-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .sana-page-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .sana-content {
+            padding: 28px;
+            flex: 1;
+        }
+
+        /* ─── CARDS ─── */
+        .sana-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .sana-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ─── FORMS ─── */
+        .sana-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .sana-input {
+            width: 100%;
+            padding: 9px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #f1f5f9;
+            font-size: 13px;
+            font-family: inherit;
+            transition: border-color 0.15s;
+            margin-bottom: 12px;
+        }
+
+        .sana-input:focus {
+            outline: none;
+            border-color: #00d2b2;
+        }
+
+        textarea.sana-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ─── BOUTONS ─── */
+        .sana-btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: opacity 0.15s;
+        }
+
+        .sana-btn:hover { opacity: 0.85; }
+
+        .sana-btn-primary {
+            background: #00d2b2;
+            color: #00213f;
+        }
+
+        .sana-btn-danger {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .sana-btn-ghost {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        /* ─── BADGES ─── */
+        .sana-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .sana-badge-green {
+            background: #064e3b;
+            color: #6ee7b7;
+        }
+
+        .sana-badge-blue {
+            background: #00213f;
+            color: #00d2b2;
+        }
+
+        .sana-badge-orange {
+            background: #451a03;
+            color: #fcd34d;
+        }
+
+        .sana-badge-red {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .sana-badge-gray {
+            background: #1e293b;
+            color: #64748b;
+        }
+
+        /* ─── TABLE ─── */
+        .sana-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .sana-table th {
+            background: #0f172a;
+            color: #64748b;
+            font-weight: 700;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sana-table td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+            vertical-align: top;
+        }
+
+        .sana-table tr:hover td {
+            background: #1e293b;
+        }
+
+        /* ─── FLASH ─── */
+        .sana-flash {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border: 1px solid #065f46;
+            background: #022c22;
+            color: #6ee7b7;
+        }
+
+        /* ─── STAT BOXES ─── */
+        .sana-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .sana-stat {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 16px;
+            border-top: 3px solid #00d2b2;
+        }
+
+        .sana-stat-val {
+            font-size: 28px;
+            font-weight: 800;
+            color: #f1f5f9;
+            line-height: 1;
+        }
+
+        .sana-stat-label {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .sana-sidebar { width: 60px; }
+            .sana-logo-text, .sana-logo-sub,
+            .sana-nav-link span, .sana-nav-section,
+            .sana-nav-badge, .sana-user-name,
+            .sana-user-role { display: none; }
+            .sana-main { margin-left: 60px; }
+            .sana-content { padding: 16px; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sana-sidebar">
+    <div class="sana-logo">
+        <div class="sana-logo-circle">S</div>
+        <div>
+            <div class="sana-logo-text">SanaThèse</div>
+            <div class="sana-logo-sub">Espace doctoral privé</div>
+        </div>
+    </div>
+
+    <nav class="sana-nav">
+
+        <div class="sana-nav-section">Principal</div>
+
+        <a href="{{ url_for('sana_dashboard') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_dashboard' %}active{% endif %}">
+            <i class="ti ti-layout-dashboard"></i>
+            <span>Tableau de bord</span>
+        </a>
+
+        <a href="{{ url_for('sana_taches') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_taches' %}active{% endif %}">
+            <i class="ti ti-checklist"></i>
+            <span>Tâches & Suivi</span>
+        </a>
+
+        <div class="sana-nav-section">Connaissance</div>
+
+        <a href="{{ url_for('sana_biblio') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_biblio' %}active{% endif %}">
+            <i class="ti ti-books"></i>
+            <span>Bibliographie</span>
+        </a>
+
+        <a href="{{ url_for('sana_glossaire') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_glossaire' %}active{% endif %}">
+            <i class="ti ti-vocabulary"></i>
+            <span>Glossaire</span>
+        </a>
+
+        <a href="{{ url_for('sana_techniques') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_techniques' %}active{% endif %}">
+            <i class="ti ti-flask"></i>
+            <span>Techniques</span>
+        </a>
+
+        <a href="{{ url_for('sana_apprentissage') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_apprentissage' %}active{% endif %}">
+            <i class="ti ti-brain"></i>
+            <span>Apprentissage</span>
+        </a>
+
+        <div class="sana-nav-section">Laboratoire</div>
+
+        <a href="{{ url_for('sana_labo') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_labo' %}active{% endif %}">
+            <i class="ti ti-notebook"></i>
+            <span>Carnet de labo</span>
+        </a>
+
+        <a href="{{ url_for('sana_protocoles') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_protocoles' %}active{% endif %}">
+            <i class="ti ti-list-check"></i>
+            <span>Protocoles</span>
+        </a>
+
+        <a href="{{ url_for('sana_reactifs') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_reactifs' %}active{% endif %}">
+            <i class="ti ti-droplet"></i>
+            <span>Réactifs & Matériel</span>
+        </a>
+
+        <div class="sana-nav-section">Réseau</div>
+
+        <a href="{{ url_for('sana_reseau') }}"
+           class="sana-nav-link {% if request.endpoint == 'sana_reseau' %}active{% endif %}">
+            <i class="ti ti-users"></i>
+            <span>Chercheurs & Labos</span>
+        </a>
+
+    </nav>
+
+    <div class="sana-sidebar-footer">
+        <div class="sana-user">
+            <div class="sana-user-avatar">AS</div>
+            <div>
+                <div class="sana-user-name">Alidou Sana</div>
+                <div class="sana-user-role">PhD · ULaval</div>
+            </div>
+        </div>
+        <a href="{{ url_for('sana_logout') }}"
+           class="sana-logout" title="Déconnexion">
+            <i class="ti ti-logout"></i>
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="sana-main">
+    <div class="sana-topbar">
+        <div>
+            <div class="sana-page-title">
+                {% block page_title %}SanaThèse{% endblock %}
+            </div>
+            <div class="sana-page-sub">
+                {% block page_sub %}{% endblock %}
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+            {% block topbar_actions %}{% endblock %}
+            <span style="font-size:11px;color:#334155">
+                ilmys.com/sana
+            </span>
+        </div>
+    </div>
+
+    <div class="sana-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="sana-flash">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
