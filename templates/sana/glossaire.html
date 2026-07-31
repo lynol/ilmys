@@ -1,0 +1,314 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Glossaire — SanaThèse{% endblock %}
+{% block page_title %}Glossaire{% endblock %}
+{% block page_sub %}{{ termes|length }} terme(s) · {{ maitrise }} maîtrisés · {{ a_revoir }} à revoir{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-terme').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+<button onclick="startFlashcards()"
+        class="sana-btn sana-btn-ghost"
+        style="margin-left:8px">
+    <i class="ti ti-cards"></i> Flashcards
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- STATS -->
+<div class="sana-stat-grid" style="grid-template-columns:repeat(3,1fr);
+     margin-bottom:20px">
+    <div class="sana-stat" style="border-top-color:#64748b">
+        <div class="sana-stat-val">{{ termes|length }}</div>
+        <div class="sana-stat-label">Total termes</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#00d2b2">
+        <div class="sana-stat-val">{{ maitrise }}</div>
+        <div class="sana-stat-label">Maîtrisés</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#ef4444">
+        <div class="sana-stat-val">{{ a_revoir }}</div>
+        <div class="sana-stat-label">À revoir</div>
+    </div>
+</div>
+
+<!-- FLASHCARD MODE -->
+<div id="flashcard-mode" style="display:none">
+    <div class="sana-card" style="text-align:center;padding:40px">
+        <div style="font-size:11px;color:#64748b;margin-bottom:8px"
+             id="fc-progress">1 / N</div>
+        <div id="fc-card"
+             style="min-height:160px;display:flex;flex-direction:column;
+                    align-items:center;justify-content:center;
+                    cursor:pointer" onclick="flipCard()">
+            <div id="fc-front">
+                <div style="font-size:24px;font-weight:800;
+                            color:#f1f5f9" id="fc-terme"></div>
+                <div style="font-size:12px;color:#64748b;
+                            margin-top:8px">Clique pour voir la définition</div>
+            </div>
+            <div id="fc-back" style="display:none">
+                <div style="font-size:14px;color:#94a3b8;
+                            line-height:1.7;max-width:500px"
+                     id="fc-def"></div>
+                {% if True %}
+                <div style="font-size:11px;color:#475569;
+                            margin-top:10px" id="fc-source"></div>
+                {% endif %}
+            </div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;
+                    margin-top:20px" id="fc-actions" style="display:none">
+            <button onclick="markCard(false)"
+                    class="sana-btn sana-btn-danger">
+                À revoir
+            </button>
+            <button onclick="markCard(true)"
+                    class="sana-btn sana-btn-primary">
+                Maîtrisé ✓
+            </button>
+        </div>
+        <button onclick="stopFlashcards()"
+                class="sana-btn sana-btn-ghost"
+                style="margin-top:16px;font-size:12px">
+            Quitter les flashcards
+        </button>
+    </div>
+</div>
+
+<!-- LISTE NORMALE -->
+<div id="liste-mode">
+    <!-- FILTRES -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <input type="text" id="searchTerme"
+               placeholder="Rechercher un terme..."
+               onkeyup="filterTermes()"
+               style="flex:1;min-width:200px;padding:8px 12px;
+                      background:#1e293b;border:1px solid #334155;
+                      border-radius:8px;color:#f1f5f9;font-size:13px">
+        <select id="filterMaitrise" onchange="filterTermes()"
+                style="padding:8px 12px;background:#1e293b;
+                       border:1px solid #334155;border-radius:8px;
+                       color:#f1f5f9;font-size:13px">
+            <option value="all">Tous</option>
+            <option value="0">À revoir</option>
+            <option value="1">Maîtrisés</option>
+        </select>
+    </div>
+
+    <!-- TERMES -->
+    {% for t in termes %}
+    <div class="sana-card terme-row"
+         data-maitrise="{{ t[5] }}"
+         style="margin-bottom:10px;padding:16px 20px;
+                border-left:3px solid {% if t[5] %}#00d2b2{% else %}#334155{% endif %}">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:flex-start;gap:12px">
+            <div style="flex:1">
+                <div style="font-size:15px;font-weight:700;
+                            color:#f1f5f9;margin-bottom:5px">
+                    {{ t[1] }}
+                </div>
+                <div style="font-size:13px;color:#94a3b8;
+                            line-height:1.6;margin-bottom:6px">
+                    {{ t[2] }}
+                </div>
+                {% if t[3] %}
+                <div style="font-size:11px;color:#475569">
+                    Source : {{ t[3] }}
+                </div>
+                {% endif %}
+                {% if t[4] %}
+                <div style="margin-top:8px;display:flex;
+                            gap:5px;flex-wrap:wrap">
+                    {% for tag in t[4].split(',') %}
+                    <span class="sana-badge sana-badge-gray">
+                        {{ tag.strip() }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:6px">
+                <form method="POST">
+                    <input type="hidden" name="action"
+                           value="toggle_maitrise">
+                    <input type="hidden" name="id" value="{{ t[0] }}">
+                    <button type="submit"
+                            class="sana-btn {% if t[5] %}sana-btn-primary{% else %}sana-btn-ghost{% endif %}"
+                            style="padding:5px 10px;font-size:11px;
+                                   white-space:nowrap">
+                        {% if t[5] %}✓ Maîtrisé{% else %}À revoir{% endif %}
+                    </button>
+                </form>
+                <form method="POST"
+                      onsubmit="return confirm('Supprimer ?')">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="{{ t[0] }}">
+                    <button type="submit"
+                            class="sana-btn sana-btn-danger"
+                            style="padding:5px 10px;font-size:11px;
+                                   width:100%">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if not termes %}
+    <div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+        Aucun terme — commence par ajouter "Protandrie" ou "Héritabilité".
+    </div>
+    {% endif %}
+</div>
+
+<!-- MODAL -->
+<div id="modal-terme"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:520px;border:1px solid #334155">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
+                Nouveau terme
+            </h3>
+            <button onclick="document.getElementById('modal-terme').style.display='none'"
+                    style="background:none;border:none;
+                           color:#64748b;font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <label class="sana-label">Terme *</label>
+            <input type="text" name="terme" class="sana-input"
+                   placeholder="Ex: Héritabilité, Protandrie, GBS..."
+                   required>
+
+            <label class="sana-label">Définition *</label>
+            <textarea name="definition" class="sana-input" rows="4"
+                      placeholder="Définition claire et concise..."
+                      required></textarea>
+
+            <label class="sana-label">Source</label>
+            <input type="text" name="source" class="sana-input"
+                   placeholder="Ex: Lynch & Walsh 1998, p.51">
+
+            <label class="sana-label">Tags</label>
+            <input type="text" name="tags" class="sana-input"
+                   placeholder="génétique, BSF, stats...">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;
+                        margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-terme').style.display='none'"
+                        class="sana-btn sana-btn-ghost">
+                    Annuler
+                </button>
+                <button type="submit" class="sana-btn sana-btn-primary">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ─── DONNÉES POUR FLASHCARDS ───
+const termes = [
+    {% for t in termes %}
+    {
+        id: {{ t[0] }},
+        terme: {{ t[1]|tojson }},
+        definition: {{ t[2]|tojson }},
+        source: {{ (t[3] or '')|tojson }},
+        maitrise: {{ t[5] }}
+    },
+    {% endfor %}
+];
+
+let fcIndex   = 0;
+let fcShowing = false;
+const fcList  = termes.filter(t => !t.maitrise);
+
+function startFlashcards() {
+    if (fcList.length === 0) {
+        alert('Tous les termes sont maîtrisés !');
+        return;
+    }
+    fcIndex = 0;
+    document.getElementById('liste-mode').style.display      = 'none';
+    document.getElementById('flashcard-mode').style.display  = 'block';
+    showCard();
+}
+
+function stopFlashcards() {
+    document.getElementById('flashcard-mode').style.display  = 'none';
+    document.getElementById('liste-mode').style.display      = 'block';
+}
+
+function showCard() {
+    if (fcIndex >= fcList.length) {
+        document.getElementById('fc-card').innerHTML =
+            '<div style="font-size:18px;color:#00d2b2;font-weight:700">' +
+            '🎉 Session terminée !</div>';
+        document.getElementById('fc-actions').style.display = 'none';
+        return;
+    }
+    const t = fcList[fcIndex];
+    document.getElementById('fc-terme').textContent      = t.terme;
+    document.getElementById('fc-def').textContent        = t.definition;
+    document.getElementById('fc-source').textContent     = t.source
+        ? 'Source : ' + t.source : '';
+    document.getElementById('fc-progress').textContent   =
+        (fcIndex + 1) + ' / ' + fcList.length;
+    document.getElementById('fc-front').style.display    = 'block';
+    document.getElementById('fc-back').style.display     = 'none';
+    document.getElementById('fc-actions').style.display  = 'none';
+    fcShowing = false;
+}
+
+function flipCard() {
+    if (!fcShowing) {
+        document.getElementById('fc-front').style.display   = 'none';
+        document.getElementById('fc-back').style.display    = 'block';
+        document.getElementById('fc-actions').style.display = 'flex';
+        fcShowing = true;
+    }
+}
+
+function markCard(maitrise) {
+    if (maitrise) {
+        fetch('/sana/glossaire', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: 'action=toggle_maitrise&id=' + fcList[fcIndex].id
+        });
+    }
+    fcIndex++;
+    showCard();
+}
+
+function filterTermes() {
+    const q = document.getElementById('searchTerme')
+                       .value.toLowerCase();
+    const m = document.getElementById('filterMaitrise').value;
+    document.querySelectorAll('.terme-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const mOk    = m === 'all' || r.dataset.maitrise === m;
+        r.style.display = (textOk && mOk) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

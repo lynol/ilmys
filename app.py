@@ -2176,12 +2176,6 @@ def sana_dashboard():
     )
 
 
-
-
-
-
-
-
 @app.route('/sana/biblio', methods=['GET', 'POST'])
 @sana_login_required
 def sana_biblio():
@@ -2235,15 +2229,109 @@ def sana_biblio():
 
 
 
-@app.route('/sana/glossaire')
+@app.route('/sana/glossaire', methods=['GET', 'POST'])
 @sana_login_required
 def sana_glossaire():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
 
-@app.route('/sana/techniques')
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_glossaire
+                    (terme, definition, source, tags, maitrise)
+                VALUES (%s,%s,%s,%s,0)
+            """, (
+                request.form.get('terme'),
+                request.form.get('definition'),
+                request.form.get('source'),
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Terme ajouté.', 'success')
+
+        elif action == 'delete':
+            cur.execute(
+                "DELETE FROM sana_glossaire WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+
+        elif action == 'toggle_maitrise':
+            cur.execute("""
+                UPDATE sana_glossaire
+                SET maitrise = 1 - maitrise WHERE id=%s
+            """, (request.form.get('id'),))
+            mysql.connection.commit()
+
+    cur.execute("""
+        SELECT id, terme, definition, source, tags, maitrise
+        FROM sana_glossaire
+        ORDER BY maitrise ASC, terme ASC
+    """)
+    termes = cur.fetchall()
+    cur.close()
+
+    maitrise   = sum(1 for t in termes if t[5])
+    a_revoir   = len(termes) - maitrise
+
+    return render_template('sana/glossaire.html',
+        termes=termes, maitrise=maitrise, a_revoir=a_revoir
+    )
+
+
+
+@app.route('/sana/techniques', methods=['GET', 'POST'])
 @sana_login_required
 def sana_techniques():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_techniques
+                    (nom, categorie, decouverte, annee,
+                     objectif, methodologie, cas_concret,
+                     resultat, avantages, limites, tags)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('nom'),
+                request.form.get('categorie'),
+                request.form.get('decouverte'),
+                request.form.get('annee') or None,
+                request.form.get('objectif'),
+                request.form.get('methodologie'),
+                request.form.get('cas_concret'),
+                request.form.get('resultat'),
+                request.form.get('avantages'),
+                request.form.get('limites'),
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Technique ajoutée.', 'success')
+
+        elif action == 'delete':
+            cur.execute(
+                "DELETE FROM sana_techniques WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+
+    cur.execute("""
+        SELECT id, nom, categorie, decouverte, annee,
+               objectif, methodologie, cas_concret,
+               resultat, avantages, limites, tags
+        FROM sana_techniques
+        ORDER BY categorie, nom
+    """)
+    techniques = cur.fetchall()
+    cur.close()
+
+    return render_template('sana/techniques.html',
+                           techniques=techniques)
 
 @app.route('/sana/labo')
 @sana_login_required

@@ -1,0 +1,277 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Techniques — SanaThèse{% endblock %}
+{% block page_title %}Techniques{% endblock %}
+{% block page_sub %}{{ techniques|length }} technique(s) · Sanger · PCR · WB · Séquençage...{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-tech').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTRES -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <input type="text" id="searchTech"
+           placeholder="Rechercher..."
+           onkeyup="filterTech()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+    <select id="filterCat" onchange="filterTech()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Toutes catégories</option>
+        <option value="sequencage">Séquençage</option>
+        <option value="pcr">PCR</option>
+        <option value="biologie_mol">Biologie moléculaire</option>
+        <option value="bioinformatique">Bioinformatique</option>
+        <option value="statistiques">Statistiques</option>
+        <option value="autre">Autre</option>
+    </select>
+</div>
+
+<!-- LISTE -->
+{% for t in techniques %}
+<div class="sana-card tech-row"
+     data-cat="{{ t[2] }}"
+     style="margin-bottom:12px">
+
+    <!-- HEADER -->
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;margin-bottom:14px">
+        <div>
+            <div style="font-size:16px;font-weight:800;
+                        color:#f1f5f9">{{ t[1] }}</div>
+            <div style="display:flex;gap:8px;margin-top:5px;
+                        flex-wrap:wrap">
+                {% if t[2] %}
+                <span class="sana-badge sana-badge-blue">{{ t[2] }}</span>
+                {% endif %}
+                {% if t[4] %}
+                <span class="sana-badge sana-badge-gray">{{ t[4] }}</span>
+                {% endif %}
+                {% if t[3] %}
+                <span style="font-size:11px;color:#64748b">
+                    Découverte : {{ t[3] }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ t[0] }}">
+            <button type="submit" class="sana-btn sana-btn-danger"
+                    style="padding:5px 10px;font-size:11px">
+                <i class="ti ti-trash"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- CONTENU EN GRILLE -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;
+                gap:14px;font-size:13px">
+        {% if t[5] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#00d2b2;
+                        text-transform:uppercase;margin-bottom:6px">
+                Objectif
+            </div>
+            <div style="color:#94a3b8;line-height:1.6">{{ t[5] }}</div>
+        </div>
+        {% endif %}
+
+        {% if t[6] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#f59e0b;
+                        text-transform:uppercase;margin-bottom:6px">
+                Méthodologie
+            </div>
+            <div style="color:#94a3b8;line-height:1.6">{{ t[6] }}</div>
+        </div>
+        {% endif %}
+
+        {% if t[7] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#8b5cf6;
+                        text-transform:uppercase;margin-bottom:6px">
+                Cas concret
+            </div>
+            <div style="color:#94a3b8;line-height:1.6">{{ t[7] }}</div>
+        </div>
+        {% endif %}
+
+        {% if t[8] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#10b981;
+                        text-transform:uppercase;margin-bottom:6px">
+                Résultats obtenus
+            </div>
+            <div style="color:#94a3b8;line-height:1.6">{{ t[8] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if t[9] or t[10] %}
+    <div style="display:grid;grid-template-columns:1fr 1fr;
+                gap:14px;margin-top:12px;font-size:13px">
+        {% if t[9] %}
+        <div style="background:#022c22;border-radius:8px;
+                    padding:12px;border-left:3px solid #00d2b2">
+            <div style="font-size:10px;font-weight:700;color:#00d2b2;
+                        text-transform:uppercase;margin-bottom:6px">
+                Avantages
+            </div>
+            <div style="color:#6ee7b7;line-height:1.6">{{ t[9] }}</div>
+        </div>
+        {% endif %}
+        {% if t[10] %}
+        <div style="background:#2d0a0a;border-radius:8px;
+                    padding:12px;border-left:3px solid #ef4444">
+            <div style="font-size:10px;font-weight:700;color:#ef4444;
+                        text-transform:uppercase;margin-bottom:6px">
+                Limites
+            </div>
+            <div style="color:#fca5a5;line-height:1.6">{{ t[10] }}</div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if t[11] %}
+    <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+        {% for tag in t[11].split(',') %}
+        <span class="sana-badge sana-badge-gray">{{ tag.strip() }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% if not techniques %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucune technique — commence par Sanger ou PCR.
+</div>
+{% endif %}
+
+<!-- MODAL -->
+<div id="modal-tech"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:620px;border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
+                Nouvelle technique
+            </h3>
+            <button onclick="document.getElementById('modal-tech').style.display='none'"
+                    style="background:none;border:none;
+                           color:#64748b;font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Nom *</label>
+                    <input type="text" name="nom" class="sana-input"
+                           placeholder="PCR, Sanger, Western Blot..." required>
+                </div>
+                <div>
+                    <label class="sana-label">Année</label>
+                    <input type="number" name="annee" class="sana-input"
+                           placeholder="1977">
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Catégorie</label>
+                    <select name="categorie" class="sana-input">
+                        <option value="sequencage">Séquençage</option>
+                        <option value="pcr">PCR</option>
+                        <option value="biologie_mol">Biologie moléculaire</option>
+                        <option value="bioinformatique">Bioinformatique</option>
+                        <option value="statistiques">Statistiques</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="sana-label">Découverte par</label>
+                    <input type="text" name="decouverte" class="sana-input"
+                           placeholder="Sanger, Mullis...">
+                </div>
+            </div>
+
+            <label class="sana-label">Objectif</label>
+            <textarea name="objectif" class="sana-input" rows="2"
+                      placeholder="À quoi ça sert ?"></textarea>
+
+            <label class="sana-label">Méthodologie</label>
+            <textarea name="methodologie" class="sana-input" rows="3"
+                      placeholder="Comment ça marche ? Étapes clés..."></textarea>
+
+            <label class="sana-label">Cas concret</label>
+            <textarea name="cas_concret" class="sana-input" rows="2"
+                      placeholder="Exemple d'application dans ton projet..."></textarea>
+
+            <label class="sana-label">Résultats obtenus</label>
+            <textarea name="resultat" class="sana-input" rows="2"
+                      placeholder="Quel type de données produit cette technique ?"></textarea>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Avantages</label>
+                    <textarea name="avantages" class="sana-input" rows="2"
+                              placeholder="Points forts..."></textarea>
+                </div>
+                <div>
+                    <label class="sana-label">Limites</label>
+                    <textarea name="limites" class="sana-input" rows="2"
+                              placeholder="Points faibles, biais..."></textarea>
+                </div>
+            </div>
+
+            <label class="sana-label">Tags</label>
+            <input type="text" name="tags" class="sana-input"
+                   placeholder="ADN, génotypage, BSF, Illumina...">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;
+                        margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-tech').style.display='none'"
+                        class="sana-btn sana-btn-ghost">
+                    Annuler
+                </button>
+                <button type="submit" class="sana-btn sana-btn-primary">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterTech() {
+    const q   = document.getElementById('searchTech')
+                         .value.toLowerCase();
+    const cat = document.getElementById('filterCat').value;
+    document.querySelectorAll('.tech-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const catOk  = cat === 'all' || r.dataset.cat === cat;
+        r.style.display = (textOk && catOk) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}
