@@ -1,0 +1,207 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Apprentissage - SanaThèse{% endblock %}
+{% block page_title %}Apprentissage{% endblock %}
+{% block page_sub %}{{ sujets|length }} sujet(s) · R · Python · Bash · Stats{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-appr').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTRES -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <input type="text" id="searchAppr"
+           placeholder="Rechercher..."
+           onkeyup="filterAppr()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+    <select id="filterCat" onchange="filterAppr()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Toutes catégories</option>
+        <option value="r">R</option>
+        <option value="python">Python</option>
+        <option value="bash">Bash</option>
+        <option value="stats">Statistiques</option>
+        <option value="bioinfo">Bioinformatique</option>
+        <option value="autre">Autre</option>
+    </select>
+    <select id="filterMaitrise" onchange="filterAppr()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Tout niveau de maîtrise</option>
+        <option value="1">Maîtrisé</option>
+        <option value="0">À revoir</option>
+    </select>
+</div>
+
+<!-- LISTE -->
+{% for s in sujets %}
+<div class="sana-card appr-row"
+     data-cat="{{ s[2] }}" data-maitrise="{{ s[6] }}"
+     style="margin-bottom:12px">
+
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;margin-bottom:14px">
+        <div>
+            <div style="font-size:16px;font-weight:800;color:#f1f5f9">
+                {{ s[1] }}
+                {% if s[6] %}
+                <span style="color:#10b981;font-size:13px">✓</span>
+                {% endif %}
+            </div>
+            <div style="display:flex;gap:8px;margin-top:5px;flex-wrap:wrap">
+                {% if s[2] %}<span class="sana-badge sana-badge-blue">{{ s[2] }}</span>{% endif %}
+                {% if s[5] %}<span class="sana-badge sana-badge-gray">{{ s[5] }}</span>{% endif %}
+            </div>
+        </div>
+        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ s[0] }}">
+            <button type="submit" class="sana-btn sana-btn-danger"
+                    style="padding:5px 10px;font-size:11px">
+                <i class="ti ti-trash"></i>
+            </button>
+        </form>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px">
+        {% if s[3] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#00d2b2;
+                        text-transform:uppercase;margin-bottom:6px">Contenu</div>
+            <div style="color:#94a3b8;line-height:1.6">{{ s[3] }}</div>
+        </div>
+        {% endif %}
+        {% if s[4] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#f59e0b;
+                        text-transform:uppercase;margin-bottom:6px">Exercices</div>
+            <div style="color:#94a3b8;line-height:1.6">{{ s[4] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if s[7] %}
+    <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+        {% for tag in s[7].split(',') %}
+        <span class="sana-badge sana-badge-gray">{{ tag.strip() }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Toggle maîtrise -->
+    <form method="POST" style="margin-top:12px">
+        <input type="hidden" name="action" value="toggle_maitrise">
+        <input type="hidden" name="id" value="{{ s[0] }}">
+        <button type="submit" class="sana-btn {% if s[6] %}sana-btn-primary{% else %}sana-btn-ghost{% endif %}"
+                style="font-size:11px;padding:5px 10px">
+            {% if s[6] %}✓ Maîtrisé{% else %}Marquer comme maîtrisé{% endif %}
+        </button>
+    </form>
+</div>
+{% endfor %}
+
+{% if not sujets %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucun sujet - commence par R ou Python.
+</div>
+{% endif %}
+
+<!-- MODAL -->
+<div id="modal-appr"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:620px;border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">Nouveau sujet</h3>
+            <button onclick="document.getElementById('modal-appr').style.display='none'"
+                    style="background:none;border:none;color:#64748b;
+                           font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <label class="sana-label">Sujet *</label>
+            <input type="text" name="sujet" class="sana-input"
+                   placeholder="dplyr, ggplot2, GBS analysis..." required>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Catégorie</label>
+                    <select name="categorie" class="sana-input">
+                        <option value="r">R</option>
+                        <option value="python">Python</option>
+                        <option value="bash">Bash</option>
+                        <option value="stats">Statistiques</option>
+                        <option value="bioinfo">Bioinformatique</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="sana-label">Niveau</label>
+                    <select name="niveau" class="sana-input">
+                        <option value="debutant">Débutant</option>
+                        <option value="intermediaire">Intermédiaire</option>
+                        <option value="avance">Avancé</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="sana-label">Contenu / notes</label>
+            <textarea name="contenu" class="sana-input" rows="3"
+                      placeholder="Concepts clés, syntaxe, ressources..."></textarea>
+
+            <label class="sana-label">Exercices</label>
+            <textarea name="exercices" class="sana-input" rows="2"
+                      placeholder="À pratiquer / déjà fait..."></textarea>
+
+            <label class="sana-label">Tags</label>
+            <input type="text" name="tags" class="sana-input"
+                   placeholder="GBS, génomique, BSF...">
+
+            <label style="display:flex;align-items:center;gap:8px;
+                          margin-top:10px;font-size:13px;color:#94a3b8">
+                <input type="checkbox" name="maitrise"> Déjà maîtrisé
+            </label>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+                <button type="button"
+                        onclick="document.getElementById('modal-appr').style.display='none'"
+                        class="sana-btn sana-btn-ghost">Annuler</button>
+                <button type="submit" class="sana-btn sana-btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterAppr() {
+    const q  = document.getElementById('searchAppr').value.toLowerCase();
+    const cat = document.getElementById('filterCat').value;
+    const mst = document.getElementById('filterMaitrise').value;
+    document.querySelectorAll('.appr-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const catOk  = cat === 'all' || r.dataset.cat === cat;
+        const mOk    = mst === 'all' || r.dataset.maitrise === mst;
+        r.style.display = (textOk && catOk && mOk) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

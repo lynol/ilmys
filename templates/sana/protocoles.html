@@ -1,0 +1,157 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Protocoles - SanaThèse{% endblock %}
+{% block page_title %}Protocoles{% endblock %}
+{% block page_sub %}{{ protocoles|length }} protocole(s) · Versions · Étapes · Paramètres{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-proto').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTRE -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <input type="text" id="searchProto"
+           placeholder="Rechercher..."
+           onkeyup="filterProto()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+</div>
+
+<!-- LISTE -->
+{% for p in protocoles %}
+<div class="sana-card proto-row" style="margin-bottom:12px">
+
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;margin-bottom:14px">
+        <div>
+            <div style="font-size:16px;font-weight:800;color:#f1f5f9">
+                {{ p[1] }}
+                {% if p[2] %}<span style="color:#64748b;font-size:12px"> · v{{ p[2] }}</span>{% endif %}
+            </div>
+            {% if p[5] %}
+            <div style="font-size:11px;color:#64748b;margin-top:5px">
+                Modifié le {{ p[5] }}
+            </div>
+            {% endif %}
+        </div>
+        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ p[0] }}">
+            <button type="submit" class="sana-btn sana-btn-danger"
+                    style="padding:5px 10px;font-size:11px">
+                <i class="ti ti-trash"></i>
+            </button>
+        </form>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px">
+        {% if p[3] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#00d2b2;
+                        text-transform:uppercase;margin-bottom:6px">Étapes</div>
+            <div style="color:#94a3b8;line-height:1.6;white-space:pre-line">{{ p[3] }}</div>
+        </div>
+        {% endif %}
+        {% if p[4] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#f59e0b;
+                        text-transform:uppercase;margin-bottom:6px">Paramètres</div>
+            <div style="color:#94a3b8;line-height:1.6;white-space:pre-line">{{ p[4] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if p[6] %}
+    <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+        {% for tag in p[6].split(',') %}
+        <span class="sana-badge sana-badge-gray">{{ tag.strip() }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% if not protocoles %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucun protocole - commence par ton extraction ADN/ARN.
+</div>
+{% endif %}
+
+<!-- MODAL -->
+<div id="modal-proto"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:620px;border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">Nouveau protocole</h3>
+            <button onclick="document.getElementById('modal-proto').style.display='none'"
+                    style="background:none;border:none;color:#64748b;
+                           font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Nom *</label>
+                    <input type="text" name="nom" class="sana-input"
+                           placeholder="Extraction ADN, GBS library prep..." required>
+                </div>
+                <div>
+                    <label class="sana-label">Version</label>
+                    <input type="text" name="version" class="sana-input" placeholder="1.0">
+                </div>
+            </div>
+
+            <label class="sana-label">Étapes</label>
+            <textarea name="etapes" class="sana-input" rows="4"
+                      placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+
+            <label class="sana-label">Paramètres</label>
+            <textarea name="parametres" class="sana-input" rows="3"
+                      placeholder="Température, temps, concentrations..."></textarea>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Date de modification</label>
+                    <input type="date" name="date_modif" class="sana-input">
+                </div>
+                <div>
+                    <label class="sana-label">Tags</label>
+                    <input type="text" name="tags" class="sana-input" placeholder="BSF, GBS, ADN...">
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+                <button type="button"
+                        onclick="document.getElementById('modal-proto').style.display='none'"
+                        class="sana-btn sana-btn-ghost">Annuler</button>
+                <button type="submit" class="sana-btn sana-btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterProto() {
+    const q = document.getElementById('searchProto').value.toLowerCase();
+    document.querySelectorAll('.proto-row').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

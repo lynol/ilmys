@@ -2376,10 +2376,44 @@ def sana_labo():
     return render_template('sana/labo.html', entrees=entrees)
 
 
-@app.route('/sana/protocoles')
+
+@app.route('/sana/protocoles', methods=['GET', 'POST'])
 @sana_login_required
 def sana_protocoles():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_protocoles
+                    (nom, version, etapes, parametres, date_modif, tags)
+                VALUES (%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('nom'),
+                request.form.get('version'),
+                request.form.get('etapes'),
+                request.form.get('parametres'),
+                request.form.get('date_modif') or None,
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Protocole ajouté.', 'success')
+
+        elif action == 'delete':
+            cur.execute("DELETE FROM sana_protocoles WHERE id=%s", (request.form.get('id'),))
+            mysql.connection.commit()
+            flash('Protocole supprimé.', 'success')
+
+        return redirect(url_for('sana_protocoles'))
+
+    cur.execute("SELECT * FROM sana_protocoles ORDER BY date_modif DESC, created_at DESC")
+    protocoles = cur.fetchall()
+
+    return render_template('sana/protocoles.html', protocoles=protocoles)
+
+
 
 @app.route('/sana/reactifs')
 @sana_login_required
@@ -2546,10 +2580,49 @@ def sana_taches():
 
 
 
-@app.route('/sana/apprentissage')
+@app.route('/sana/apprentissage', methods=['GET', 'POST'])
 @sana_login_required
 def sana_apprentissage():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_apprentissage
+                    (sujet, categorie, contenu, exercices, niveau, maitrise, tags)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('sujet'),
+                request.form.get('categorie'),
+                request.form.get('contenu'),
+                request.form.get('exercices'),
+                request.form.get('niveau'),
+                1 if request.form.get('maitrise') == 'on' else 0,
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Sujet ajouté.', 'success')
+
+        elif action == 'toggle_maitrise':
+            cur.execute(
+                "UPDATE sana_apprentissage SET maitrise = NOT maitrise WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+
+        elif action == 'delete':
+            cur.execute("DELETE FROM sana_apprentissage WHERE id=%s", (request.form.get('id'),))
+            mysql.connection.commit()
+            flash('Sujet supprimé.', 'success')
+
+        return redirect(url_for('sana_apprentissage'))
+
+    cur.execute("SELECT * FROM sana_apprentissage ORDER BY created_at DESC")
+    sujets = cur.fetchall()
+
+    return render_template('sana/apprentissage.html', sujets=sujets)
 
 
 
