@@ -1,0 +1,188 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Carnet de labo — SanaThèse{% endblock %}
+{% block page_title %}Carnet de labo{% endblock %}
+{% block page_sub %}{{ entrees|length }} entrée(s) · Journal de recherche{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-labo').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Nouvelle entrée
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTRES -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <input type="text" id="searchLabo"
+           placeholder="Rechercher..."
+           onkeyup="filterLabo()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+    <select id="filterType" onchange="filterLabo()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Tous types</option>
+        <option value="note">Note</option>
+        <option value="reunion">Réunion</option>
+        <option value="experience">Expérience</option>
+        <option value="decision">Décision</option>
+        <option value="observation">Observation</option>
+    </select>
+</div>
+
+<!-- ENTRÉES -->
+{% for e in entrees %}
+<div class="sana-card labo-row"
+     data-type="{{ e[4] }}"
+     style="margin-bottom:12px;padding:18px 20px;
+            border-left:3px solid
+            {% if e[4]=='reunion' %}#8b5cf6
+            {% elif e[4]=='experience' %}#00d2b2
+            {% elif e[4]=='decision' %}#f59e0b
+            {% elif e[4]=='observation' %}#3b82f6
+            {% else %}#334155{% endif %}">
+
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;gap:12px">
+        <div style="flex:1">
+            <div style="display:flex;align-items:center;
+                        gap:10px;margin-bottom:6px">
+                <span style="font-size:12px;font-weight:700;
+                             color:#64748b">
+                    {{ e[1].strftime('%d/%m/%Y') if e[1] else '—' }}
+                </span>
+                <span class="sana-badge
+                    {% if e[4]=='reunion' %}sana-badge-blue
+                    {% elif e[4]=='experience' %}sana-badge-green
+                    {% elif e[4]=='decision' %}sana-badge-orange
+                    {% else %}sana-badge-gray{% endif %}">
+                    {{ e[4] }}
+                </span>
+            </div>
+            <div style="font-size:15px;font-weight:700;
+                        color:#f1f5f9;margin-bottom:8px">
+                {{ e[2] }}
+            </div>
+            <div style="font-size:13px;color:#94a3b8;
+                        line-height:1.7;white-space:pre-wrap">
+                {{ e[3] }}
+            </div>
+            {% if e[5] %}
+            <div style="margin-top:10px;display:flex;
+                        gap:5px;flex-wrap:wrap">
+                {% for tag in e[5].split(',') %}
+                <span class="sana-badge sana-badge-gray">
+                    {{ tag.strip() }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ e[0] }}">
+            <button type="submit"
+                    class="sana-btn sana-btn-danger"
+                    style="padding:5px 10px;font-size:11px">
+                <i class="ti ti-trash"></i>
+            </button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+{% if not entrees %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucune entrée — commence par noter ta première réunion avec Alnahhas.
+</div>
+{% endif %}
+
+<!-- MODAL -->
+<div id="modal-labo"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:560px;border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
+                Nouvelle entrée
+            </h3>
+            <button onclick="document.getElementById('modal-labo').style.display='none'"
+                    style="background:none;border:none;
+                           color:#64748b;font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Date</label>
+                    <input type="date" name="date_entree"
+                           class="sana-input"
+                           value="{{ now }}">
+                </div>
+                <div>
+                    <label class="sana-label">Type</label>
+                    <select name="type_entree" class="sana-input">
+                        <option value="note">Note</option>
+                        <option value="reunion">Réunion</option>
+                        <option value="experience">Expérience</option>
+                        <option value="decision">Décision</option>
+                        <option value="observation">Observation</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="sana-label">Titre *</label>
+            <input type="text" name="titre" class="sana-input"
+                   placeholder="Ex: Réunion Alnahhas — protocole GBS"
+                   required>
+
+            <label class="sana-label">Contenu</label>
+            <textarea name="contenu" class="sana-input" rows="6"
+                      placeholder="Notes, décisions, observations..."></textarea>
+
+            <label class="sana-label">Tags</label>
+            <input type="text" name="tags" class="sana-input"
+                   placeholder="BSF, ADN, Alnahhas...">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;
+                        margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-labo').style.display='none'"
+                        class="sana-btn sana-btn-ghost">
+                    Annuler
+                </button>
+                <button type="submit" class="sana-btn sana-btn-primary">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterLabo() {
+    const q    = document.getElementById('searchLabo')
+                          .value.toLowerCase();
+    const type = document.getElementById('filterType').value;
+    document.querySelectorAll('.labo-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const typeOk = type === 'all' || r.dataset.type === type;
+        r.style.display = (textOk && typeOk) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

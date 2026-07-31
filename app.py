@@ -2333,10 +2333,48 @@ def sana_techniques():
     return render_template('sana/techniques.html',
                            techniques=techniques)
 
-@app.route('/sana/labo')
+@app.route('/sana/labo', methods=['GET', 'POST'])
 @sana_login_required
 def sana_labo():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_labo
+                    (date_entree, titre, contenu, type_entree, tags)
+                VALUES (%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('date_entree') or date.today(),
+                request.form.get('titre'),
+                request.form.get('contenu'),
+                request.form.get('type_entree'),
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Entrée ajoutée.', 'success')
+
+        elif action == 'delete':
+            cur.execute(
+                "DELETE FROM sana_labo WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+
+    cur.execute("""
+        SELECT id, date_entree, titre, contenu,
+               type_entree, tags
+        FROM sana_labo
+        ORDER BY date_entree DESC, created_at DESC
+    """)
+    entrees = cur.fetchall()
+    cur.close()
+
+    now = date.today().isoformat()
+    return render_template('sana/labo.html', entrees=entrees)
+
 
 @app.route('/sana/protocoles')
 @sana_login_required
