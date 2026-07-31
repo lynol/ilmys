@@ -2051,5 +2051,59 @@ def admin_stats():
         status_count    = dict(status_count),
     )
 
+
+# ════════════════════════════════════
+# ─── SANA THÈSE ───
+# ════════════════════════════════════
+
+def sana_login_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('sana_logged_in'):
+            return redirect(url_for('sana_login'))
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route('/sana/login', methods=['GET', 'POST'])
+def sana_login():
+    error = None
+    if request.method == 'POST':
+        email    = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute(
+                "SELECT id, password FROM sana_users WHERE email=%s",
+                (email,)
+            )
+            user = cur.fetchone()
+            cur.close()
+            if user:
+                from werkzeug.security import check_password_hash
+                if check_password_hash(user[1], password):
+                    session['sana_logged_in'] = True
+                    session['sana_user_id']   = user[0]
+                    return redirect(url_for('sana_dashboard'))
+                else:
+                    error = 'Mot de passe incorrect.'
+            else:
+                error = 'Email non trouvé.'
+        except Exception as e:
+            error = f'Erreur : {str(e)}'
+    return render_template('sana/login.html', error=error)
+
+@app.route('/sana/logout')
+def sana_logout():
+    session.pop('sana_logged_in', None)
+    session.pop('sana_user_id', None)
+    return redirect(url_for('sana_login'))
+
+@app.route('/sana')
+@app.route('/sana/dashboard')
+@sana_login_required
+def sana_dashboard():
+    return render_template('sana/dashboard.html')
+
 if __name__ == '__main__':
     app.run(debug=False)
