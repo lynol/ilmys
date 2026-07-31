@@ -2175,9 +2175,58 @@ def sana_dashboard():
     )
 
 
+
+
+
+
+
+
+@app.route('/sana/biblio')
 @sana_login_required
-def sana_dashboard():
+def sana_biblio():
     return render_template('sana/dashboard.html')
+
+@app.route('/sana/glossaire')
+@sana_login_required
+def sana_glossaire():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/techniques')
+@sana_login_required
+def sana_techniques():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/labo')
+@sana_login_required
+def sana_labo():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/protocoles')
+@sana_login_required
+def sana_protocoles():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/reactifs')
+@sana_login_required
+def sana_reactifs():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/reseau')
+@sana_login_required
+def sana_reseau():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/taches')
+@sana_login_required
+def sana_taches():
+    return render_template('sana/dashboard.html')
+
+@app.route('/sana/apprentissage')
+@sana_login_required
+def sana_apprentissage():
+    return render_template('sana/dashboard.html')
+
+
 
 if __name__ == '__main__':
     app.run(debug=False)
