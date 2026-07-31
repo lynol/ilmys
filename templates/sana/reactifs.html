@@ -1,0 +1,197 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Réactifs - SanaThèse{% endblock %}
+{% block page_title %}Réactifs / Matériel{% endblock %}
+{% block page_sub %}{{ reactifs|length }} item(s) · Stock · Lots · Péremption{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-react').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+{% endblock %}
+
+{% block content %}
+
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <input type="text" id="searchReact"
+           placeholder="Rechercher..."
+           onkeyup="filterReact()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+    <select id="filterType" onchange="filterReact()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Tous types</option>
+        <option value="reactif">Réactif</option>
+        <option value="consommable">Consommable</option>
+        <option value="equipement">Équipement</option>
+        <option value="kit">Kit</option>
+        <option value="autre">Autre</option>
+    </select>
+</div>
+
+{% for r in reactifs %}
+<div class="sana-card react-row" data-type="{{ r[2] }}" style="margin-bottom:12px">
+
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;margin-bottom:14px">
+        <div>
+            <div style="font-size:16px;font-weight:800;color:#f1f5f9">{{ r[1] }}</div>
+            <div style="display:flex;gap:8px;margin-top:5px;flex-wrap:wrap">
+                {% if r[2] %}<span class="sana-badge sana-badge-blue">{{ r[2] }}</span>{% endif %}
+                {% if r[3] %}<span class="sana-badge sana-badge-gray">Lot {{ r[3] }}</span>{% endif %}
+                {% if r[4] %}<span style="font-size:11px;color:#64748b">{{ r[4] }}</span>{% endif %}
+            </div>
+        </div>
+        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ r[0] }}">
+            <button type="submit" class="sana-btn sana-btn-danger"
+                    style="padding:5px 10px;font-size:11px">
+                <i class="ti ti-trash"></i>
+            </button>
+        </form>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;font-size:13px">
+        {% if r[5] %}
+        <div>
+            <div style="font-size:10px;font-weight:700;color:#64748b;
+                        text-transform:uppercase;margin-bottom:4px">Réception</div>
+            <div style="color:#94a3b8">{{ r[5] }}</div>
+        </div>
+        {% endif %}
+        {% if r[6] %}
+        <div>
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;
+                        margin-bottom:4px;color:{{ '#ef4444' if r.expired else '#f59e0b' }}">
+                Péremption
+            </div>
+            <div class="expiry-date" data-date="{{ r[6] }}" style="color:#94a3b8">{{ r[6] }}</div>
+        </div>
+        {% endif %}
+        {% if r[7] %}
+        <div>
+            <div style="font-size:10px;font-weight:700;color:#64748b;
+                        text-transform:uppercase;margin-bottom:4px">Fournisseur</div>
+            <div style="color:#94a3b8">{{ r[7] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if r[8] %}
+    <div style="background:#0f172a;border-radius:8px;padding:12px;margin-top:12px">
+        <div style="color:#94a3b8;line-height:1.6;font-size:13px">{{ r[8] }}</div>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% if not reactifs %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucun item - ajoute tes premiers réactifs/kits.
+</div>
+{% endif %}
+
+<!-- MODAL -->
+<div id="modal-react"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:620px;border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">Nouvel item</h3>
+            <button onclick="document.getElementById('modal-react').style.display='none'"
+                    style="background:none;border:none;color:#64748b;
+                           font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Nom *</label>
+                    <input type="text" name="nom" class="sana-input"
+                           placeholder="Kit extraction ADN, primers..." required>
+                </div>
+                <div>
+                    <label class="sana-label">Type</label>
+                    <select name="type_item" class="sana-input">
+                        <option value="reactif">Réactif</option>
+                        <option value="consommable">Consommable</option>
+                        <option value="equipement">Équipement</option>
+                        <option value="kit">Kit</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Lot</label>
+                    <input type="text" name="lot" class="sana-input">
+                </div>
+                <div>
+                    <label class="sana-label">Quantité</label>
+                    <input type="text" name="quantite" class="sana-input" placeholder="2 boîtes, 500mL...">
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Date de réception</label>
+                    <input type="date" name="date_recep" class="sana-input">
+                </div>
+                <div>
+                    <label class="sana-label">Date de péremption</label>
+                    <input type="date" name="date_expiry" class="sana-input">
+                </div>
+            </div>
+
+            <label class="sana-label">Fournisseur</label>
+            <input type="text" name="fournisseur" class="sana-input">
+
+            <label class="sana-label">Notes</label>
+            <textarea name="notes" class="sana-input" rows="2"></textarea>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+                <button type="button"
+                        onclick="document.getElementById('modal-react').style.display='none'"
+                        class="sana-btn sana-btn-ghost">Annuler</button>
+                <button type="submit" class="sana-btn sana-btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterReact() {
+    const q = document.getElementById('searchReact').value.toLowerCase();
+    const t = document.getElementById('filterType').value;
+    document.querySelectorAll('.react-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const typeOk = t === 'all' || r.dataset.type === t;
+        r.style.display = (textOk && typeOk) ? '' : 'none';
+    });
+}
+
+// Surligne en rouge les dates de péremption dépassées ou proches (<30j)
+document.querySelectorAll('.expiry-date').forEach(el => {
+    const d = new Date(el.dataset.date);
+    const now = new Date();
+    const diffDays = (d - now) / (1000*60*60*24);
+    if (diffDays < 0) { el.style.color = '#ef4444'; el.style.fontWeight = '700'; }
+    else if (diffDays < 30) { el.style.color = '#f59e0b'; el.style.fontWeight = '700'; }
+});
+</script>
+{% endblock %}

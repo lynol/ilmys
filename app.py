@@ -2415,10 +2415,43 @@ def sana_protocoles():
 
 
 
-@app.route('/sana/reactifs')
+@app.route('/sana/reactifs', methods=['GET', 'POST'])
 @sana_login_required
 def sana_reactifs():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_reactifs
+                    (nom, type_item, lot, quantite, date_recep, date_expiry, fournisseur, notes)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('nom'),
+                request.form.get('type_item'),
+                request.form.get('lot'),
+                request.form.get('quantite'),
+                request.form.get('date_recep') or None,
+                request.form.get('date_expiry') or None,
+                request.form.get('fournisseur'),
+                request.form.get('notes'),
+            ))
+            mysql.connection.commit()
+            flash('Item ajouté.', 'success')
+
+        elif action == 'delete':
+            cur.execute("DELETE FROM sana_reactifs WHERE id=%s", (request.form.get('id'),))
+            mysql.connection.commit()
+            flash('Item supprimé.', 'success')
+
+        return redirect(url_for('sana_reactifs'))
+
+    cur.execute("SELECT * FROM sana_reactifs ORDER BY date_expiry ASC, created_at DESC")
+    reactifs = cur.fetchall()
+
+    return render_template('sana/reactifs.html', reactifs=reactifs)
 
 
 @app.route('/sana/reseau', methods=['GET', 'POST'])
@@ -2577,7 +2610,6 @@ def sana_taches():
     return render_template('sana/taches.html',
         taches=taches, jalons=jalons, stats=stats
     )
-
 
 
 @app.route('/sana/apprentissage', methods=['GET', 'POST'])
