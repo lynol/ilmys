@@ -1,5 +1,5 @@
 {% extends 'sana/base_sana.html' %}
-{% block title %}Carnet de labo — SanaThèse{% endblock %}
+{% block title %}Carnet de labo - SanaThèse{% endblock %}
 {% block page_title %}Carnet de labo{% endblock %}
 {% block page_sub %}{{ entrees|length }} entrée(s) · Journal de recherche{% endblock %}
 
@@ -52,7 +52,7 @@
                         gap:10px;margin-bottom:6px">
                 <span style="font-size:12px;font-weight:700;
                              color:#64748b">
-                    {{ e[1].strftime('%d/%m/%Y') if e[1] else '—' }}
+                    {{ e[1].strftime('%d/%m/%Y') if e[1] else '-' }}
                 </span>
                 <span class="sana-badge
                     {% if e[4]=='reunion' %}sana-badge-blue
@@ -97,7 +97,7 @@
 
 {% if not entrees %}
 <div style="text-align:center;padding:48px;color:#475569;font-size:13px">
-    Aucune entrée — commence par noter ta première réunion avec Alnahhas.
+    Aucune entrée - commence par noter ta première réunion avec Alnahhas.
 </div>
 {% endif %}
 
@@ -144,7 +144,7 @@
 
             <label class="sana-label">Titre *</label>
             <input type="text" name="titre" class="sana-input"
-                   placeholder="Ex: Réunion Alnahhas — protocole GBS"
+                   placeholder="Ex: Réunion Alnahhas - protocole GBS"
                    required>
 
             <label class="sana-label">Contenu</label>

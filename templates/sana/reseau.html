@@ -1,0 +1,205 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Réseau - SanaThèse{% endblock %}
+{% block page_title %}Réseau{% endblock %}
+{% block page_sub %}{{ contacts|length }} contact(s) · Chercheurs · Labos · Collaborateurs{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-reseau').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTRES -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+    <input type="text" id="searchReseau"
+           placeholder="Rechercher..."
+           onkeyup="filterReseau()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+    <select id="filterStatut" onchange="filterReseau()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Tous statuts</option>
+        <option value="a_contacter">À contacter</option>
+        <option value="contacte">Contacté</option>
+        <option value="en_echange">En échange</option>
+        <option value="collaboration_active">Collaboration active</option>
+    </select>
+</div>
+
+<!-- LISTE -->
+{% for c in contacts %}
+<div class="sana-card reseau-row"
+     data-statut="{{ c[7] }}"
+     style="margin-bottom:12px">
+
+    <!-- HEADER -->
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;margin-bottom:14px">
+        <div>
+            <div style="font-size:16px;font-weight:800;
+                        color:#f1f5f9">{{ c[1] }}</div>
+            <div style="display:flex;gap:8px;margin-top:5px;flex-wrap:wrap">
+                {% if c[2] %}<span class="sana-badge sana-badge-blue">{{ c[2] }}</span>{% endif %}
+                {% if c[3] %}<span class="sana-badge sana-badge-gray">{{ c[3] }}</span>{% endif %}
+                {% if c[4] %}<span style="font-size:11px;color:#64748b">{{ c[4] }}</span>{% endif %}
+            </div>
+        </div>
+        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ c[0] }}">
+            <button type="submit" class="sana-btn sana-btn-danger"
+                    style="padding:5px 10px;font-size:11px">
+                <i class="ti ti-trash"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- CONTENU -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px">
+        {% if c[5] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#00d2b2;
+                        text-transform:uppercase;margin-bottom:6px">Email</div>
+            <div style="color:#94a3b8;line-height:1.6">{{ c[5] }}</div>
+        </div>
+        {% endif %}
+        {% if c[6] %}
+        <div style="background:#0f172a;border-radius:8px;padding:12px">
+            <div style="font-size:10px;font-weight:700;color:#f59e0b;
+                        text-transform:uppercase;margin-bottom:6px">Domaine</div>
+            <div style="color:#94a3b8;line-height:1.6">{{ c[6] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if c[8] %}
+    <div style="background:#0f172a;border-radius:8px;padding:12px;margin-top:12px">
+        <div style="font-size:10px;font-weight:700;color:#8b5cf6;
+                    text-transform:uppercase;margin-bottom:6px">Notes</div>
+        <div style="color:#94a3b8;line-height:1.6">{{ c[8] }}</div>
+    </div>
+    {% endif %}
+
+    {% if c[9] %}
+    <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+        {% for tag in c[9].split(',') %}
+        <span class="sana-badge sana-badge-gray">{{ tag.strip() }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- STATUT (select inline) -->
+    <form method="POST" style="margin-top:12px">
+        <input type="hidden" name="action" value="update_statut">
+        <input type="hidden" name="id" value="{{ c[0] }}">
+        <select name="statut" onchange="this.form.submit()" class="sana-input" style="width:auto">
+            <option value="a_contacter" {% if c[7]=='a_contacter' %}selected{% endif %}>À contacter</option>
+            <option value="contacte" {% if c[7]=='contacte' %}selected{% endif %}>Contacté</option>
+            <option value="en_echange" {% if c[7]=='en_echange' %}selected{% endif %}>En échange</option>
+            <option value="collaboration_active" {% if c[7]=='collaboration_active' %}selected{% endif %}>Collaboration active</option>
+        </select>
+    </form>
+</div>
+{% endfor %}
+
+{% if not contacts %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucun contact - commence par ton superviseur.
+</div>
+{% endif %}
+
+<!-- MODAL -->
+<div id="modal-reseau"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;padding:20px">
+    <div style="background:#1e293b;border-radius:14px;padding:28px;
+                width:100%;max-width:620px;border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">Nouveau contact</h3>
+            <button onclick="document.getElementById('modal-reseau').style.display='none'"
+                    style="background:none;border:none;color:#64748b;
+                           font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <label class="sana-label">Nom *</label>
+            <input type="text" name="nom" class="sana-input" required>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Rôle</label>
+                    <input type="text" name="role" class="sana-input"
+                           placeholder="PI, post-doc, chercheur...">
+                </div>
+                <div>
+                    <label class="sana-label">Labo</label>
+                    <input type="text" name="labo" class="sana-input">
+                </div>
+            </div>
+
+            <label class="sana-label">Institution</label>
+            <input type="text" name="institution" class="sana-input">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Email</label>
+                    <input type="email" name="email" class="sana-input">
+                </div>
+                <div>
+                    <label class="sana-label">Statut</label>
+                    <select name="statut" class="sana-input">
+                        <option value="a_contacter">À contacter</option>
+                        <option value="contacte">Contacté</option>
+                        <option value="en_echange">En échange</option>
+                        <option value="collaboration_active">Collaboration active</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="sana-label">Domaine de recherche</label>
+            <textarea name="domaine" class="sana-input" rows="2"></textarea>
+
+            <label class="sana-label">Notes</label>
+            <textarea name="notes" class="sana-input" rows="2"></textarea>
+
+            <label class="sana-label">Tags</label>
+            <input type="text" name="tags" class="sana-input"
+                   placeholder="BSF, génomique, Laval...">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-reseau').style.display='none'"
+                        class="sana-btn sana-btn-ghost">Annuler</button>
+                <button type="submit" class="sana-btn sana-btn-primary">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterReseau() {
+    const q = document.getElementById('searchReseau').value.toLowerCase();
+    const st = document.getElementById('filterStatut').value;
+    document.querySelectorAll('.reseau-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const stOk = st === 'all' || r.dataset.statut === st;
+        r.style.display = (textOk && stOk) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

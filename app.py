@@ -2386,10 +2386,54 @@ def sana_protocoles():
 def sana_reactifs():
     return render_template('sana/dashboard.html')
 
-@app.route('/sana/reseau')
+
+@app.route('/sana/reseau', methods=['GET', 'POST'])
 @sana_login_required
 def sana_reseau():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_reseau
+                    (nom, role, labo, institution, email, domaine, statut, notes, tags)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('nom'),
+                request.form.get('role'),
+                request.form.get('labo'),
+                request.form.get('institution'),
+                request.form.get('email'),
+                request.form.get('domaine'),
+                request.form.get('statut') or 'a_contacter',
+                request.form.get('notes'),
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Contact ajouté.', 'success')
+
+        elif action == 'update_statut':
+            cur.execute(
+                "UPDATE sana_reseau SET statut=%s WHERE id=%s",
+                (request.form.get('statut'), request.form.get('id'))
+            )
+            mysql.connection.commit()
+            flash('Statut mis à jour.', 'success')
+
+        elif action == 'delete':
+            cur.execute("DELETE FROM sana_reseau WHERE id=%s", (request.form.get('id'),))
+            mysql.connection.commit()
+            flash('Contact supprimé.', 'success')
+
+        return redirect(url_for('sana_reseau'))
+
+    cur.execute("SELECT * FROM sana_reseau ORDER BY created_at DESC")
+    contacts = cur.fetchall()
+
+    return render_template('sana/reseau.html', contacts=contacts)
+
 
 @app.route('/sana/taches', methods=['GET', 'POST'])
 @sana_login_required

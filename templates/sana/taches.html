@@ -1,5 +1,5 @@
 {% extends 'sana/base_sana.html' %}
-{% block title %}Tâches & Suivi — SanaThèse{% endblock %}
+{% block title %}Tâches & Suivi - SanaThèse{% endblock %}
 {% block page_title %}Tâches & Suivi{% endblock %}
 {% block page_sub %}Planificateur doctoral · Jalons · Priorités{% endblock %}
 
@@ -96,7 +96,7 @@
                 </td>
                 <td>
                     <span class="sana-badge sana-badge-gray">
-                        {{ t[3] or '—' }}
+                        {{ t[3] or '-' }}
                     </span>
                 </td>
                 <td>
@@ -139,7 +139,7 @@
                                      {% else %}#94a3b8{% endif %}">
                             {{ t[6].strftime('%d/%m/%Y') }}
                         </span>
-                    {% else %}—{% endif %}
+                    {% else %}-{% endif %}
                 </td>
                 <td>
                     <form method="POST"
@@ -213,7 +213,7 @@
                         {% endif %}
                         <div style="font-size:11px;color:#475569;
                                     margin-top:6px">
-                            {{ j[3].strftime('%B %Y') if j[3] else '—' }}
+                            {{ j[3].strftime('%B %Y') if j[3] else '-' }}
                         </div>
                     </div>
                     <div style="display:flex;gap:6px;align-items:center">

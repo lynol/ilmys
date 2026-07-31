@@ -1,5 +1,5 @@
 {% extends 'sana/base_sana.html' %}
-{% block title %}Tableau de bord — SanaThèse{% endblock %}
+{% block title %}Tableau de bord - SanaThèse{% endblock %}
 {% block page_title %}Tableau de bord{% endblock %}
 {% block page_sub %}PhD Animal Sciences · ULaval · Oct. 2026{% endblock %}
 
@@ -63,7 +63,7 @@
                         </span>
                     </td>
                     <td style="color:#64748b;font-size:12px">
-                        {{ t[4].strftime('%d/%m/%Y') if t[4] else '—' }}
+                        {{ t[4].strftime('%d/%m/%Y') if t[4] else '-' }}
                     </td>
                 </tr>
                 {% endfor %}
@@ -85,13 +85,13 @@
     <div class="sana-card">
         <div class="sana-card-title">
             <i class="ti ti-notebook" style="color:#f59e0b"></i>
-            Carnet de labo — récent
+            Carnet de labo - récent
         </div>
         {% if labo_recent %}
         {% for e in labo_recent %}
         <div style="padding:10px 0;border-bottom:1px solid #334155">
             <div style="font-size:12px;color:#64748b;margin-bottom:3px">
-                {{ e[1].strftime('%d/%m/%Y') if e[1] else '—' }}
+                {{ e[1].strftime('%d/%m/%Y') if e[1] else '-' }}
                 <span class="sana-badge sana-badge-gray"
                       style="margin-left:6px">{{ e[3] }}</span>
             </div>
@@ -134,7 +134,7 @@
                     {{ j[1] }}
                 </div>
                 <div style="font-size:11px;color:#64748b;margin-top:2px">
-                    {{ j[3].strftime('%B %Y') if j[3] else '—' }}
+                    {{ j[3].strftime('%B %Y') if j[3] else '-' }}
                 </div>
             </div>
             <span class="sana-badge
@@ -148,7 +148,7 @@
     </div>
     {% else %}
     <div style="text-align:center;padding:24px;color:#475569;font-size:13px">
-        Aucun jalon défini —
+        Aucun jalon défini -
         <a href="{{ url_for('sana_taches') }}"
            style="color:#00d2b2;text-decoration:none">
             Ajouter des jalons →
