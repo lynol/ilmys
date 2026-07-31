@@ -1,0 +1,422 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Tâches & Suivi — SanaThèse{% endblock %}
+{% block page_title %}Tâches & Suivi{% endblock %}
+{% block page_sub %}Planificateur doctoral · Jalons · Priorités{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-tache').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Nouvelle tâche
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- STATS -->
+<div class="sana-stat-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="sana-stat" style="border-top-color:#64748b">
+        <div class="sana-stat-val">{{ stats.total }}</div>
+        <div class="sana-stat-label">Total tâches</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#f59e0b">
+        <div class="sana-stat-val">{{ stats.a_faire }}</div>
+        <div class="sana-stat-label">À faire</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#00d2b2">
+        <div class="sana-stat-val">{{ stats.en_cours }}</div>
+        <div class="sana-stat-label">En cours</div>
+    </div>
+    <div class="sana-stat" style="border-top-color:#10b981">
+        <div class="sana-stat-val">{{ stats.termine }}</div>
+        <div class="sana-stat-label">Terminées</div>
+    </div>
+</div>
+
+<!-- FILTRES -->
+<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button onclick="filtrer('all')" id="f-all"
+            class="sana-btn sana-btn-primary"
+            style="font-size:12px;padding:6px 14px">
+        Toutes
+    </button>
+    <button onclick="filtrer('a_faire')" id="f-a_faire"
+            class="sana-btn sana-btn-ghost"
+            style="font-size:12px;padding:6px 14px">
+        À faire
+    </button>
+    <button onclick="filtrer('en_cours')" id="f-en_cours"
+            class="sana-btn sana-btn-ghost"
+            style="font-size:12px;padding:6px 14px">
+        En cours
+    </button>
+    <button onclick="filtrer('termine')" id="f-termine"
+            class="sana-btn sana-btn-ghost"
+            style="font-size:12px;padding:6px 14px">
+        Terminées
+    </button>
+    <input type="text" id="searchTache"
+           placeholder="Rechercher..."
+           onkeyup="filtrer(currentFilter)"
+           style="padding:6px 12px;background:#1e293b;
+                  border:1px solid #334155;border-radius:8px;
+                  color:#f1f5f9;font-size:13px;
+                  margin-left:auto;width:200px">
+</div>
+
+<!-- TÂCHES -->
+<div class="sana-card">
+    <div class="sana-card-title">
+        <i class="ti ti-checklist" style="color:#00d2b2"></i>
+        Tâches
+    </div>
+    <table class="sana-table" id="tachesTable">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Catégorie</th>
+                <th>Priorité</th>
+                <th>Statut</th>
+                <th>Échéance</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in taches %}
+            <tr class="tache-row" data-statut="{{ t[5] }}">
+                <td>
+                    <div style="font-weight:600;color:#f1f5f9">
+                        {{ t[1] }}
+                    </div>
+                    {% if t[2] %}
+                    <div style="font-size:11px;color:#64748b;
+                                margin-top:2px">
+                        {{ t[2][:80] }}{% if t[2]|length > 80 %}...{% endif %}
+                    </div>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="sana-badge sana-badge-gray">
+                        {{ t[3] or '—' }}
+                    </span>
+                </td>
+                <td>
+                    <span class="sana-badge
+                        {% if t[4]=='haute' %}sana-badge-red
+                        {% elif t[4]=='normale' %}sana-badge-blue
+                        {% else %}sana-badge-gray{% endif %}">
+                        {{ t[4] }}
+                    </span>
+                </td>
+                <td>
+                    <form method="POST" style="display:inline">
+                        <input type="hidden" name="action"
+                               value="update_statut">
+                        <input type="hidden" name="id" value="{{ t[0] }}">
+                        <select name="statut" onchange="this.form.submit()"
+                                style="background:#0f172a;border:1px solid #334155;
+                                       color:#f1f5f9;border-radius:6px;
+                                       padding:3px 6px;font-size:12px;
+                                       cursor:pointer">
+                            <option value="a_faire"
+                                {% if t[5]=='a_faire' %}selected{% endif %}>
+                                À faire
+                            </option>
+                            <option value="en_cours"
+                                {% if t[5]=='en_cours' %}selected{% endif %}>
+                                En cours
+                            </option>
+                            <option value="termine"
+                                {% if t[5]=='termine' %}selected{% endif %}>
+                                Terminée
+                            </option>
+                        </select>
+                    </form>
+                </td>
+                <td style="color:#64748b;font-size:12px">
+                    {% if t[6] %}
+                        {% set today = namespace(val=none) %}
+                        <span style="color:{% if t[6] < today.val %}#ef4444
+                                     {% else %}#94a3b8{% endif %}">
+                            {{ t[6].strftime('%d/%m/%Y') }}
+                        </span>
+                    {% else %}—{% endif %}
+                </td>
+                <td>
+                    <form method="POST"
+                          onsubmit="return confirm('Supprimer ?')">
+                        <input type="hidden" name="action"
+                               value="delete_tache">
+                        <input type="hidden" name="id" value="{{ t[0] }}">
+                        <button type="submit"
+                                class="sana-btn sana-btn-danger"
+                                style="padding:4px 10px;font-size:11px">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- JALONS -->
+<div class="sana-card">
+    <div class="sana-card-title" style="justify-content:space-between">
+        <span>
+            <i class="ti ti-timeline" style="color:#8b5cf6"></i>
+            Jalons de la thèse
+        </span>
+        <button onclick="document.getElementById('modal-jalon').style.display='flex'"
+                class="sana-btn sana-btn-ghost"
+                style="font-size:12px;padding:5px 12px">
+            + Jalon
+        </button>
+    </div>
+
+    <div style="position:relative;padding-left:20px">
+        {% for j in jalons %}
+        <div style="display:flex;gap:16px;margin-bottom:20px;
+                    position:relative">
+            <!-- Ligne verticale -->
+            {% if not loop.last %}
+            <div style="position:absolute;left:-13px;top:16px;
+                        width:2px;height:calc(100% + 20px);
+                        background:#334155"></div>
+            {% endif %}
+
+            <!-- Point -->
+            <div style="width:14px;height:14px;border-radius:50%;
+                        flex-shrink:0;margin-top:3px;
+                        position:absolute;left:-20px;
+                        background:{% if j[5]=='termine' %}#00d2b2
+                        {% elif j[5]=='en_cours' %}#f59e0b
+                        {% else %}#334155{% endif %};
+                        border:2px solid #0f172a">
+            </div>
+
+            <!-- Contenu -->
+            <div style="flex:1;background:#0f172a;border-radius:10px;
+                        padding:14px 16px;border:1px solid #334155">
+                <div style="display:flex;justify-content:space-between;
+                            align-items:flex-start;gap:10px">
+                    <div>
+                        <div style="font-weight:700;color:#f1f5f9;
+                                    font-size:14px">
+                            {{ j[1] }}
+                        </div>
+                        {% if j[2] %}
+                        <div style="font-size:12px;color:#64748b;
+                                    margin-top:3px">
+                            {{ j[2] }}
+                        </div>
+                        {% endif %}
+                        <div style="font-size:11px;color:#475569;
+                                    margin-top:6px">
+                            {{ j[3].strftime('%B %Y') if j[3] else '—' }}
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:6px;align-items:center">
+                        <form method="POST">
+                            <input type="hidden" name="action"
+                                   value="update_jalon">
+                            <input type="hidden" name="id"
+                                   value="{{ j[0] }}">
+                            <select name="statut"
+                                    onchange="this.form.submit()"
+                                    style="background:#1e293b;
+                                           border:1px solid #334155;
+                                           color:#f1f5f9;border-radius:6px;
+                                           padding:3px 6px;font-size:11px;
+                                           cursor:pointer">
+                                <option value="a_venir"
+                                    {% if j[5]=='a_venir' %}selected{% endif %}>
+                                    À venir
+                                </option>
+                                <option value="en_cours"
+                                    {% if j[5]=='en_cours' %}selected{% endif %}>
+                                    En cours
+                                </option>
+                                <option value="termine"
+                                    {% if j[5]=='termine' %}selected{% endif %}>
+                                    Terminé
+                                </option>
+                            </select>
+                        </form>
+                        <form method="POST"
+                              onsubmit="return confirm('Supprimer ?')">
+                            <input type="hidden" name="action"
+                                   value="delete_jalon">
+                            <input type="hidden" name="id"
+                                   value="{{ j[0] }}">
+                            <button type="submit"
+                                    class="sana-btn sana-btn-danger"
+                                    style="padding:3px 8px;font-size:11px">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not jalons %}
+        <div style="text-align:center;padding:24px;color:#475569;
+                    font-size:13px">
+            Aucun jalon défini pour l'instant
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- MODAL TÂCHE -->
+<div id="modal-tache"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.7);z-index:1000;
+            align-items:center;justify-content:center">
+    <div style="background:#1e293b;border-radius:14px;
+                padding:28px;width:100%;max-width:500px;
+                border:1px solid #334155">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
+                Nouvelle tâche
+            </h3>
+            <button onclick="document.getElementById('modal-tache').style.display='none'"
+                    style="background:none;border:none;color:#64748b;
+                           font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add_tache">
+            <label class="sana-label">Titre *</label>
+            <input type="text" name="titre" class="sana-input"
+                   placeholder="Ex: Lire Liu et al. 2019" required>
+
+            <label class="sana-label">Description</label>
+            <textarea name="description" class="sana-input"
+                      placeholder="Détails, contexte..."></textarea>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Catégorie</label>
+                    <select name="categorie" class="sana-input">
+                        <option value="lecture">Lecture</option>
+                        <option value="redaction">Rédaction</option>
+                        <option value="analyse">Analyse</option>
+                        <option value="labo">Labo</option>
+                        <option value="admin">Administratif</option>
+                        <option value="formation">Formation</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="sana-label">Priorité</label>
+                    <select name="priorite" class="sana-input">
+                        <option value="normale">Normale</option>
+                        <option value="haute">Haute</option>
+                        <option value="basse">Basse</option>
+                    </select>
+                </div>
+            </div>
+
+            <label class="sana-label">Date d'échéance</label>
+            <input type="date" name="date_echeance" class="sana-input">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;
+                        margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-tache').style.display='none'"
+                        class="sana-btn sana-btn-ghost">
+                    Annuler
+                </button>
+                <button type="submit" class="sana-btn sana-btn-primary">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL JALON -->
+<div id="modal-jalon"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.7);z-index:1000;
+            align-items:center;justify-content:center">
+    <div style="background:#1e293b;border-radius:14px;
+                padding:28px;width:100%;max-width:460px;
+                border:1px solid #334155">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
+                Nouveau jalon
+            </h3>
+            <button onclick="document.getElementById('modal-jalon').style.display='none'"
+                    style="background:none;border:none;color:#64748b;
+                           font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add_jalon">
+
+            <label class="sana-label">Titre *</label>
+            <input type="text" name="titre" class="sana-input"
+                   placeholder="Ex: Dépôt du chapitre 1" required>
+
+            <label class="sana-label">Description</label>
+            <textarea name="description" class="sana-input"
+                      placeholder="Détails..."></textarea>
+
+            <label class="sana-label">Date prévue</label>
+            <input type="date" name="date_prevue" class="sana-input">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;
+                        margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-jalon').style.display='none'"
+                        class="sana-btn sana-btn-ghost">
+                    Annuler
+                </button>
+                <button type="submit" class="sana-btn sana-btn-primary">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentFilter = 'all';
+
+function filtrer(statut) {
+    currentFilter = statut;
+    const q = document.getElementById('searchTache')
+                       .value.toLowerCase();
+
+    document.querySelectorAll('.tache-row').forEach(r => {
+        const statutOk = statut === 'all' ||
+                         r.dataset.statut === statut;
+        const textOk   = r.textContent.toLowerCase().includes(q);
+        r.style.display = (statutOk && textOk) ? '' : 'none';
+    });
+
+    document.querySelectorAll('[id^="f-"]').forEach(b => {
+        b.className = 'sana-btn sana-btn-ghost';
+        b.style.fontSize = '12px';
+        b.style.padding  = '6px 14px';
+    });
+    const active = document.getElementById('f-' + statut);
+    if (active) {
+        active.className = 'sana-btn sana-btn-primary';
+        active.style.fontSize = '12px';
+        active.style.padding  = '6px 14px';
+    }
+}
+</script>
+{% endblock %}

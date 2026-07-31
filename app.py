@@ -14,6 +14,7 @@ from flask_mail import Mail, Message
 import secrets
 from datetime import datetime, timedelta
 from collections import Counter
+from datetime import date
 
 import re
 import time
@@ -2181,10 +2182,58 @@ def sana_dashboard():
 
 
 
-@app.route('/sana/biblio')
+@app.route('/sana/biblio', methods=['GET', 'POST'])
 @sana_login_required
 def sana_biblio():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add':
+            cur.execute("""
+                INSERT INTO sana_biblio
+                    (auteurs, annee, titre, journal, doi, lien, resume, tags)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('auteurs'),
+                request.form.get('annee') or None,
+                request.form.get('titre'),
+                request.form.get('journal'),
+                request.form.get('doi'),
+                request.form.get('lien'),
+                request.form.get('resume'),
+                request.form.get('tags'),
+            ))
+            mysql.connection.commit()
+            flash('Référence ajoutée.', 'success')
+
+        elif action == 'delete':
+            cur.execute(
+                "DELETE FROM sana_biblio WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+            flash('Référence supprimée.', 'success')
+
+        elif action == 'toggle_lu':
+            cur.execute("""
+                UPDATE sana_biblio SET lu = 1 - lu WHERE id=%s
+            """, (request.form.get('id'),))
+            mysql.connection.commit()
+
+    cur.execute("""
+        SELECT id, auteurs, annee, titre, journal,
+               doi, lien, resume, tags, lu
+        FROM sana_biblio
+        ORDER BY annee DESC, auteurs ASC
+    """)
+    refs = cur.fetchall()
+    cur.close()
+
+    return render_template('sana/biblio.html', refs=refs)
+
+
 
 @app.route('/sana/glossaire')
 @sana_login_required
@@ -2216,10 +2265,116 @@ def sana_reactifs():
 def sana_reseau():
     return render_template('sana/dashboard.html')
 
-@app.route('/sana/taches')
+@app.route('/sana/taches', methods=['GET', 'POST'])
 @sana_login_required
 def sana_taches():
-    return render_template('sana/dashboard.html')
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add_tache':
+            cur.execute("""
+                INSERT INTO sana_taches
+                    (titre, description, categorie, priorite,
+                     statut, date_echeance)
+                VALUES (%s, %s, %s, %s, 'a_faire', %s)
+            """, (
+                request.form.get('titre'),
+                request.form.get('description'),
+                request.form.get('categorie'),
+                request.form.get('priorite'),
+                request.form.get('date_echeance') or None
+            ))
+            mysql.connection.commit()
+            flash('Tâche ajoutée.', 'success')
+
+        elif action == 'update_statut':
+            cur.execute("""
+                UPDATE sana_taches SET statut=%s,
+                date_done=%s WHERE id=%s
+            """, (
+                request.form.get('statut'),
+                date.today() if request.form.get('statut') == 'termine'
+                else None,
+                request.form.get('id')
+            ))
+            mysql.connection.commit()
+
+        elif action == 'delete_tache':
+            cur.execute(
+                "DELETE FROM sana_taches WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+
+        elif action == 'add_jalon':
+            cur.execute("""
+                INSERT INTO sana_jalons
+                    (titre, description, date_prevue, statut)
+                VALUES (%s, %s, %s, 'a_venir')
+            """, (
+                request.form.get('titre'),
+                request.form.get('description'),
+                request.form.get('date_prevue') or None
+            ))
+            mysql.connection.commit()
+            flash('Jalon ajouté.', 'success')
+
+        elif action == 'update_jalon':
+            cur.execute("""
+                UPDATE sana_jalons SET statut=%s WHERE id=%s
+            """, (
+                request.form.get('statut'),
+                request.form.get('id')
+            ))
+            mysql.connection.commit()
+
+        elif action == 'delete_jalon':
+            cur.execute(
+                "DELETE FROM sana_jalons WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+
+    # Tâches par statut
+    cur.execute("""
+        SELECT id, titre, description, categorie,
+               priorite, statut, date_echeance, date_done
+        FROM sana_taches
+        ORDER BY
+            CASE priorite
+                WHEN 'haute'   THEN 1
+                WHEN 'normale' THEN 2
+                ELSE 3
+            END,
+            date_echeance ASC
+    """)
+    taches = cur.fetchall()
+
+    # Jalons
+    cur.execute("""
+        SELECT id, titre, description, date_prevue,
+               date_reelle, statut
+        FROM sana_jalons
+        ORDER BY date_prevue ASC
+    """)
+    jalons = cur.fetchall()
+
+    # Stats
+    stats = {
+        'total'    : len(taches),
+        'a_faire'  : sum(1 for t in taches if t[5] == 'a_faire'),
+        'en_cours' : sum(1 for t in taches if t[5] == 'en_cours'),
+        'termine'  : sum(1 for t in taches if t[5] == 'termine'),
+    }
+
+    cur.close()
+    return render_template('sana/taches.html',
+        taches=taches, jalons=jalons, stats=stats
+    )
+
+
 
 @app.route('/sana/apprentissage')
 @sana_login_required

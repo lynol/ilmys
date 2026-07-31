@@ -1,0 +1,222 @@
+{% extends 'sana/base_sana.html' %}
+{% block title %}Bibliographie — SanaThèse{% endblock %}
+{% block page_title %}Bibliographie{% endblock %}
+{% block page_sub %}{{ refs|length }} référence(s) · Papers · DOI · Résumés{% endblock %}
+
+{% block topbar_actions %}
+<button onclick="document.getElementById('modal-ref').style.display='flex'"
+        class="sana-btn sana-btn-primary">
+    <i class="ti ti-plus"></i> Ajouter
+</button>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTRES -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;
+            align-items:center">
+    <input type="text" id="searchRef"
+           placeholder="Rechercher auteur, titre, tag..."
+           onkeyup="filterRefs()"
+           style="flex:1;min-width:200px;padding:8px 12px;
+                  background:#1e293b;border:1px solid #334155;
+                  border-radius:8px;color:#f1f5f9;font-size:13px">
+    <select id="filterLu" onchange="filterRefs()"
+            style="padding:8px 12px;background:#1e293b;
+                   border:1px solid #334155;border-radius:8px;
+                   color:#f1f5f9;font-size:13px">
+        <option value="all">Tous</option>
+        <option value="0">Non lus</option>
+        <option value="1">Lus</option>
+    </select>
+</div>
+
+<!-- LISTE REFS -->
+<div id="refsList">
+{% for r in refs %}
+<div class="sana-card ref-row"
+     data-lu="{{ r[9] }}"
+     style="margin-bottom:12px;padding:18px 20px">
+    <div style="display:flex;justify-content:space-between;
+                align-items:flex-start;gap:12px">
+        <div style="flex:1">
+            <!-- Titre -->
+            <div style="font-size:14px;font-weight:700;
+                        color:#f1f5f9;margin-bottom:4px">
+                {{ r[3] }}
+            </div>
+            <!-- Auteurs + année -->
+            <div style="font-size:12px;color:#00d2b2;margin-bottom:6px">
+                {{ r[1] }}
+                {% if r[2] %} · {{ r[2] }}{% endif %}
+                {% if r[4] %} · <em style="color:#64748b">{{ r[4] }}</em>{% endif %}
+            </div>
+            <!-- Résumé -->
+            {% if r[7] %}
+            <div style="font-size:12px;color:#94a3b8;
+                        line-height:1.6;margin-bottom:8px">
+                {{ r[7] }}
+            </div>
+            {% endif %}
+            <!-- Tags -->
+            {% if r[8] %}
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+                {% for tag in r[8].split(',') %}
+                <span class="sana-badge sana-badge-blue"
+                      style="font-size:10px">
+                    {{ tag.strip() }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;flex-direction:column;
+                    gap:6px;flex-shrink:0">
+            {% if r[6] %}
+            <a href="{{ r[6] }}" target="_blank"
+               class="sana-btn sana-btn-ghost"
+               style="padding:5px 10px;font-size:11px;
+                      text-decoration:none;text-align:center">
+                <i class="ti ti-external-link"></i> Lien
+            </a>
+            {% endif %}
+
+            <form method="POST">
+                <input type="hidden" name="action" value="toggle_lu">
+                <input type="hidden" name="id" value="{{ r[0] }}">
+                <button type="submit"
+                        class="sana-btn {% if r[9] %}sana-btn-primary{% else %}sana-btn-ghost{% endif %}"
+                        style="padding:5px 10px;font-size:11px;width:100%">
+                    {% if r[9] %}✓ Lu{% else %}Marquer lu{% endif %}
+                </button>
+            </form>
+
+            <form method="POST"
+                  onsubmit="return confirm('Supprimer ?')">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="id" value="{{ r[0] }}">
+                <button type="submit"
+                        class="sana-btn sana-btn-danger"
+                        style="padding:5px 10px;font-size:11px;width:100%">
+                    <i class="ti ti-trash"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if r[5] %}
+    <div style="margin-top:8px;font-size:11px;color:#475569">
+        DOI : <a href="https://doi.org/{{ r[5] }}" target="_blank"
+                 style="color:#64748b">{{ r[5] }}</a>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% if not refs %}
+<div style="text-align:center;padding:48px;color:#475569;font-size:13px">
+    Aucune référence — commence par en ajouter une.
+</div>
+{% endif %}
+</div>
+
+<!-- MODAL -->
+<div id="modal-ref"
+     style="display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,0.75);z-index:1000;
+            align-items:center;justify-content:center;
+            padding:20px">
+    <div style="background:#1e293b;border-radius:14px;
+                padding:28px;width:100%;max-width:560px;
+                border:1px solid #334155;
+                max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:20px">
+            <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
+                Nouvelle référence
+            </h3>
+            <button onclick="document.getElementById('modal-ref').style.display='none'"
+                    style="background:none;border:none;
+                           color:#64748b;font-size:20px;cursor:pointer">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+
+            <label class="sana-label">Titre *</label>
+            <input type="text" name="titre" class="sana-input"
+                   placeholder="Titre de l'article" required>
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">Auteurs</label>
+                    <input type="text" name="auteurs" class="sana-input"
+                           placeholder="Liu et al.">
+                </div>
+                <div>
+                    <label class="sana-label">Année</label>
+                    <input type="number" name="annee" class="sana-input"
+                           placeholder="2024" min="1900" max="2099">
+                </div>
+            </div>
+
+            <label class="sana-label">Journal / Revue</label>
+            <input type="text" name="journal" class="sana-input"
+                   placeholder="Nature, Science, Genetics...">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                    <label class="sana-label">DOI</label>
+                    <input type="text" name="doi" class="sana-input"
+                           placeholder="10.1038/...">
+                </div>
+                <div>
+                    <label class="sana-label">Lien URL</label>
+                    <input type="url" name="lien" class="sana-input"
+                           placeholder="https://...">
+                </div>
+            </div>
+
+            <label class="sana-label">Résumé personnel (1-3 lignes)</label>
+            <textarea name="resume" class="sana-input" rows="3"
+                      placeholder="Ce que tu retiens de cet article..."></textarea>
+
+            <label class="sana-label">Tags (séparés par virgule)</label>
+            <input type="text" name="tags" class="sana-input"
+                   placeholder="BSF, génétique, sélection, GBS...">
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;
+                        margin-top:8px">
+                <button type="button"
+                        onclick="document.getElementById('modal-ref').style.display='none'"
+                        class="sana-btn sana-btn-ghost">
+                    Annuler
+                </button>
+                <button type="submit" class="sana-btn sana-btn-primary">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterRefs() {
+    const q  = document.getElementById('searchRef')
+                        .value.toLowerCase();
+    const lu = document.getElementById('filterLu').value;
+
+    document.querySelectorAll('.ref-row').forEach(r => {
+        const textOk = r.textContent.toLowerCase().includes(q);
+        const luOk   = lu === 'all' || r.dataset.lu === lu;
+        r.style.display = (textOk && luOk) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}
