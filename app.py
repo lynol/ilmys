@@ -2518,17 +2518,22 @@ def sana_taches():
             mysql.connection.commit()
             flash('Tâche ajoutée.', 'success')
 
-        elif action == 'update_statut':
+        elif action == 'update_tache':
             cur.execute("""
-                UPDATE sana_taches SET statut=%s,
-                date_done=%s WHERE id=%s
+                UPDATE sana_taches SET
+                    titre=%s, description=%s, categorie=%s,
+                    priorite=%s, date_echeance=%s
+                WHERE id=%s
             """, (
-                request.form.get('statut'),
-                date.today() if request.form.get('statut') == 'termine'
-                else None,
+                request.form.get('titre'),
+                request.form.get('description'),
+                request.form.get('categorie'),
+                request.form.get('priorite'),
+                request.form.get('date_echeance') or None,
                 request.form.get('id')
             ))
             mysql.connection.commit()
+            flash('Tâche modifiée.', 'success')
 
         elif action == 'delete_tache':
             cur.execute(

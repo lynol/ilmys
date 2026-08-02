@@ -4,8 +4,7 @@
 {% block page_sub %}Planificateur doctoral · Jalons · Priorités{% endblock %}
 
 {% block topbar_actions %}
-<button onclick="document.getElementById('modal-tache').style.display='flex'"
-        class="sana-btn sana-btn-primary">
+<button onclick="document.getElementById('modal-tache').style.display='flex'" class="sana-btn sana-btn-primary">
     <i class="ti ti-plus"></i> Nouvelle tâche
 </button>
 {% endblock %}
@@ -56,16 +55,22 @@
             </div>
             <div style="display:flex;flex-direction:column;gap:10px">
                 <div style="display:flex;align-items:center;gap:8px">
-                    <span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>
-                    <span style="font-size:12px;color:#334155">À faire — {{ stats.a_faire }} ({{ stats.pct_a_faire }}%)</span>
+                    <span
+                        style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>
+                    <span style="font-size:12px;color:#334155">À faire — {{ stats.a_faire }}
+                        ({{ stats.pct_a_faire }}%)</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
-                    <span style="width:10px;height:10px;border-radius:2px;background:#00d2b2;display:inline-block"></span>
-                    <span style="font-size:12px;color:#334155">En cours — {{ stats.en_cours }} ({{ stats.pct_en_cours }}%)</span>
+                    <span
+                        style="width:10px;height:10px;border-radius:2px;background:#00d2b2;display:inline-block"></span>
+                    <span style="font-size:12px;color:#334155">En cours — {{ stats.en_cours }}
+                        ({{ stats.pct_en_cours }}%)</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
-                    <span style="width:10px;height:10px;border-radius:2px;background:#10b981;display:inline-block"></span>
-                    <span style="font-size:12px;color:#334155">Terminées — {{ stats.termine }} ({{ stats.pct_termine }}%)</span>
+                    <span
+                        style="width:10px;height:10px;border-radius:2px;background:#10b981;display:inline-block"></span>
+                    <span style="font-size:12px;color:#334155">Terminées — {{ stats.termine }}
+                        ({{ stats.pct_termine }}%)</span>
                 </div>
             </div>
         </div>
@@ -81,7 +86,9 @@
                     <span>Haute</span><span style="font-weight:700">{{ stats.haute }}</span>
                 </div>
                 <div style="background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden">
-                    <div style="background:#ef4444;height:100%;width:{{ (stats.haute / maxp * 100) if maxp else 0 }}%;border-radius:6px"></div>
+                    <div
+                        style="background:#ef4444;height:100%;width:{{ (stats.haute / maxp * 100) if maxp else 0 }}%;border-radius:6px">
+                    </div>
                 </div>
             </div>
             <div>
@@ -89,7 +96,9 @@
                     <span>Normale</span><span style="font-weight:700">{{ stats.normale }}</span>
                 </div>
                 <div style="background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden">
-                    <div style="background:#3b82f6;height:100%;width:{{ (stats.normale / maxp * 100) if maxp else 0 }}%;border-radius:6px"></div>
+                    <div
+                        style="background:#3b82f6;height:100%;width:{{ (stats.normale / maxp * 100) if maxp else 0 }}%;border-radius:6px">
+                    </div>
                 </div>
             </div>
             <div>
@@ -97,7 +106,9 @@
                     <span>Basse</span><span style="font-weight:700">{{ stats.basse }}</span>
                 </div>
                 <div style="background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden">
-                    <div style="background:#64748b;height:100%;width:{{ (stats.basse / maxp * 100) if maxp else 0 }}%;border-radius:6px"></div>
+                    <div
+                        style="background:#64748b;height:100%;width:{{ (stats.basse / maxp * 100) if maxp else 0 }}%;border-radius:6px">
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,30 +117,23 @@
 
 <!-- FILTRES -->
 <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
-    <button onclick="filtrer('all')" id="f-all"
-            class="sana-btn sana-btn-primary"
-            style="font-size:12px;padding:6px 14px">
+    <button onclick="filtrer('all')" id="f-all" class="sana-btn sana-btn-primary"
+        style="font-size:12px;padding:6px 14px">
         Toutes
     </button>
-    <button onclick="filtrer('a_faire')" id="f-a_faire"
-            class="sana-btn sana-btn-ghost"
-            style="font-size:12px;padding:6px 14px">
+    <button onclick="filtrer('a_faire')" id="f-a_faire" class="sana-btn sana-btn-ghost"
+        style="font-size:12px;padding:6px 14px">
         À faire
     </button>
-    <button onclick="filtrer('en_cours')" id="f-en_cours"
-            class="sana-btn sana-btn-ghost"
-            style="font-size:12px;padding:6px 14px">
+    <button onclick="filtrer('en_cours')" id="f-en_cours" class="sana-btn sana-btn-ghost"
+        style="font-size:12px;padding:6px 14px">
         En cours
     </button>
-    <button onclick="filtrer('termine')" id="f-termine"
-            class="sana-btn sana-btn-ghost"
-            style="font-size:12px;padding:6px 14px">
+    <button onclick="filtrer('termine')" id="f-termine" class="sana-btn sana-btn-ghost"
+        style="font-size:12px;padding:6px 14px">
         Terminées
     </button>
-    <input type="text" id="searchTache"
-           placeholder="Rechercher..."
-           onkeyup="filtrer(currentFilter)"
-           style="padding:6px 12px;background:#1e293b;
+    <input type="text" id="searchTache" placeholder="Rechercher..." onkeyup="filtrer(currentFilter)" style="padding:6px 12px;background:#1e293b;
                   border:1px solid #334155;border-radius:8px;
                   color:#f1f5f9;font-size:13px;
                   margin-left:auto;width:200px">
@@ -181,49 +185,202 @@
                 </td>
                 <td>
                     <form method="POST" style="display:inline">
-                        <input type="hidden" name="action"
-                               value="update_statut">
+                        <input type="hidden" name="action" value="update_statut">
+                <td style="white-space:nowrap">
+                    <button onclick="document.getElementById('modal-edit-{{ t[0] }}').style.display='flex'"
+                        class="sana-btn sana-btn-ghost" style="padding:4px 10px;font-size:11px;margin-right:4px">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                    <form method="POST" style="display:inline" onsubmit="return confirm('Supprimer ?')">
+                        <input type="hidden" name="action" value="delete_tache">
                         <input type="hidden" name="id" value="{{ t[0] }}">
-                        <select name="statut" onchange="this.form.submit()"
-                                style="background:#0f172a;border:1px solid #334155;
-                                       color:#f1f5f9;border-radius:6px;
-                                       padding:3px 6px;font-size:12px;
-                                       cursor:pointer">
-                            <option value="a_faire"
-                                {% if t[5]=='a_faire' %}selected{% endif %}>
-                                À faire
-                            </option>
-                            <option value="en_cours"
-                                {% if t[5]=='en_cours' %}selected{% endif %}>
-                                En cours
-                            </option>
-                            <option value="termine"
-                                {% if t[5]=='termine' %}selected{% endif %}>
-                                Terminée
-                            </option>
-                        </select>
-                    </form>
-                </td>
-                <td style="color:#64748b;font-size:12px">
-                    {% if t[6] %}
-                        <span style="color:{% if t[6] < today %}#ef4444
-                                     {% else %}#94a3b8{% endif %}">
-                            {{ t[6].strftime('%d/%m/%Y') }}
-                        </span>
-                    {% else %}-{% endif %}
-                </td>
-                <td>
-                    <form method="POST"
-                          onsubmit="return confirm('Supprimer ?')">
-                        <input type="hidden" name="action"
-                               value="delete_tache">
-                        <input type="hidden" name="id" value="{{ t[0] }}">
-                        <button type="submit"
-                                class="sana-btn sana-btn-danger"
-                                style="padding:4px 10px;font-size:11px">
+                        <button type="submit" class="sana-btn sana-btn-danger" style="padding:4px 10px;font-size:11px">
                             <i class="ti ti-trash"></i>
                         </button>
                     </form>
+
+                    <!-- Modale édition (une par tâche) -->
+                    <div id="modal-edit-{{ t[0] }}" style="display:none;position:fixed;inset:0;
+                background:rgba(0,0,0,0.4);z-index:1000;
+                align-items:center;justify-content:center">
+                        <div style="background:#ffffff;border-radius:14px;
+                    padding:28px;width:100%;max-width:500px;
+                    border:1px solid #e2e8f0">
+                            <div style="display:flex;justify-content:space-between;
+                        align-items:center;margin-bottom:20px">
+                                <h3 style="font-size:16px;font-weight:700;color:#0f172a">
+                                    Modifier la tâche
+                                </h3>
+                                <button onclick="document.getElementById('modal-edit-{{ t[0] }}').style.display='none'"
+                                    style="background:none;border:none;color:#94a3b8;
+                               font-size:20px;cursor:pointer">
+                                    <i class="ti ti-x"></i>
+                                </button>
+                            </div>
+                            <form method="POST">
+                                <input type="hidden" name="action" value="update_tache">
+                                <input type="hidden" name="id" value="{{ t[0] }}">
+
+                                <label class="sana-label">Titre *</label>
+                                <input type="text" name="titre" class="sana-input" value="{{ t[1] }}" required>
+
+                                <label class="sana-label">Description</label>
+                                <textarea name="description" class="sana-input">{{ t[2] or '' }}</textarea>
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                                    <div>
+                                        <label class="sana-label">Catégorie</label>
+                                        <select name="categorie" class="sana-input">
+                                            {% for c in ['lecture','redaction','analyse','labo','admin','formation','autre'] %}
+                                            <option value="{{ c }}" {% if t[3]==c %}selected{% endif %}>
+                                                {{ c|capitalize }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="sana-label">Priorité</label>
+                                        <select name="priorite" class="sana-input">
+                                            {% for p in ['haute','normale','basse'] %}
+                                            <option value="{{ p }}" {% if t[4]==p %}selected{% endif %}>
+                                                {{ p|capitalize }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <label class="sana-label">Date d'échéance</label>
+                                <input type="date" name="date_echeance" class="sana-input"
+                                    value="{{ t[6].strftime('%Y-%m-%d') if t[6] else '' }}">
+
+                                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+                                    <button type="button"
+                                        onclick="document.getElementById('modal-edit-{{ t[0] }}').style.display='none'"
+                                        class="sana-btn sana-btn-ghost">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" class="sana-btn sana-btn-primary">
+                                        Enregistrer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+                <select name="statut" onchange="this.form.submit()" style="background:#0f172a;border:1px solid #334155;
+                                       color:#f1f5f9;border-radius:6px;
+                                       padding:3px 6px;font-size:12px;
+                                       cursor:pointer">
+                    <option value="a_faire" {% if t[5]=='a_faire' %}selected{% endif %}>
+                        À faire
+                    </option>
+                    <option value="en_cours" {% if t[5]=='en_cours' %}selected{% endif %}>
+                        En cours
+                    </option>
+                    <option value="termine" {% if t[5]=='termine' %}selected{% endif %}>
+                        Terminée
+                    </option>
+                </select>
+                </form>
+                </td>
+                <td style="color:#64748b;font-size:12px">
+                    {% if t[6] %}
+                    <span style="color:{% if t[6] < today %}#ef4444
+                                     {% else %}#94a3b8{% endif %}">
+                        {{ t[6].strftime('%d/%m/%Y') }}
+                    </span>
+                    {% else %}-{% endif %}
+                </td>
+                <td>
+                    <form method="POST" onsubmit="return confirm('Supprimer ?')">
+                        <input type="hidden" name="action" value="delete_tache">
+                <td style="white-space:nowrap">
+                    <button onclick="document.getElementById('modal-edit-{{ t[0] }}').style.display='flex'"
+                        class="sana-btn sana-btn-ghost" style="padding:4px 10px;font-size:11px;margin-right:4px">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                    <form method="POST" style="display:inline" onsubmit="return confirm('Supprimer ?')">
+                        <input type="hidden" name="action" value="delete_tache">
+                        <input type="hidden" name="id" value="{{ t[0] }}">
+                        <button type="submit" class="sana-btn sana-btn-danger" style="padding:4px 10px;font-size:11px">
+                            <i class="ti ti-trash"></i>
+                        </button>
+                    </form>
+
+                    <!-- Modale édition (une par tâche) -->
+                    <div id="modal-edit-{{ t[0] }}" style="display:none;position:fixed;inset:0;
+                background:rgba(0,0,0,0.4);z-index:1000;
+                align-items:center;justify-content:center">
+                        <div style="background:#ffffff;border-radius:14px;
+                    padding:28px;width:100%;max-width:500px;
+                    border:1px solid #e2e8f0">
+                            <div style="display:flex;justify-content:space-between;
+                        align-items:center;margin-bottom:20px">
+                                <h3 style="font-size:16px;font-weight:700;color:#0f172a">
+                                    Modifier la tâche
+                                </h3>
+                                <button onclick="document.getElementById('modal-edit-{{ t[0] }}').style.display='none'"
+                                    style="background:none;border:none;color:#94a3b8;
+                               font-size:20px;cursor:pointer">
+                                    <i class="ti ti-x"></i>
+                                </button>
+                            </div>
+                            <form method="POST">
+                                <input type="hidden" name="action" value="update_tache">
+                                <input type="hidden" name="id" value="{{ t[0] }}">
+
+                                <label class="sana-label">Titre *</label>
+                                <input type="text" name="titre" class="sana-input" value="{{ t[1] }}" required>
+
+                                <label class="sana-label">Description</label>
+                                <textarea name="description" class="sana-input">{{ t[2] or '' }}</textarea>
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                                    <div>
+                                        <label class="sana-label">Catégorie</label>
+                                        <select name="categorie" class="sana-input">
+                                            {% for c in ['lecture','redaction','analyse','labo','admin','formation','autre'] %}
+                                            <option value="{{ c }}" {% if t[3]==c %}selected{% endif %}>
+                                                {{ c|capitalize }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="sana-label">Priorité</label>
+                                        <select name="priorite" class="sana-input">
+                                            {% for p in ['haute','normale','basse'] %}
+                                            <option value="{{ p }}" {% if t[4]==p %}selected{% endif %}>
+                                                {{ p|capitalize }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <label class="sana-label">Date d'échéance</label>
+                                <input type="date" name="date_echeance" class="sana-input"
+                                    value="{{ t[6].strftime('%Y-%m-%d') if t[6] else '' }}">
+
+                                <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+                                    <button type="button"
+                                        onclick="document.getElementById('modal-edit-{{ t[0] }}').style.display='none'"
+                                        class="sana-btn sana-btn-ghost">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" class="sana-btn sana-btn-primary">
+                                        Enregistrer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+                <button type="submit" class="sana-btn sana-btn-danger" style="padding:4px 10px;font-size:11px">
+                    <i class="ti ti-trash"></i>
+                </button>
+                </form>
                 </td>
             </tr>
             {% endfor %}
@@ -260,8 +417,7 @@
                         background:{% if gj.statut=='termine' %}#00d2b2
                         {% elif gj.statut=='en_cours' %}#f59e0b
                         {% else %}#334155{% endif %};
-                        border:2px solid #0f172a"
-                 title="{{ gj.titre }} — {{ gj.date.strftime('%d/%m/%Y') }}">
+                        border:2px solid #0f172a" title="{{ gj.titre }} — {{ gj.date.strftime('%d/%m/%Y') }}">
             </div>
             <div style="font-size:9px;color:#94a3b8;line-height:1.2">
                 {{ gj.titre[:18] }}{% if gj.titre|length > 18 %}...{% endif %}
@@ -282,9 +438,8 @@
             <i class="ti ti-timeline" style="color:#8b5cf6"></i>
             Jalons de la thèse
         </span>
-        <button onclick="document.getElementById('modal-jalon').style.display='flex'"
-                class="sana-btn sana-btn-ghost"
-                style="font-size:12px;padding:5px 12px">
+        <button onclick="document.getElementById('modal-jalon').style.display='flex'" class="sana-btn sana-btn-ghost"
+            style="font-size:12px;padding:5px 12px">
             + Jalon
         </button>
     </div>
@@ -333,40 +488,29 @@
                     </div>
                     <div style="display:flex;gap:6px;align-items:center">
                         <form method="POST">
-                            <input type="hidden" name="action"
-                                   value="update_jalon">
-                            <input type="hidden" name="id"
-                                   value="{{ j[0] }}">
-                            <select name="statut"
-                                    onchange="this.form.submit()"
-                                    style="background:#1e293b;
+                            <input type="hidden" name="action" value="update_jalon">
+                            <input type="hidden" name="id" value="{{ j[0] }}">
+                            <select name="statut" onchange="this.form.submit()" style="background:#1e293b;
                                            border:1px solid #334155;
                                            color:#f1f5f9;border-radius:6px;
                                            padding:3px 6px;font-size:11px;
                                            cursor:pointer">
-                                <option value="a_venir"
-                                    {% if j[5]=='a_venir' %}selected{% endif %}>
+                                <option value="a_venir" {% if j[5]=='a_venir' %}selected{% endif %}>
                                     À venir
                                 </option>
-                                <option value="en_cours"
-                                    {% if j[5]=='en_cours' %}selected{% endif %}>
+                                <option value="en_cours" {% if j[5]=='en_cours' %}selected{% endif %}>
                                     En cours
                                 </option>
-                                <option value="termine"
-                                    {% if j[5]=='termine' %}selected{% endif %}>
+                                <option value="termine" {% if j[5]=='termine' %}selected{% endif %}>
                                     Terminé
                                 </option>
                             </select>
                         </form>
-                        <form method="POST"
-                              onsubmit="return confirm('Supprimer ?')">
-                            <input type="hidden" name="action"
-                                   value="delete_jalon">
-                            <input type="hidden" name="id"
-                                   value="{{ j[0] }}">
-                            <button type="submit"
-                                    class="sana-btn sana-btn-danger"
-                                    style="padding:3px 8px;font-size:11px">
+                        <form method="POST" onsubmit="return confirm('Supprimer ?')">
+                            <input type="hidden" name="action" value="delete_jalon">
+                            <input type="hidden" name="id" value="{{ j[0] }}">
+                            <button type="submit" class="sana-btn sana-btn-danger"
+                                style="padding:3px 8px;font-size:11px">
                                 <i class="ti ti-trash"></i>
                             </button>
                         </form>
@@ -386,8 +530,7 @@
 </div>
 
 <!-- MODAL TÂCHE -->
-<div id="modal-tache"
-     style="display:none;position:fixed;inset:0;
+<div id="modal-tache" style="display:none;position:fixed;inset:0;
             background:rgba(0,0,0,0.7);z-index:1000;
             align-items:center;justify-content:center">
     <div style="background:#1e293b;border-radius:14px;
@@ -398,8 +541,7 @@
             <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
                 Nouvelle tâche
             </h3>
-            <button onclick="document.getElementById('modal-tache').style.display='none'"
-                    style="background:none;border:none;color:#64748b;
+            <button onclick="document.getElementById('modal-tache').style.display='none'" style="background:none;border:none;color:#64748b;
                            font-size:20px;cursor:pointer">
                 <i class="ti ti-x"></i>
             </button>
@@ -407,12 +549,10 @@
         <form method="POST">
             <input type="hidden" name="action" value="add_tache">
             <label class="sana-label">Titre *</label>
-            <input type="text" name="titre" class="sana-input"
-                   placeholder="Ex: Lire Liu et al. 2019" required>
+            <input type="text" name="titre" class="sana-input" placeholder="Ex: Lire Liu et al. 2019" required>
 
             <label class="sana-label">Description</label>
-            <textarea name="description" class="sana-input"
-                      placeholder="Détails, contexte..."></textarea>
+            <textarea name="description" class="sana-input" placeholder="Détails, contexte..."></textarea>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div>
@@ -442,9 +582,8 @@
 
             <div style="display:flex;gap:10px;justify-content:flex-end;
                         margin-top:8px">
-                <button type="button"
-                        onclick="document.getElementById('modal-tache').style.display='none'"
-                        class="sana-btn sana-btn-ghost">
+                <button type="button" onclick="document.getElementById('modal-tache').style.display='none'"
+                    class="sana-btn sana-btn-ghost">
                     Annuler
                 </button>
                 <button type="submit" class="sana-btn sana-btn-primary">
@@ -456,8 +595,7 @@
 </div>
 
 <!-- MODAL JALON -->
-<div id="modal-jalon"
-     style="display:none;position:fixed;inset:0;
+<div id="modal-jalon" style="display:none;position:fixed;inset:0;
             background:rgba(0,0,0,0.7);z-index:1000;
             align-items:center;justify-content:center">
     <div style="background:#1e293b;border-radius:14px;
@@ -468,8 +606,7 @@
             <h3 style="font-size:16px;font-weight:700;color:#f1f5f9">
                 Nouveau jalon
             </h3>
-            <button onclick="document.getElementById('modal-jalon').style.display='none'"
-                    style="background:none;border:none;color:#64748b;
+            <button onclick="document.getElementById('modal-jalon').style.display='none'" style="background:none;border:none;color:#64748b;
                            font-size:20px;cursor:pointer">
                 <i class="ti ti-x"></i>
             </button>
@@ -478,21 +615,18 @@
             <input type="hidden" name="action" value="add_jalon">
 
             <label class="sana-label">Titre *</label>
-            <input type="text" name="titre" class="sana-input"
-                   placeholder="Ex: Dépôt du chapitre 1" required>
+            <input type="text" name="titre" class="sana-input" placeholder="Ex: Dépôt du chapitre 1" required>
 
             <label class="sana-label">Description</label>
-            <textarea name="description" class="sana-input"
-                      placeholder="Détails..."></textarea>
+            <textarea name="description" class="sana-input" placeholder="Détails..."></textarea>
 
             <label class="sana-label">Date prévue</label>
             <input type="date" name="date_prevue" class="sana-input">
 
             <div style="display:flex;gap:10px;justify-content:flex-end;
                         margin-top:8px">
-                <button type="button"
-                        onclick="document.getElementById('modal-jalon').style.display='none'"
-                        class="sana-btn sana-btn-ghost">
+                <button type="button" onclick="document.getElementById('modal-jalon').style.display='none'"
+                    class="sana-btn sana-btn-ghost">
                     Annuler
                 </button>
                 <button type="submit" class="sana-btn sana-btn-primary">
@@ -507,31 +641,31 @@
 
 {% block extra_js %}
 <script>
-let currentFilter = 'all';
+    let currentFilter = 'all';
 
-function filtrer(statut) {
-    currentFilter = statut;
-    const q = document.getElementById('searchTache')
-                       .value.toLowerCase();
+    function filtrer(statut) {
+        currentFilter = statut;
+        const q = document.getElementById('searchTache')
+            .value.toLowerCase();
 
-    document.querySelectorAll('.tache-row').forEach(r => {
-        const statutOk = statut === 'all' ||
-                         r.dataset.statut === statut;
-        const textOk   = r.textContent.toLowerCase().includes(q);
-        r.style.display = (statutOk && textOk) ? '' : 'none';
-    });
+        document.querySelectorAll('.tache-row').forEach(r => {
+            const statutOk = statut === 'all' ||
+                r.dataset.statut === statut;
+            const textOk = r.textContent.toLowerCase().includes(q);
+            r.style.display = (statutOk && textOk) ? '' : 'none';
+        });
 
-    document.querySelectorAll('[id^="f-"]').forEach(b => {
-        b.className = 'sana-btn sana-btn-ghost';
-        b.style.fontSize = '12px';
-        b.style.padding  = '6px 14px';
-    });
-    const active = document.getElementById('f-' + statut);
-    if (active) {
-        active.className = 'sana-btn sana-btn-primary';
-        active.style.fontSize = '12px';
-        active.style.padding  = '6px 14px';
+        document.querySelectorAll('[id^="f-"]').forEach(b => {
+            b.className = 'sana-btn sana-btn-ghost';
+            b.style.fontSize = '12px';
+            b.style.padding = '6px 14px';
+        });
+        const active = document.getElementById('f-' + statut);
+        if (active) {
+            active.className = 'sana-btn sana-btn-primary';
+            active.style.fontSize = '12px';
+            active.style.padding = '6px 14px';
+        }
     }
-}
 </script>
 {% endblock %}
