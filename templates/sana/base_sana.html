@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SanaThèse{% endblock %}</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont,
-                         'Segoe UI', sans-serif;
-            background: #0f172a;
-            color: #cbd5e1;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f1f5f9;
+            color: #334155;
             min-height: 100vh;
             display: flex;
         }
@@ -22,18 +25,19 @@
         .sana-sidebar {
             width: 240px;
             min-height: 100vh;
-            background: #1e293b;
-            border-right: 1px solid #334155;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             z-index: 100;
         }
 
         .sana-logo {
             padding: 20px 20px 16px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -49,19 +53,19 @@
             justify-content: center;
             font-size: 14px;
             font-weight: 800;
-            color: #00213f;
+            color: #ffffff;
             flex-shrink: 0;
         }
 
         .sana-logo-text {
             font-size: 15px;
             font-weight: 700;
-            color: #f1f5f9;
+            color: #0f172a;
         }
 
         .sana-logo-sub {
             font-size: 10px;
-            color: #64748b;
+            color: #94a3b8;
             margin-top: 1px;
         }
 
@@ -75,7 +79,7 @@
         .sana-nav-section {
             font-size: 10px;
             font-weight: 700;
-            color: #475569;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             padding: 12px 12px 6px;
@@ -89,20 +93,20 @@
             border-radius: 8px;
             font-size: 13px;
             font-weight: 500;
-            color: #94a3b8;
+            color: #64748b;
             text-decoration: none;
             transition: all 0.15s;
             margin-bottom: 2px;
         }
 
         .sana-nav-link:hover {
-            background: #0f172a;
-            color: #f1f5f9;
+            background: #f1f5f9;
+            color: #0f172a;
         }
 
         .sana-nav-link.active {
-            background: #00213f;
-            color: #00d2b2;
+            background: #e6fbf7;
+            color: #00a389;
             font-weight: 600;
         }
 
@@ -117,14 +121,14 @@
             font-size: 10px;
             padding: 2px 7px;
             border-radius: 20px;
-            background: #334155;
+            background: #e2e8f0;
             color: #64748b;
         }
 
         /* ─── FOOTER SIDEBAR ─── */
         .sana-sidebar-footer {
             padding: 14px 16px;
-            border-top: 1px solid #334155;
+            border-top: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -140,35 +144,37 @@
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background: #00213f;
+            background: #e6fbf7;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 11px;
             font-weight: 700;
-            color: #00d2b2;
+            color: #00a389;
             flex-shrink: 0;
         }
 
         .sana-user-name {
             font-size: 12px;
             font-weight: 600;
-            color: #f1f5f9;
+            color: #0f172a;
         }
 
         .sana-user-role {
             font-size: 10px;
-            color: #64748b;
+            color: #94a3b8;
         }
 
         .sana-logout {
-            color: #64748b;
+            color: #94a3b8;
             text-decoration: none;
             font-size: 16px;
             transition: color 0.15s;
         }
 
-        .sana-logout:hover { color: #ef4444; }
+        .sana-logout:hover {
+            color: #ef4444;
+        }
 
         /* ─── MAIN ─── */
         .sana-main {
@@ -181,11 +187,11 @@
 
         .sana-topbar {
             padding: 16px 28px;
-            border-bottom: 1px solid #1e293b;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #0f172a;
+            background: #ffffff;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -194,12 +200,12 @@
         .sana-page-title {
             font-size: 18px;
             font-weight: 700;
-            color: #f1f5f9;
+            color: #0f172a;
         }
 
         .sana-page-sub {
             font-size: 12px;
-            color: #64748b;
+            color: #94a3b8;
             margin-top: 2px;
         }
 
@@ -210,20 +216,21 @@
 
         /* ─── CARDS ─── */
         .sana-card {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         }
 
         .sana-card-title {
             font-size: 14px;
             font-weight: 700;
-            color: #f1f5f9;
+            color: #0f172a;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -234,7 +241,7 @@
             display: block;
             font-size: 11px;
             font-weight: 700;
-            color: #64748b;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 6px;
@@ -243,10 +250,10 @@
         .sana-input {
             width: 100%;
             padding: 9px 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            color: #f1f5f9;
+            color: #0f172a;
             font-size: 13px;
             font-family: inherit;
             transition: border-color 0.15s;
@@ -275,21 +282,23 @@
             transition: opacity 0.15s;
         }
 
-        .sana-btn:hover { opacity: 0.85; }
+        .sana-btn:hover {
+            opacity: 0.85;
+        }
 
         .sana-btn-primary {
             background: #00d2b2;
-            color: #00213f;
+            color: #ffffff;
         }
 
         .sana-btn-danger {
-            background: #7f1d1d;
-            color: #fca5a5;
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         .sana-btn-ghost {
-            background: #334155;
-            color: #94a3b8;
+            background: #f1f5f9;
+            color: #64748b;
         }
 
         /* ─── BADGES ─── */
@@ -302,27 +311,27 @@
         }
 
         .sana-badge-green {
-            background: #064e3b;
-            color: #6ee7b7;
+            background: #dcfce7;
+            color: #15803d;
         }
 
         .sana-badge-blue {
-            background: #00213f;
-            color: #00d2b2;
+            background: #e6fbf7;
+            color: #00a389;
         }
 
         .sana-badge-orange {
-            background: #451a03;
-            color: #fcd34d;
+            background: #fef3c7;
+            color: #b45309;
         }
 
         .sana-badge-red {
-            background: #7f1d1d;
-            color: #fca5a5;
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         .sana-badge-gray {
-            background: #1e293b;
+            background: #f1f5f9;
             color: #64748b;
         }
 
@@ -334,12 +343,12 @@
         }
 
         .sana-table th {
-            background: #0f172a;
-            color: #64748b;
+            background: #f8fafc;
+            color: #94a3b8;
             font-weight: 700;
             padding: 10px 14px;
             text-align: left;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -347,13 +356,13 @@
 
         .sana-table td {
             padding: 11px 14px;
-            border-bottom: 1px solid #1e293b;
-            color: #cbd5e1;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
             vertical-align: top;
         }
 
         .sana-table tr:hover td {
-            background: #1e293b;
+            background: #f8fafc;
         }
 
         /* ─── FLASH ─── */
@@ -362,9 +371,9 @@
             border-radius: 8px;
             font-size: 13px;
             margin-bottom: 16px;
-            border: 1px solid #065f46;
-            background: #022c22;
-            color: #6ee7b7;
+            border: 1px solid #bbf7d0;
+            background: #f0fdf4;
+            color: #15803d;
         }
 
         /* ─── STAT BOXES ─── */
@@ -376,171 +385,187 @@
         }
 
         .sana-stat {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 10px;
             padding: 16px;
             border-top: 3px solid #00d2b2;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         }
 
         .sana-stat-val {
             font-size: 28px;
             font-weight: 800;
-            color: #f1f5f9;
+            color: #0f172a;
             line-height: 1;
         }
 
         .sana-stat-label {
             font-size: 11px;
-            color: #64748b;
+            color: #94a3b8;
             margin-top: 6px;
             font-weight: 600;
         }
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 768px) {
-            .sana-sidebar { width: 60px; }
-            .sana-logo-text, .sana-logo-sub,
-            .sana-nav-link span, .sana-nav-section,
-            .sana-nav-badge, .sana-user-name,
-            .sana-user-role { display: none; }
-            .sana-main { margin-left: 60px; }
-            .sana-content { padding: 16px; }
+            .sana-sidebar {
+                width: 60px;
+            }
+
+            .sana-logo-text,
+            .sana-logo-sub,
+            .sana-nav-link span,
+            .sana-nav-section,
+            .sana-nav-badge,
+            .sana-user-name,
+            .sana-user-role {
+                display: none;
+            }
+
+            .sana-main {
+                margin-left: 60px;
+            }
+
+            .sana-content {
+                padding: 16px;
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sana-sidebar">
-    <div class="sana-logo">
-        <div class="sana-logo-circle">S</div>
-        <div>
-            <div class="sana-logo-text">SanaThèse</div>
-            <div class="sana-logo-sub">Espace doctoral privé</div>
-        </div>
-    </div>
-
-    <nav class="sana-nav">
-
-        <div class="sana-nav-section">Principal</div>
-
-        <a href="{{ url_for('sana_dashboard') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_dashboard' %}active{% endif %}">
-            <i class="ti ti-layout-dashboard"></i>
-            <span>Tableau de bord</span>
-        </a>
-
-        <a href="{{ url_for('sana_taches') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_taches' %}active{% endif %}">
-            <i class="ti ti-checklist"></i>
-            <span>Tâches & Suivi</span>
-        </a>
-
-        <div class="sana-nav-section">Connaissance</div>
-
-        <a href="{{ url_for('sana_biblio') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_biblio' %}active{% endif %}">
-            <i class="ti ti-books"></i>
-            <span>Bibliographie</span>
-        </a>
-
-        <a href="{{ url_for('sana_glossaire') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_glossaire' %}active{% endif %}">
-            <i class="ti ti-vocabulary"></i>
-            <span>Glossaire</span>
-        </a>
-
-        <a href="{{ url_for('sana_techniques') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_techniques' %}active{% endif %}">
-            <i class="ti ti-flask"></i>
-            <span>Techniques</span>
-        </a>
-
-        <a href="{{ url_for('sana_apprentissage') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_apprentissage' %}active{% endif %}">
-            <i class="ti ti-brain"></i>
-            <span>Apprentissage</span>
-        </a>
-
-        <div class="sana-nav-section">Laboratoire</div>
-
-        <a href="{{ url_for('sana_labo') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_labo' %}active{% endif %}">
-            <i class="ti ti-notebook"></i>
-            <span>Carnet de labo</span>
-        </a>
-
-        <a href="{{ url_for('sana_protocoles') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_protocoles' %}active{% endif %}">
-            <i class="ti ti-list-check"></i>
-            <span>Protocoles</span>
-        </a>
-
-        <a href="{{ url_for('sana_reactifs') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_reactifs' %}active{% endif %}">
-            <i class="ti ti-droplet"></i>
-            <span>Réactifs & Matériel</span>
-        </a>
-
-        <div class="sana-nav-section">Réseau</div>
-
-        <a href="{{ url_for('sana_reseau') }}"
-           class="sana-nav-link {% if request.endpoint == 'sana_reseau' %}active{% endif %}">
-            <i class="ti ti-users"></i>
-            <span>Chercheurs & Labos</span>
-        </a>
-
-    </nav>
-
-    <div class="sana-sidebar-footer">
-        <div class="sana-user">
-            <div class="sana-user-avatar">AS</div>
+    <!-- SIDEBAR -->
+    <aside class="sana-sidebar">
+        <div class="sana-logo">
+            <div class="sana-logo-circle">S</div>
             <div>
-                <div class="sana-user-name">Alidou Sana</div>
-                <div class="sana-user-role">PhD · ULaval</div>
+                <div class="sana-logo-text">SanaThèse</div>
+                <div class="sana-logo-sub">Espace doctoral privé</div>
             </div>
         </div>
-        <a href="{{ url_for('sana_logout') }}"
-           class="sana-logout" title="Déconnexion">
-            <i class="ti ti-logout"></i>
-        </a>
-    </div>
-</aside>
 
-<!-- MAIN -->
-<main class="sana-main">
-    <div class="sana-topbar">
-        <div>
-            <div class="sana-page-title">
-                {% block page_title %}SanaThèse{% endblock %}
-            </div>
-            <div class="sana-page-sub">
-                {% block page_sub %}{% endblock %}
-            </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px">
-            {% block topbar_actions %}{% endblock %}
-            <span style="font-size:11px;color:#334155">
-                ilmys.com/sana
-            </span>
-        </div>
-    </div>
+        <nav class="sana-nav">
 
-    <div class="sana-content">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
+            <div class="sana-nav-section">Principal</div>
+
+            <a href="{{ url_for('sana_dashboard') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_dashboard' %}active{% endif %}">
+                <i class="ti ti-layout-dashboard"></i>
+                <span>Tableau de bord</span>
+            </a>
+
+            <a href="{{ url_for('sana_taches') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_taches' %}active{% endif %}">
+                <i class="ti ti-checklist"></i>
+                <span>Tâches & Suivi</span>
+            </a>
+
+            <div class="sana-nav-section">Connaissance</div>
+
+            <a href="{{ url_for('sana_biblio') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_biblio' %}active{% endif %}">
+                <i class="ti ti-books"></i>
+                <span>Bibliographie</span>
+            </a>
+
+            <a href="{{ url_for('sana_glossaire') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_glossaire' %}active{% endif %}">
+                <i class="ti ti-vocabulary"></i>
+                <span>Glossaire</span>
+            </a>
+
+            <a href="{{ url_for('sana_techniques') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_techniques' %}active{% endif %}">
+                <i class="ti ti-flask"></i>
+                <span>Techniques</span>
+            </a>
+
+            <a href="{{ url_for('sana_apprentissage') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_apprentissage' %}active{% endif %}">
+                <i class="ti ti-brain"></i>
+                <span>Apprentissage</span>
+            </a>
+
+            <div class="sana-nav-section">Laboratoire</div>
+
+            <a href="{{ url_for('sana_labo') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_labo' %}active{% endif %}">
+                <i class="ti ti-notebook"></i>
+                <span>Carnet de labo</span>
+            </a>
+
+            <a href="{{ url_for('sana_protocoles') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_protocoles' %}active{% endif %}">
+                <i class="ti ti-list-check"></i>
+                <span>Protocoles</span>
+            </a>
+
+            <a href="{{ url_for('sana_reactifs') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_reactifs' %}active{% endif %}">
+                <i class="ti ti-droplet"></i>
+                <span>Réactifs & Matériel</span>
+            </a>
+
+            <div class="sana-nav-section">Réseau</div>
+
+            <a href="{{ url_for('sana_reseau') }}"
+                class="sana-nav-link {% if request.endpoint == 'sana_reseau' %}active{% endif %}">
+                <i class="ti ti-users"></i>
+                <span>Chercheurs & Labos</span>
+            </a>
+
+        </nav>
+
+        <div class="sana-sidebar-footer">
+            <div class="sana-user">
+                <div class="sana-user-avatar">AS</div>
+                <div>
+                    <div class="sana-user-name">Alidou Sana</div>
+                    <div class="sana-user-role">PhD · ULaval</div>
+                </div>
+            </div>
+            <a href="{{ url_for('sana_logout') }}" class="sana-logout" title="Déconnexion">
+                <i class="ti ti-logout"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="sana-main">
+        <div class="sana-topbar">
+            <div>
+                <div class="sana-page-title">
+                    {% block page_title %}SanaThèse{% endblock %}
+                </div>
+                <div class="sana-page-sub">
+                    {% block page_sub %}{% endblock %}
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+                {% block topbar_actions %}{% endblock %}
+                <span style="font-size:11px;color:#334155">
+                    ilmys.com/sana
+                </span>
+            </div>
+        </div>
+
+        <div class="sana-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
             {% for category, message in messages %}
             <div class="sana-flash">{{ message }}</div>
             {% endfor %}
-        {% endif %}
-        {% endwith %}
+            {% endif %}
+            {% endwith %}
 
-        {% block content %}{% endblock %}
-    </div>
-</main>
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
-{% block extra_js %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
+
 </html>
