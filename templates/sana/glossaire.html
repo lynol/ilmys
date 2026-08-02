@@ -24,7 +24,7 @@
         <div class="sana-stat-val">{{ termes|length }}</div>
         <div class="sana-stat-label">Total termes</div>
     </div>
-    <div class="sana-stat" style="border-top-color:#00d2b2">
+    <div class="sana-stat" style="border-top-color:#00a389">
         <div class="sana-stat-val">{{ maitrise }}</div>
         <div class="sana-stat-label">Maîtrisés</div>
     </div>
@@ -103,7 +103,7 @@
     <div class="sana-card terme-row"
          data-maitrise="{{ t[5] }}"
          style="margin-bottom:10px;padding:16px 20px;
-                border-left:3px solid {% if t[5] %}#00d2b2{% else %}#334155{% endif %}">
+                border-left:3px solid {% if t[5] %}#00a389{% else %}#334155{% endif %}">
         <div style="display:flex;justify-content:space-between;
                     align-items:flex-start;gap:12px">
             <div style="flex:1">
@@ -261,7 +261,7 @@ function stopFlashcards() {
 function showCard() {
     if (fcIndex >= fcList.length) {
         document.getElementById('fc-card').innerHTML =
-            '<div style="font-size:18px;color:#00d2b2;font-weight:700">' +
+            '<div style="font-size:18px;color:#00a389;font-weight:700">' +
             '🎉 Session terminée !</div>';
         document.getElementById('fc-actions').style.display = 'none';
         return;

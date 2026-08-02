@@ -21,7 +21,7 @@
         <div class="sana-stat-val">{{ stats.a_faire }}</div>
         <div class="sana-stat-label">À faire</div>
     </div>
-    <div class="sana-stat" style="border-top-color:#00d2b2">
+    <div class="sana-stat" style="border-top-color:#00a389">
         <div class="sana-stat-val">{{ stats.en_cours }}</div>
         <div class="sana-stat-label">En cours</div>
     </div>
@@ -49,7 +49,7 @@
             <div style="width:130px;height:130px;border-radius:50%;flex-shrink:0;
                 background: conic-gradient(
                     #f59e0b 0% {{ stats.pct_a_faire }}%,
-                    #00d2b2 {{ stats.pct_a_faire }}% {{ stats.pct_a_faire + stats.pct_en_cours }}%,
+                    #00a389 {{ stats.pct_a_faire }}% {{ stats.pct_a_faire + stats.pct_en_cours }}%,
                     #10b981 {{ stats.pct_a_faire + stats.pct_en_cours }}% 100%
                 );">
             </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
                     <span
-                        style="width:10px;height:10px;border-radius:2px;background:#00d2b2;display:inline-block"></span>
+                        style="width:10px;height:10px;border-radius:2px;background:#00a389;display:inline-block"></span>
                     <span style="font-size:12px;color:#334155">En cours — {{ stats.en_cours }}
                         ({{ stats.pct_en_cours }}%)</span>
                 </div>
@@ -142,7 +142,7 @@
 <!-- TÂCHES -->
 <div class="sana-card">
     <div class="sana-card-title">
-        <i class="ti ti-checklist" style="color:#00d2b2"></i>
+        <i class="ti ti-checklist" style="color:#00a389"></i>
         Tâches
     </div>
     <table class="sana-table" id="tachesTable">
@@ -329,7 +329,7 @@
                     width:90px">
             <div style="width:14px;height:14px;border-radius:50%;
                         margin:0 auto 4px auto;
-                        background:{% if gj.statut=='termine' %}#00d2b2
+                        background:{% if gj.statut=='termine' %}#00a389
                         {% elif gj.statut=='en_cours' %}#f59e0b
                         {% else %}#334155{% endif %};
                         border:2px solid #0f172a" title="{{ gj.titre }} — {{ gj.date.strftime('%d/%m/%Y') }}">
@@ -374,7 +374,7 @@
             <div style="width:14px;height:14px;border-radius:50%;
                         flex-shrink:0;margin-top:3px;
                         position:absolute;left:-20px;
-                        background:{% if j[5]=='termine' %}#00d2b2
+                        background:{% if j[5]=='termine' %}#00a389
                         {% elif j[5]=='en_cours' %}#f59e0b
                         {% else %}#334155{% endif %};
                         border:2px solid #0f172a">

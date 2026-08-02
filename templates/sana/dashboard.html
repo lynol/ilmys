@@ -7,7 +7,7 @@
 
 <!-- STATS RAPIDES -->
 <div class="sana-stat-grid">
-    <div class="sana-stat" style="border-top-color:#00d2b2">
+    <div class="sana-stat" style="border-top-color:#00a389">
         <div class="sana-stat-val">{{ stats.biblio }}</div>
         <div class="sana-stat-label">Références</div>
     </div>
@@ -38,7 +38,7 @@
     <!-- TÂCHES RÉCENTES -->
     <div class="sana-card">
         <div class="sana-card-title">
-            <i class="ti ti-checklist" style="color:#00d2b2"></i>
+            <i class="ti ti-checklist" style="color:#00a389"></i>
             Tâches prioritaires
         </div>
         {% if taches %}
@@ -76,7 +76,7 @@
         {% endif %}
         <a href="{{ url_for('sana_taches') }}"
            style="display:block;text-align:center;margin-top:12px;
-                  font-size:12px;color:#00d2b2;text-decoration:none">
+                  font-size:12px;color:#00a389;text-decoration:none">
             Voir toutes les tâches →
         </a>
     </div>
@@ -107,7 +107,7 @@
         {% endif %}
         <a href="{{ url_for('sana_labo') }}"
            style="display:block;text-align:center;margin-top:12px;
-                  font-size:12px;color:#00d2b2;text-decoration:none">
+                  font-size:12px;color:#00a389;text-decoration:none">
             Ouvrir le carnet →
         </a>
     </div>
@@ -125,7 +125,7 @@
         {% for j in jalons %}
         <div style="display:flex;align-items:center;gap:14px">
             <div style="width:10px;height:10px;border-radius:50%;flex-shrink:0;
-                        background:{% if j[4]=='termine' %}#00d2b2
+                        background:{% if j[4]=='termine' %}#00a389
                         {% elif j[4]=='en_cours' %}#f59e0b
                         {% else %}#334155{% endif %}">
             </div>
@@ -150,7 +150,7 @@
     <div style="text-align:center;padding:24px;color:#475569;font-size:13px">
         Aucun jalon défini -
         <a href="{{ url_for('sana_taches') }}"
-           style="color:#00d2b2;text-decoration:none">
+           style="color:#00a389;text-decoration:none">
             Ajouter des jalons →
         </a>
     </div>
