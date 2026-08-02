@@ -42,13 +42,65 @@
 
 <!-- GRAPHIQUES -->
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+
+    <!-- Donut statut, pur CSS (conic-gradient) -->
     <div class="sana-card">
         <div class="sana-card-title">Répartition par statut</div>
-        <canvas id="chartStatut" height="140"></canvas>
+        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+            <div style="width:130px;height:130px;border-radius:50%;flex-shrink:0;
+                background: conic-gradient(
+                    #f59e0b 0% {{ stats.pct_a_faire }}%,
+                    #00d2b2 {{ stats.pct_a_faire }}% {{ stats.pct_a_faire + stats.pct_en_cours }}%,
+                    #10b981 {{ stats.pct_a_faire + stats.pct_en_cours }}% 100%
+                );">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>
+                    <span style="font-size:12px;color:#334155">À faire — {{ stats.a_faire }} ({{ stats.pct_a_faire }}%)</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="width:10px;height:10px;border-radius:2px;background:#00d2b2;display:inline-block"></span>
+                    <span style="font-size:12px;color:#334155">En cours — {{ stats.en_cours }} ({{ stats.pct_en_cours }}%)</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="width:10px;height:10px;border-radius:2px;background:#10b981;display:inline-block"></span>
+                    <span style="font-size:12px;color:#334155">Terminées — {{ stats.termine }} ({{ stats.pct_termine }}%)</span>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Barres priorité, pur CSS -->
     <div class="sana-card">
         <div class="sana-card-title">Répartition par priorité</div>
-        <canvas id="chartPriorite" height="140"></canvas>
+        {% set maxp = [stats.haute, stats.normale, stats.basse] | max %}
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:6px">
+            <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;margin-bottom:5px">
+                    <span>Haute</span><span style="font-weight:700">{{ stats.haute }}</span>
+                </div>
+                <div style="background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden">
+                    <div style="background:#ef4444;height:100%;width:{{ (stats.haute / maxp * 100) if maxp else 0 }}%;border-radius:6px"></div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;margin-bottom:5px">
+                    <span>Normale</span><span style="font-weight:700">{{ stats.normale }}</span>
+                </div>
+                <div style="background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden">
+                    <div style="background:#3b82f6;height:100%;width:{{ (stats.normale / maxp * 100) if maxp else 0 }}%;border-radius:6px"></div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;margin-bottom:5px">
+                    <span>Basse</span><span style="font-weight:700">{{ stats.basse }}</span>
+                </div>
+                <div style="background:#f1f5f9;border-radius:6px;height:12px;overflow:hidden">
+                    <div style="background:#64748b;height:100%;width:{{ (stats.basse / maxp * 100) if maxp else 0 }}%;border-radius:6px"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -454,38 +506,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-new Chart(document.getElementById('chartStatut'), {
-    type: 'doughnut',
-    data: {
-        labels: ['À faire', 'En cours', 'Terminées'],
-        datasets: [{
-            data: [{{ stats.a_faire }}, {{ stats.en_cours }}, {{ stats.termine }}],
-            backgroundColor: ['#f59e0b', '#00d2b2', '#10b981']
-        }]
-    },
-    options: { plugins: { legend: { labels: { color: '#f1f5f9' } } } }
-});
-
-new Chart(document.getElementById('chartPriorite'), {
-    type: 'bar',
-    data: {
-        labels: ['Haute', 'Normale', 'Basse'],
-        datasets: [{
-            data: [{{ stats.haute }}, {{ stats.normale }}, {{ stats.basse }}],
-            backgroundColor: ['#ef4444', '#3b82f6', '#64748b']
-        }]
-    },
-    options: {
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { ticks: { color: '#94a3b8' } },
-            y: { ticks: { color: '#94a3b8' }, beginAtZero: true }
-        }
-    }
-});
-
 let currentFilter = 'all';
 
 function filtrer(statut) {

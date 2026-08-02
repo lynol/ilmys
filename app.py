@@ -2602,6 +2602,9 @@ def sana_taches():
         'basse'    : sum(1 for t in taches if t[4] == 'basse'),
     }
     stats['taux_completion'] = round(stats['termine'] / stats['total'] * 100) if stats['total'] else 0
+    stats['pct_a_faire']  = round(stats['a_faire']  / stats['total'] * 100, 1) if stats['total'] else 0
+    stats['pct_en_cours'] = round(stats['en_cours'] / stats['total'] * 100, 1) if stats['total'] else 0
+    stats['pct_termine']  = round(stats['termine']  / stats['total'] * 100, 1) if stats['total'] else 0
 
     # Données pour la frise chronologique (Gantt) des jalons
     gantt_jalons = []
