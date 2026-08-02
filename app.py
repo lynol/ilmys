@@ -1,3 +1,4 @@
+from datetime import date
 from flask import (Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response)
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
@@ -14,7 +15,6 @@ from flask_mail import Mail, Message
 import secrets
 from datetime import datetime, timedelta
 from collections import Counter
-from datetime import date
 
 import re
 import time
@@ -571,7 +571,6 @@ def api_finances():
         return jsonify({'error': str(e)}), 500
 
 
-
 @app.route('/analyses')
 def analyses():
     theme = request.args.get('theme', 'tous')
@@ -763,7 +762,6 @@ def donnees():
         total      = total,
         total_dl   = total_dl
     )
-
 
 
 @app.route('/donnees/telecharger/<int:id>')
@@ -1078,8 +1076,6 @@ def admin_finances():
     stats = cur.fetchall()
     cur.close()
     return render_template('admin/finances.html', stats=stats)
-
-
 
 
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
@@ -1783,7 +1779,7 @@ def admin_donnee_supprimer(id):
     return redirect(url_for('admin_donnees'))
 
 
-### Dashboard/Education
+# Dashboard/Education
 @app.route('/admin/education', methods=['GET', 'POST'])
 @login_required
 def admin_education():
@@ -2228,7 +2224,6 @@ def sana_biblio():
     return render_template('sana/biblio.html', refs=refs)
 
 
-
 @app.route('/sana/glossaire', methods=['GET', 'POST'])
 @sana_login_required
 def sana_glossaire():
@@ -2279,7 +2274,6 @@ def sana_glossaire():
     return render_template('sana/glossaire.html',
         termes=termes, maitrise=maitrise, a_revoir=a_revoir
     )
-
 
 
 @app.route('/sana/techniques', methods=['GET', 'POST'])
@@ -2376,7 +2370,6 @@ def sana_labo():
     return render_template('sana/labo.html', entrees=entrees)
 
 
-
 @app.route('/sana/protocoles', methods=['GET', 'POST'])
 @sana_login_required
 def sana_protocoles():
@@ -2412,7 +2405,6 @@ def sana_protocoles():
     protocoles = cur.fetchall()
 
     return render_template('sana/protocoles.html', protocoles=protocoles)
-
 
 
 @app.route('/sana/reactifs', methods=['GET', 'POST'])
@@ -2604,11 +2596,34 @@ def sana_taches():
         'a_faire'  : sum(1 for t in taches if t[5] == 'a_faire'),
         'en_cours' : sum(1 for t in taches if t[5] == 'en_cours'),
         'termine'  : sum(1 for t in taches if t[5] == 'termine'),
+        'en_retard': sum(1 for t in taches if t[6] and t[6] < date.today() and t[5] != 'termine'),
+        'haute'    : sum(1 for t in taches if t[4] == 'haute'),
+        'normale'  : sum(1 for t in taches if t[4] == 'normale'),
+        'basse'    : sum(1 for t in taches if t[4] == 'basse'),
     }
+    stats['taux_completion'] = round(stats['termine'] / stats['total'] * 100) if stats['total'] else 0
+
+    # Données pour la frise chronologique (Gantt) des jalons
+    gantt_jalons = []
+    dates_jalons = [j[3] for j in jalons if j[3]] + [j[4] for j in jalons if j[4]]
+    if dates_jalons:
+        gantt_start = min(dates_jalons)
+        gantt_end   = max(max(dates_jalons), date.today())
+        span_days   = (gantt_end - gantt_start).days or 1
+        for j in jalons:
+            if j[3]:
+                pct = (j[3] - gantt_start).days / span_days * 100
+                gantt_jalons.append({'id': j[0], 'titre': j[1], 'statut': j[5],
+                                      'date': j[3], 'pct': round(pct, 1)})
+        today_pct = round((date.today() - gantt_start).days / span_days * 100, 1)
+    else:
+        gantt_start = gantt_end = today_pct = None
 
     cur.close()
     return render_template('sana/taches.html',
-        taches=taches, jalons=jalons, stats=stats
+        taches=taches, jalons=jalons, stats=stats, today=date.today(),
+        gantt_jalons=gantt_jalons, gantt_start=gantt_start,
+        gantt_end=gantt_end, today_pct=today_pct
     )
 
 
