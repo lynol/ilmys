@@ -260,7 +260,7 @@
                                     <div>
                                         <label class="sana-label">Catégorie</label>
                                         <select name="categorie" class="sana-input">
-                                            {% for c in ['lecture','redaction','analyse','labo','admin','formation','autre'] %}
+                                            {% for c in ['lecture','redaction','analyse','labo','administratif','formation','autre'] %}
                                             <option value="{{ c }}" {% if t[3]==c %}selected{% endif %}>
                                                 {{ c|capitalize }}
                                             </option>
