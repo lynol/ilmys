@@ -3038,10 +3038,20 @@ def ceemuci_amanah():
     return render_template('ceemuci/amanah.html',
                            success=success, error=error)
 
-@app.route('/ceemuci/admin/amanah')
+@app.route('/ceemuci/admin/amanah', methods=['GET', 'POST'])
 @ceemuci_login_required
 def ceemuci_admin_amanah():
     cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'delete':
+            cur.execute(
+                "DELETE FROM ceemuci_amanah WHERE id=%s",
+                (request.form.get('id'),)
+            )
+            mysql.connection.commit()
+            flash('Réponse supprimée.', 'success')
     cur.execute("""
         SELECT id, nom, prenoms, whatsapp,
                localisation, disponible_djouman,
@@ -3218,6 +3228,7 @@ def ceemuci_planning():
     return render_template('ceemuci/planning.html',
         plannings=plannings, disponibles=disponibles
     )
+
 
 
 

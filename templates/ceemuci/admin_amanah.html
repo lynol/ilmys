@@ -163,6 +163,7 @@
                     <th>Djouman vendredi</th>
                     <th>Ibn Baz</th>
                     <th>Date</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -199,6 +200,19 @@
                     </td>
                     <td style="color:#94a3b8;font-size:11px">
                         {{ r[7].strftime('%d/%m %H:%M') if r[7] else '—' }}
+                    </td>
+                    <td>
+                        <form method="POST"
+                            onsubmit="return confirm('Supprimer cette réponse ?')">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="{{ r[0] }}">
+                            <button type="submit"
+                                    style="padding:4px 10px;background:#fee2e2;
+                                        color:#991b1b;border:none;border-radius:6px;
+                                        font-size:11px;font-weight:600;cursor:pointer">
+                                🗑️
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
