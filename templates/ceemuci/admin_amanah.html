@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEEMUCI — Sondage Ibn Baz</title>
+    <title>CEEMUCI - Sondage Ibn Baz</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background:#f4f7f4;padding:24px 16px }
@@ -81,7 +81,7 @@
 <!-- TOPBAR -->
 <div class="topbar">
     <div>
-        <h1>Sondage — Présence Ibn Baz</h1>
+        <h1>Sondage - Présence Ibn Baz</h1>
         <p>Résultats · CEEMUCI Admin</p>
     </div>
     <div style="display:flex;gap:8px">
@@ -175,12 +175,12 @@
                     <td style="font-weight:700;color:#1e293b">
                         {{ r[1] }} {{ r[2] }}
                     </td>
-                    <td>{{ r[3] or '—' }}</td>
+                    <td>{{ r[3] or '-' }}</td>
                     <td>
                         <span class="badge
                             {% if r[4]=='Abidjan' %}badge-abidjan
                             {% else %}badge-hors{% endif %}">
-                            {{ r[4] or '—' }}
+                            {{ r[4] or '-' }}
                         </span>
                     </td>
                     <td>
@@ -188,18 +188,18 @@
                             {% if r[5]=='Oui' %}badge-oui
                             {% elif r[5]=='Non' %}badge-non
                             {% else %}badge-parfois{% endif %}">
-                            {{ r[5] or '—' }}
+                            {{ r[5] or '-' }}
                         </span>
                     </td>
                     <td>
                         <span class="badge
                             {% if r[6]=='Oui' %}badge-oui
                             {% else %}badge-non{% endif %}">
-                            {{ r[6] or '—' }}
+                            {{ r[6] or '-' }}
                         </span>
                     </td>
                     <td style="color:#94a3b8;font-size:11px">
-                        {{ r[7].strftime('%d/%m %H:%M') if r[7] else '—' }}
+                        {{ r[7].strftime('%d/%m %H:%M') if r[7] else '-' }}
                     </td>
                     <td>
                         <form method="POST"
