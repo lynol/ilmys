@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEEMUCI - Modifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background:#f4f7f4;padding:30px 16px }
+        .card { border:1px solid #d4e4d4;border-radius:12px }
+        .card-header {
+            background:#1a5c2a;color:#fff;
+            border-radius:12px 12px 0 0;padding:16px 24px;
+            font-weight:700;font-size:16px;
+        }
+        .form-label {
+            font-size:12px;font-weight:600;
+            color:#4a6352;text-transform:uppercase;
+            letter-spacing:0.3px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color:#2d8a45;
+            box-shadow:0 0 0 3px rgba(45,138,69,0.12);
+        }
+        .btn-save {
+            background:#1a5c2a;color:#fff;border:none;
+            padding:10px 24px;border-radius:8px;font-weight:700;
+        }
+        .btn-save:hover { background:#2d8a45;color:#fff }
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:680px">
+
+    <a href="{{ url_for('ceemuci_admin') }}"
+       class="btn btn-sm btn-outline-secondary mb-3">
+        ← Retour
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            Modifier la fiche - {{ b[1] }} {{ b[2] }}
+        </div>
+        <div class="card-body p-4">
+            <form method="POST">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nom *</label>
+                        <input type="text" name="nom"
+                               class="form-control" required
+                               value="{{ b[1] }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Prénoms *</label>
+                        <input type="text" name="prenoms"
+                               class="form-control" required
+                               value="{{ b[2] }}">
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Sexe *</label>
+                        <select name="sexe" class="form-select" required>
+                            <option value="Masculin"
+                                {% if b[3]=='Masculin' %}selected{% endif %}>
+                                Masculin
+                            </option>
+                            <option value="Féminin"
+                                {% if b[3]=='Féminin' %}selected{% endif %}>
+                                Féminin
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ville d'origine</label>
+                        <input type="text" name="ville_origine"
+                               class="form-control"
+                               value="{{ b[4] or '' }}">
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Université</label>
+                        <input type="text" name="universite"
+                               class="form-control"
+                               value="{{ b[5] or '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Filière</label>
+                        <input type="text" name="filiere"
+                               class="form-control"
+                               value="{{ b[6] or '' }}">
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Téléphone *</label>
+                        <input type="tel" name="telephone"
+                               class="form-control" required
+                               value="{{ b[8] or '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">WhatsApp</label>
+                        <input type="tel" name="whatsapp"
+                               class="form-control"
+                               value="{{ b[9] or '' }}">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email"
+                           class="form-control"
+                           value="{{ b[10] or '' }}">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Membre CEEMUCI</label>
+                    <select name="ceemuci_membre" class="form-select">
+                        <option value="1"
+                            {% if b[7] %}selected{% endif %}>
+                            Oui, membre
+                        </option>
+                        <option value="0"
+                            {% if not b[7] %}selected{% endif %}>
+                            Non
+                        </option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-save">
+                        Enregistrer les modifications
+                    </button>
+                    <a href="{{ url_for('ceemuci_admin') }}"
+                       class="btn btn-outline-secondary">
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

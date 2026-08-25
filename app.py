@@ -2884,7 +2884,126 @@ def ceemuci_export(format):
                      'attachment;filename=ceemuci_bacheliers_2026.txt'}
         )
 
+# ─── EXPORT PDF ───
+@app.route('/ceemuci/export/pdf')
+@ceemuci_login_required
+def ceemuci_export_pdf():
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib import colors
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet
+    import io
 
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT nom, prenoms, sexe, ville_origine,
+               universite, filiere,
+               CASE ceemuci_membre WHEN 1 THEN 'Oui' ELSE 'Non' END,
+               telephone, whatsapp,
+               DATE_FORMAT(created_at, '%d/%m/%Y')
+        FROM ceemuci_bacheliers ORDER BY created_at DESC
+    """)
+    rows = cur.fetchall()
+    cur.close()
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4),
+                            leftMargin=20, rightMargin=20,
+                            topMargin=30, bottomMargin=20)
+
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # Titre
+    elements.append(Paragraph(
+        "CEEMUCI — Recensement Bacheliers 2026",
+        styles['Title']
+    ))
+    elements.append(Spacer(1, 12))
+
+    # Tableau
+    headers = ['Nom', 'Prénoms', 'Sexe', 'Ville',
+               'Université', 'Filière', 'CEEMUCI',
+               'Téléphone', 'WhatsApp', 'Date']
+    data = [headers] + [list(r) for r in rows]
+
+    t = Table(data, repeatRows=1)
+    t.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1a5c2a')),
+        ('TEXTCOLOR',  (0,0), (-1,0), colors.white),
+        ('FONTNAME',   (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTSIZE',   (0,0), (-1,0), 8),
+        ('FONTSIZE',   (0,1), (-1,-1), 7),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1),
+         [colors.white, colors.HexColor('#f0faf4')]),
+        ('GRID', (0,0), (-1,-1), 0.3, colors.HexColor('#c8dcc8')),
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('PADDING', (0,0), (-1,-1), 4),
+    ]))
+    elements.append(t)
+    doc.build(elements)
+
+    buffer.seek(0)
+    from flask import Response
+    return Response(
+        buffer.getvalue(),
+        mimetype='application/pdf',
+        headers={'Content-Disposition':
+                 'attachment;filename=ceemuci_bacheliers_2026.pdf'}
+    )
+
+# ─── MODIFIER ───
+@app.route('/ceemuci/modifier/<int:bid>', methods=['GET', 'POST'])
+@ceemuci_login_required
+def ceemuci_modifier(bid):
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        cur.execute("""
+            UPDATE ceemuci_bacheliers
+            SET nom=%s, prenoms=%s, sexe=%s, ville_origine=%s,
+                universite=%s, filiere=%s, ceemuci_membre=%s,
+                telephone=%s, whatsapp=%s, email=%s
+            WHERE id=%s
+        """, (
+            request.form.get('nom','').strip().upper(),
+            request.form.get('prenoms','').strip(),
+            request.form.get('sexe'),
+            request.form.get('ville_origine','').strip(),
+            request.form.get('universite','').strip() or None,
+            request.form.get('filiere','').strip() or None,
+            int(request.form.get('ceemuci_membre', 0)),
+            request.form.get('telephone','').strip(),
+            request.form.get('whatsapp','').strip() or None,
+            request.form.get('email','').strip() or None,
+            bid
+        ))
+        mysql.connection.commit()
+        cur.close()
+        flash('Fiche mise à jour.', 'success')
+        return redirect(url_for('ceemuci_admin'))
+
+    cur.execute("""
+        SELECT id, nom, prenoms, sexe, ville_origine,
+               universite, filiere, ceemuci_membre,
+               telephone, whatsapp, email
+        FROM ceemuci_bacheliers WHERE id=%s
+    """, (bid,))
+    b = cur.fetchone()
+    cur.close()
+    return render_template('ceemuci/modifier.html', b=b)
+
+# ─── SUPPRIMER ───
+@app.route('/ceemuci/supprimer/<int:bid>', methods=['POST'])
+@ceemuci_login_required
+def ceemuci_supprimer(bid):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM ceemuci_bacheliers WHERE id=%s", (bid,))
+    mysql.connection.commit()
+    cur.close()
+    flash('Fiche supprimée.', 'success')
+    return redirect(url_for('ceemuci_admin'))
 
 if __name__ == '__main__':
     app.run(debug=False)

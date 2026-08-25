@@ -1,285 +1,433 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CEEMUCI -Administration</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <style>
-        * { box-sizing:border-box;margin:0;padding:0 }
-        body {
-            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-            background:#f0f4f8;min-height:100vh;color:#1e293b;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
         }
-        .topbar {
-            background:#00213f;padding:14px 28px;
-            display:flex;align-items:center;
-            justify-content:space-between;
-        }
-        .topbar-left {
-            display:flex;align-items:center;gap:12px;color:#fff
-        }
-        .topbar img {
-            width:36px;height:36px;border-radius:50%;
-            object-fit:cover;border:2px solid #00d2b2;
-        }
-        .topbar h1 { font-size:16px;font-weight:700 }
-        .topbar p  { font-size:11px;color:#64748b }
-        .topbar-right { display:flex;gap:8px;align-items:center }
-        .btn {
-            padding:7px 14px;border-radius:8px;font-size:12px;
-            font-weight:600;cursor:pointer;border:none;
-            font-family:inherit;text-decoration:none;
-            display:inline-flex;align-items:center;gap:5px;
-        }
-        .btn-green  { background:#00d2b2;color:#00213f }
-        .btn-white  { background:#fff;color:#00213f }
-        .btn-danger { background:#fee2e2;color:#991b1b }
-        .btn-gray   { background:#334155;color:#94a3b8 }
 
-        .content { padding:24px 28px }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .topbar {
+            background: #00213f;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff
+        }
+
+        .topbar img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00d2b2;
+        }
+
+        .topbar h1 {
+            font-size: 16px;
+            font-weight: 700
+        }
+
+        .topbar p {
+            font-size: 11px;
+            color: #64748b
+        }
+
+        .topbar-right {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .btn {
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-green {
+            background: #00d2b2;
+            color: #00213f
+        }
+
+        .btn-white {
+            background: #fff;
+            color: #00213f
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        .btn-gray {
+            background: #334155;
+            color: #94a3b8
+        }
+
+        .content {
+            padding: 24px 28px
+        }
 
         /* STATS */
         .stats-grid {
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-            gap:14px;margin-bottom:24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
         }
+
         .stat {
-            background:#fff;border-radius:12px;padding:18px;
-            border:1px solid #e2e8f0;
-            border-top:3px solid #00d2b2;
-            box-shadow:0 1px 3px rgba(0,0,0,0.05);
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+            border-top: 3px solid #00d2b2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
+
         .stat-val {
-            font-size:30px;font-weight:800;color:#00213f;
-            line-height:1;
+            font-size: 30px;
+            font-weight: 800;
+            color: #00213f;
+            line-height: 1;
         }
+
         .stat-label {
-            font-size:12px;color:#64748b;margin-top:5px;
-            font-weight:600;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+            font-weight: 600;
         }
 
         /* TABLE */
         .table-card {
-            background:#fff;border-radius:12px;
-            border:1px solid #e2e8f0;overflow:hidden;
-            box-shadow:0 1px 3px rgba(0,0,0,0.05);
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
+
         .table-header {
-            padding:14px 20px;border-bottom:1px solid #e2e8f0;
-            display:flex;justify-content:space-between;
-            align-items:center;flex-wrap:wrap;gap:10px;
-            background:#f8fafc;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #f8fafc;
         }
+
         .table-header h2 {
-            font-size:14px;font-weight:700;color:#00213f
+            font-size: 14px;
+            font-weight: 700;
+            color: #00213f
         }
-        .export-btns { display:flex;gap:6px;flex-wrap:wrap }
+
+        .export-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap
+        }
 
         input[type="text"] {
-            padding:7px 12px;border:1px solid #e2e8f0;
-            border-radius:8px;font-size:13px;font-family:inherit;
-            color:#1e293b;width:220px;
+            padding: 7px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            color: #1e293b;
+            width: 220px;
         }
+
         input[type="text"]:focus {
-            outline:none;border-color:#00d2b2
+            outline: none;
+            border-color: #00d2b2
         }
 
         table {
-            width:100%;border-collapse:collapse;font-size:13px
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px
         }
+
         thead th {
-            background:#f1f5f9;color:#475569;font-weight:700;
-            padding:10px 14px;text-align:left;
-            border-bottom:1px solid #e2e8f0;
-            font-size:11px;text-transform:uppercase;
-            letter-spacing:0.4px;white-space:nowrap;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
         }
+
         tbody td {
-            padding:10px 14px;border-bottom:1px solid #f1f5f9;
-            color:#334155;vertical-align:middle;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
         }
-        tbody tr:hover td { background:#f8fafc }
+
+        tbody tr:hover td {
+            background: #f8fafc
+        }
 
         .badge {
-            display:inline-block;padding:2px 8px;
-            border-radius:20px;font-size:10px;font-weight:700;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
         }
-        .badge-green { background:#dcfce7;color:#166534 }
-        .badge-blue  { background:#dbeafe;color:#1d4ed8 }
-        .badge-pink  { background:#fce7f3;color:#9d174d }
-        .badge-gray  { background:#f1f5f9;color:#64748b }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #166534
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1d4ed8
+        }
+
+        .badge-pink {
+            background: #fce7f3;
+            color: #9d174d
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #64748b
+        }
 
         .footer {
-            text-align:center;padding:20px;font-size:11px;
-            color:#94a3b8;
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: #94a3b8;
         }
 
         @media (max-width:600px) {
-            .content { padding:16px }
-            .topbar  { flex-direction:column;gap:10px }
+            .content {
+                padding: 16px
+            }
+
+            .topbar {
+                flex-direction: column;
+                gap: 10px
+            }
         }
     </style>
 </head>
+
 <body>
 
-<div class="topbar">
-    <div class="topbar-left">
-        <img src="/static/assets/ceemuci_logo_rond.png" alt="CEEMUCI">
-        <div>
-            <h1>CEEMUCI -Administration</h1>
-            <p>Recensement Bacheliers 2026</p>
-        </div>
-    </div>
-    <div class="topbar-right">
-        <a href="{{ url_for('ceemuci_formulaire') }}"
-           class="btn btn-white" target="_blank">
-            <i class="ti ti-external-link"></i> Formulaire public
-        </a>
-        <a href="{{ url_for('ceemuci_logout') }}"
-           class="btn btn-danger">
-            <i class="ti ti-logout"></i> Déconnexion
-        </a>
-    </div>
-</div>
-
-<div class="content">
-
-    <!-- STATS -->
-    <div class="stats-grid">
-        <div class="stat">
-            <div class="stat-val">{{ stats.total }}</div>
-            <div class="stat-label">Total inscrits</div>
-        </div>
-        <div class="stat" style="border-top-color:#3b82f6">
-            <div class="stat-val" style="color:#1d4ed8">
-                {{ stats.garcons }}
+    <div class="topbar">
+        <div class="topbar-left">
+            <img src="/static/assets/ceemuci_logo_rond.png" alt="CEEMUCI">
+            <div>
+                <h1>CEEMUCI -Administration</h1>
+                <p>Recensement Bacheliers 2026</p>
             </div>
-            <div class="stat-label">Garçons</div>
         </div>
-        <div class="stat" style="border-top-color:#ec4899">
-            <div class="stat-val" style="color:#9d174d">
-                {{ stats.filles }}
-            </div>
-            <div class="stat-label">Filles</div>
-        </div>
-        <div class="stat" style="border-top-color:#f59e0b">
-            <div class="stat-val" style="color:#92400e">
-                {{ stats.membres }}
-            </div>
-            <div class="stat-label">Anciens membres</div>
+        <div class="topbar-right">
+            <a href="{{ url_for('ceemuci_formulaire') }}" class="btn btn-white" target="_blank">
+                <i class="ti ti-external-link"></i> Formulaire public
+            </a>
+            <a href="{{ url_for('ceemuci_logout') }}" class="btn btn-danger">
+                <i class="ti ti-logout"></i> Déconnexion
+            </a>
         </div>
     </div>
 
-    <!-- TABLEAU -->
-    <div class="table-card">
-        <div class="table-header">
-            <h2>Liste des bacheliers</h2>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;
-                        align-items:center">
-                <input type="text" id="searchInput"
-                       placeholder="Rechercher..."
-                       onkeyup="filterTable()">
-                <div class="export-btns">
-                    <a href="{{ url_for('ceemuci_export', format='csv') }}"
-                       class="btn btn-green">
-                        <i class="ti ti-file-text"></i> CSV
-                    </a>
-                    <a href="{{ url_for('ceemuci_export', format='excel') }}"
-                       class="btn btn-green">
-                        <i class="ti ti-file-spreadsheet"></i> Excel
-                    </a>
-                    <a href="{{ url_for('ceemuci_export', format='txt') }}"
-                       class="btn btn-gray">
-                        <i class="ti ti-file"></i> TXT
-                    </a>
+    <div class="content">
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="stat-val">{{ stats.total }}</div>
+                <div class="stat-label">Total inscrits</div>
+            </div>
+            <div class="stat" style="border-top-color:#3b82f6">
+                <div class="stat-val" style="color:#1d4ed8">
+                    {{ stats.garcons }}
+                </div>
+                <div class="stat-label">Garçons</div>
+            </div>
+            <div class="stat" style="border-top-color:#ec4899">
+                <div class="stat-val" style="color:#9d174d">
+                    {{ stats.filles }}
+                </div>
+                <div class="stat-label">Filles</div>
+            </div>
+            <div class="stat" style="border-top-color:#f59e0b">
+                <div class="stat-val" style="color:#92400e">
+                    {{ stats.membres }}
+                </div>
+                <div class="stat-label">Anciens membres</div>
+            </div>
+        </div>
+
+        <!-- TABLEAU -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Liste des bacheliers
+                    <span style="font-size:12px;font-weight:400;color:#64748b;
+                     margin-left:8px" id="countLabel">
+                        {{ bacheliers|length }} inscrits
+                    </span>
+                </h2>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                    <input type="text" id="searchInput" placeholder="Rechercher..." onkeyup="filterTable()">
+                    <select id="filterSexe" onchange="filterTable()" style="padding:7px 10px;border:1px solid #e2e8f0;
+                       border-radius:8px;font-size:13px">
+                        <option value="all">Tous</option>
+                        <option value="Masculin">Garçons</option>
+                        <option value="Féminin">Filles</option>
+                    </select>
+                    <select id="filterMembre" onchange="filterTable()" style="padding:7px 10px;border:1px solid #e2e8f0;
+                       border-radius:8px;font-size:13px">
+                        <option value="all">Tous membres</option>
+                        <option value="Oui">Anciens membres</option>
+                        <option value="Non">Nouveaux</option>
+                    </select>
+                    <div class="export-btns">
+                        <a href="{{ url_for('ceemuci_export', format='csv') }}" class="btn btn-green">CSV</a>
+                        <a href="{{ url_for('ceemuci_export', format='excel') }}" class="btn btn-green">Excel</a>
+                        <a href="{{ url_for('ceemuci_export_pdf') }}" class="btn btn-green">PDF</a>
+                        <a href="{{ url_for('ceemuci_export', format='txt') }}" class="btn btn-gray">TXT</a>
+                    </div>
                 </div>
             </div>
+
+            <div style="overflow-x:auto">
+                <table id="mainTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nom & Prénoms</th>
+                            <th>Sexe</th>
+                            <th>Ville</th>
+                            <th>Université</th>
+                            <th>Filière</th>
+                            <th>CEEMUCI</th>
+                            <th>Téléphone</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in bacheliers %}
+                        <tr data-sexe="{{ b[3] }}" data-membre="{% if b[7] %}Oui{% else %}Non{% endif %}">
+                            <td style="color:#94a3b8;font-size:11px">{{ loop.index }}</td>
+                            <td>
+                                <div style="font-weight:700;color:#1e293b">
+                                    {{ b[1] }} {{ b[2] }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge
+                        {% if b[3]=='Féminin' %}badge-pink
+                        {% else %}badge-blue{% endif %}">
+                                    {{ b[3] }}
+                                </span>
+                            </td>
+                            <td>{{ b[4] or '-' }}</td>
+                            <td style="max-width:130px;overflow:hidden;
+                           text-overflow:ellipsis;white-space:nowrap">
+                                {{ b[5] or '-' }}
+                            </td>
+                            <td>{{ b[6] or '-' }}</td>
+                            <td>
+                                <span class="badge
+                        {% if b[7] %}badge-green{% else %}badge-gray{% endif %}">
+                                    {% if b[7] %}Membre{% else %}Non{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ b[8] or '-' }}</td>
+                            <td style="color:#94a3b8;font-size:11px;white-space:nowrap">
+                                {{ b[11].strftime('%d/%m/%Y') if b[11] else '-' }}
+                            </td>
+                            <td>
+                                <div style="display:flex;gap:5px">
+                                    <a href="{{ url_for('ceemuci_modifier', bid=b[0]) }}" class="btn btn-white"
+                                        style="padding:4px 10px;font-size:11px">
+                                        ✏️
+                                    </a>
+                                    <form method="POST" action="{{ url_for('ceemuci_supprimer', bid=b[0]) }}"
+                                        onsubmit="return confirm('Supprimer {{ b[1] }} {{ b[2] }} ?')">
+                                        <button type="submit" class="btn btn-danger"
+                                            style="padding:4px 10px;font-size:11px">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div style="overflow-x:auto">
-            <table id="mainTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nom & Prénoms</th>
-                        <th>Sexe</th>
-                        <th>Ville</th>
-                        <th>Université</th>
-                        <th>Filière</th>
-                        <th>CEEMUCI</th>
-                        <th>Téléphone</th>
-                        <th>WhatsApp</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for b in bacheliers %}
-                    <tr>
-                        <td style="color:#94a3b8;font-size:11px">
-                            {{ loop.index }}
-                        </td>
-                        <td>
-                            <div style="font-weight:700;color:#1e293b">
-                                {{ b[1] }} {{ b[2] }}
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge
-                                {% if b[3]=='Féminin' %}badge-pink
-                                {% else %}badge-blue{% endif %}">
-                                {{ b[3] }}
-                            </span>
-                        </td>
-                        <td>{{ b[4] or '—' }}</td>
-                        <td style="max-width:150px;overflow:hidden;
-                                   text-overflow:ellipsis;
-                                   white-space:nowrap">
-                            {{ b[5] or '—' }}
-                        </td>
-                        <td>{{ b[6] or '—' }}</td>
-                        <td>
-                            <span class="badge
-                                {% if b[7] %}badge-green{% else %}badge-gray{% endif %}">
-                                {% if b[7] %}Membre{% else %}Non{% endif %}
-                            </span>
-                        </td>
-                        <td>{{ b[8] or '—' }}</td>
-                        <td>{{ b[9] or '—' }}</td>
-                        <td style="color:#94a3b8;font-size:11px;
-                                   white-space:nowrap">
-                            {{ b[11].strftime('%d/%m/%Y') if b[11] else '—' }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="footer">
+            CEEMUCI · Données confidentielles · Réservé aux membres
         </div>
 
-        {% if not bacheliers %}
-        <div style="text-align:center;padding:48px;color:#94a3b8;
-                    font-size:13px">
-            Aucune inscription pour le moment.
-        </div>
-        {% endif %}
-    </div>
-</div>
+        <script>
+            function filterTable() {
+                const q      = document.getElementById('searchInput')
+                                        .value.toLowerCase();
+                const sexe   = document.getElementById('filterSexe').value;
+                const membre = document.getElementById('filterMembre').value;
+                let count    = 0;
 
-<div class="footer">
-    CEEMUCI  · Données confidentielles · Réservé aux membres
-</div>
+                document.querySelectorAll('#mainTable tbody tr').forEach(r => {
+                    const textOk   = r.textContent.toLowerCase().includes(q);
+                    const sexeOk   = sexe   === 'all' || r.dataset.sexe   === sexe;
+                    const membreOk = membre === 'all' || r.dataset.membre === membre;
+                    const show     = textOk && sexeOk && membreOk;
+                    r.style.display = show ? '' : 'none';
+                    if (show) count++;
+                });
 
-<script>
-function filterTable() {
-    const q = document.getElementById('searchInput')
-                       .value.toLowerCase();
-    document.querySelectorAll('#mainTable tbody tr').forEach(r => {
-        r.style.display =
-            r.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-}
-</script>
+                document.getElementById('countLabel').textContent =
+                    count + ' inscrits';
+            }
+        </script>
 </body>
+
 </html>
