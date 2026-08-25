@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from collections import Counter
 
 import re
+import datetime
 import time
 import os
 
@@ -3060,6 +3061,165 @@ def ceemuci_admin_amanah():
 
     return render_template('ceemuci/admin_amanah.html',
                            reponses=reponses, stats=stats)
+
+
+
+@app.route('/ceemuci/admin/planning', methods=['GET', 'POST'])
+@ceemuci_login_required
+def ceemuci_planning():
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        # ─── GÉNÉRER AUTOMATIQUEMENT ───
+        if action == 'generer':
+            nb_semaines = int(request.form.get('nb_semaines', 4))
+            min_par_djouman = 2
+
+            # Membres disponibles — Djouman + Abidjan
+            cur.execute("""
+                SELECT id, nom, prenoms, whatsapp
+                FROM ceemuci_amanah
+                WHERE ibn_baz_accessible = 'Djouman'
+                AND disponible_djouman IN ('Oui','Parfois')
+                ORDER BY RAND()
+            """)
+            disponibles = list(cur.fetchall())
+
+            if len(disponibles) < min_par_djouman:
+                flash('Pas assez de membres disponibles.', 'error')
+            else:
+                # Trouver le prochain vendredi
+                today = datetime.date.today()
+                days_ahead = 4 - today.weekday()
+                if days_ahead <= 0:
+                    days_ahead += 7
+                prochain_vendredi = today + datetime.timedelta(days=days_ahead)
+
+                idx = 0
+                for i in range(nb_semaines):
+                    date_djouman = prochain_vendredi + \
+                                   datetime.timedelta(weeks=i)
+
+                    # Vérifier si ce vendredi existe déjà
+                    cur.execute("""
+                        SELECT id FROM ceemuci_planning
+                        WHERE date_djouman = %s
+                    """, (date_djouman,))
+                    existing = cur.fetchone()
+                    if existing:
+                        continue
+
+                    # Créer le planning
+                    cur.execute("""
+                        INSERT INTO ceemuci_planning
+                            (date_djouman, statut)
+                        VALUES (%s, 'proposé')
+                    """, (date_djouman,))
+                    planning_id = cur.lastrowid
+
+                    # Assigner 2 membres en rotation
+                    for j in range(min_par_djouman):
+                        membre = disponibles[idx % len(disponibles)]
+                        cur.execute("""
+                            INSERT INTO ceemuci_planning_membres
+                                (planning_id, amanah_id)
+                            VALUES (%s, %s)
+                        """, (planning_id, membre[0]))
+                        idx += 1
+
+                mysql.connection.commit()
+                flash('Planning généré avec succès.', 'success')
+
+        # ─── VALIDER UN PLANNING ───
+        elif action == 'valider':
+            cur.execute("""
+                UPDATE ceemuci_planning
+                SET statut = 'validé'
+                WHERE id = %s
+            """, (request.form.get('planning_id'),))
+            mysql.connection.commit()
+            flash('Planning validé.', 'success')
+
+        # ─── SUPPRIMER UN PLANNING ───
+        elif action == 'supprimer':
+            cur.execute("""
+                DELETE FROM ceemuci_planning WHERE id = %s
+            """, (request.form.get('planning_id'),))
+            mysql.connection.commit()
+            flash('Planning supprimé.', 'success')
+
+        # ─── AJOUTER MANUELLEMENT UN MEMBRE ───
+        elif action == 'ajouter_membre':
+            cur.execute("""
+                INSERT INTO ceemuci_planning_membres
+                    (planning_id, amanah_id)
+                VALUES (%s, %s)
+            """, (
+                request.form.get('planning_id'),
+                request.form.get('amanah_id')
+            ))
+            mysql.connection.commit()
+
+        # ─── RETIRER UN MEMBRE ───
+        elif action == 'retirer_membre':
+            cur.execute("""
+                DELETE FROM ceemuci_planning_membres
+                WHERE id = %s
+            """, (request.form.get('pm_id'),))
+            mysql.connection.commit()
+
+    # ─── CHARGER LES PLANNINGS ───
+    cur.execute("""
+        SELECT p.id, p.date_djouman, p.statut, p.notes,
+               GROUP_CONCAT(
+                   CONCAT(a.nom,' ',a.prenoms,
+                          '|',a.whatsapp,'|',pm.id)
+                   SEPARATOR ';;'
+               ) as membres
+        FROM ceemuci_planning p
+        LEFT JOIN ceemuci_planning_membres pm ON pm.planning_id = p.id
+        LEFT JOIN ceemuci_amanah a ON a.id = pm.amanah_id
+        GROUP BY p.id
+        ORDER BY p.date_djouman ASC
+    """)
+    plannings_raw = cur.fetchall()
+
+    plannings = []
+    for p in plannings_raw:
+        membres = []
+        if p[4]:
+            for m in p[4].split(';;'):
+                parts = m.split('|')
+                if len(parts) == 3:
+                    membres.append({
+                        'nom'     : parts[0],
+                        'whatsapp': parts[1],
+                        'pm_id'   : parts[2]
+                    })
+        plannings.append({
+            'id'          : p[0],
+            'date'        : p[1],
+            'statut'      : p[2],
+            'notes'       : p[3],
+            'membres'     : membres
+        })
+
+    # Membres disponibles pour ajout manuel
+    cur.execute("""
+        SELECT id, nom, prenoms FROM ceemuci_amanah
+        WHERE ibn_baz_accessible = 'Djouman'
+        ORDER BY nom
+    """)
+    disponibles = cur.fetchall()
+    cur.close()
+
+    return render_template('ceemuci/planning.html',
+        plannings=plannings, disponibles=disponibles
+    )
+
+
 
 if __name__ == '__main__':
     app.run(debug=False)
