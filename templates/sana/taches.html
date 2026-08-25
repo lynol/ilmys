@@ -57,19 +57,19 @@
                 <div style="display:flex;align-items:center;gap:8px">
                     <span
                         style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>
-                    <span style="font-size:12px;color:#334155">À faire — {{ stats.a_faire }}
+                    <span style="font-size:12px;color:#334155">À faire - {{ stats.a_faire }}
                         ({{ stats.pct_a_faire }}%)</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
                     <span
                         style="width:10px;height:10px;border-radius:2px;background:#00a389;display:inline-block"></span>
-                    <span style="font-size:12px;color:#334155">En cours — {{ stats.en_cours }}
+                    <span style="font-size:12px;color:#334155">En cours - {{ stats.en_cours }}
                         ({{ stats.pct_en_cours }}%)</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
                     <span
                         style="width:10px;height:10px;border-radius:2px;background:#10b981;display:inline-block"></span>
-                    <span style="font-size:12px;color:#334155">Terminées — {{ stats.termine }}
+                    <span style="font-size:12px;color:#334155">Terminées - {{ stats.termine }}
                         ({{ stats.pct_termine }}%)</span>
                 </div>
             </div>
@@ -332,7 +332,7 @@
                         background:{% if gj.statut=='termine' %}#00a389
                         {% elif gj.statut=='en_cours' %}#f59e0b
                         {% else %}#334155{% endif %};
-                        border:2px solid #0f172a" title="{{ gj.titre }} — {{ gj.date.strftime('%d/%m/%Y') }}">
+                        border:2px solid #0f172a" title="{{ gj.titre }} - {{ gj.date.strftime('%d/%m/%Y') }}">
             </div>
             <div style="font-size:9px;color:#94a3b8;line-height:1.2">
                 {{ gj.titre[:18] }}{% if gj.titre|length > 18 %}...{% endif %}

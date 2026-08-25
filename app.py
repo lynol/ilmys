@@ -2681,5 +2681,210 @@ def sana_apprentissage():
 
 
 
+# ════════════════════════════════════
+# ─── CEEMUCI ───
+# ════════════════════════════════════
+
+def ceemuci_login_required(f):
+    from functools import wraps
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('ceemuci_logged_in'):
+            return redirect(url_for('ceemuci_login'))
+        return f(*args, **kwargs)
+    return decorated
+
+@app.route('/ceemuci/login', methods=['GET', 'POST'])
+def ceemuci_login():
+    error = None
+    if request.method == 'POST':
+        email    = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute(
+                "SELECT id, password, nom, role FROM ceemuci_users WHERE email=%s",
+                (email,)
+            )
+            user = cur.fetchone()
+            cur.close()
+            if user:
+                from werkzeug.security import check_password_hash
+                if check_password_hash(user[1], password):
+                    session['ceemuci_logged_in'] = True
+                    session['ceemuci_user_id']   = user[0]
+                    session['ceemuci_role']      = user[3]
+                    session['ceemuci_nom']       = user[2]
+                    return redirect(url_for('ceemuci_admin'))
+                else:
+                    error = 'Mot de passe incorrect.'
+            else:
+                error = 'Email non trouvé.'
+        except Exception as e:
+            error = f'Erreur : {str(e)}'
+    return render_template('ceemuci/login.html', error=error)
+
+@app.route('/ceemuci/logout')
+def ceemuci_logout():
+    session.pop('ceemuci_logged_in', None)
+    session.pop('ceemuci_user_id', None)
+    session.pop('ceemuci_role', None)
+    session.pop('ceemuci_nom', None)
+    return redirect(url_for('ceemuci_login'))
+
+@app.route('/ceemuci', methods=['GET', 'POST'])
+def ceemuci_formulaire():
+    success = False
+    error   = None
+    form    = None
+
+    if request.method == 'POST':
+        form = request.form
+        # Vérif doublons sur téléphone
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute(
+                "SELECT id FROM ceemuci_bacheliers WHERE telephone=%s",
+                (form.get('telephone'),)
+            )
+            existing = cur.fetchone()
+            if existing:
+                error = 'Ce numéro de téléphone est déjà enregistré.'
+            else:
+                cur.execute("""
+                    INSERT INTO ceemuci_bacheliers
+                        (nom, prenoms, sexe, ville_origine,
+                         universite, filiere, ceemuci_membre,
+                         telephone, whatsapp, email)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """, (
+                    form.get('nom','').strip().upper(),
+                    form.get('prenoms','').strip(),
+                    form.get('sexe'),
+                    form.get('ville_origine','').strip(),
+                    form.get('universite','').strip() or None,
+                    form.get('filiere','').strip() or None,
+                    int(form.get('ceemuci_membre', 0)),
+                    form.get('telephone','').strip(),
+                    form.get('whatsapp','').strip() or None,
+                    form.get('email','').strip() or None,
+                ))
+                mysql.connection.commit()
+                success = True
+                form    = None
+            cur.close()
+        except Exception as e:
+            error = f'Erreur technique : {str(e)}'
+
+    return render_template('ceemuci/formulaire.html',
+                           success=success, error=error, form=form)
+
+@app.route('/ceemuci/admin')
+@ceemuci_login_required
+def ceemuci_admin():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT id, nom, prenoms, sexe, ville_origine,
+               universite, filiere, ceemuci_membre,
+               telephone, whatsapp, email, created_at
+        FROM ceemuci_bacheliers
+        ORDER BY created_at DESC
+    """)
+    bacheliers = cur.fetchall()
+
+    stats = {
+        'total'   : len(bacheliers),
+        'membres' : sum(1 for b in bacheliers if b[7]),
+        'filles'  : sum(1 for b in bacheliers if b[3]=='Féminin'),
+        'garcons' : sum(1 for b in bacheliers if b[3]=='Masculin'),
+    }
+    cur.close()
+    return render_template('ceemuci/admin.html',
+                           bacheliers=bacheliers, stats=stats)
+
+@app.route('/ceemuci/export/<format>')
+@ceemuci_login_required
+def ceemuci_export(format):
+    import csv, io
+    from flask import Response
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT nom, prenoms, sexe, ville_origine,
+               universite, filiere,
+               CASE ceemuci_membre WHEN 1 THEN 'Oui' ELSE 'Non' END,
+               telephone, whatsapp, email,
+               DATE_FORMAT(created_at, '%d/%m/%Y %H:%i')
+        FROM ceemuci_bacheliers
+        ORDER BY created_at DESC
+    """)
+    rows = cur.fetchall()
+    cur.close()
+
+    headers = ['Nom','Prénoms','Sexe','Ville','Université',
+               'Filière','CEEMUCI','Téléphone','WhatsApp',
+               'Email','Date inscription']
+
+    if format == 'csv':
+        output = io.StringIO()
+        writer = csv.writer(output, delimiter=';')
+        writer.writerow(headers)
+        writer.writerows(rows)
+        return Response(
+            '\ufeff' + output.getvalue(),
+            mimetype='text/csv; charset=utf-8',
+            headers={'Content-Disposition':
+                     'attachment;filename=ceemuci_bacheliers_2026.csv'}
+        )
+
+    elif format == 'excel':
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Bacheliers 2026"
+
+        # Header style
+        header_fill = PatternFill("solid", fgColor="00213f")
+        header_font = Font(color="00d2b2", bold=True)
+
+        for col, h in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=h)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal='center')
+            ws.column_dimensions[
+                openpyxl.utils.get_column_letter(col)
+            ].width = 18
+
+        for row_idx, row in enumerate(rows, 2):
+            for col_idx, val in enumerate(row, 1):
+                ws.cell(row=row_idx, column=col_idx, value=val)
+
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        return Response(
+            output.getvalue(),
+            mimetype='application/vnd.openxmlformats-officedocument'
+                     '.spreadsheetml.sheet',
+            headers={'Content-Disposition':
+                     'attachment;filename=ceemuci_bacheliers_2026.xlsx'}
+        )
+
+    elif format == 'txt':
+        lines = ['\t'.join(headers)]
+        for row in rows:
+            lines.append('\t'.join(str(v or '') for v in row))
+        content = '\n'.join(lines)
+        return Response(
+            content,
+            mimetype='text/plain; charset=utf-8',
+            headers={'Content-Disposition':
+                     'attachment;filename=ceemuci_bacheliers_2026.txt'}
+        )
+
+
+
 if __name__ == '__main__':
     app.run(debug=False)

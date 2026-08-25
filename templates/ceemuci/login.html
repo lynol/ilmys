@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEEMUCI — Connexion</title>
+    <style>
+        * { box-sizing:border-box;margin:0;padding:0 }
+        body {
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            background:#f0f4f8;min-height:100vh;
+            display:flex;align-items:center;justify-content:center;
+            padding:20px;
+        }
+        .card {
+            background:#fff;border-radius:16px;padding:40px;
+            width:100%;max-width:420px;
+            box-shadow:0 4px 24px rgba(0,0,0,0.08);
+        }
+        .logo { text-align:center;margin-bottom:28px }
+        .logo img { width:80px;height:80px;border-radius:50%;
+                    object-fit:cover;margin-bottom:12px }
+        .logo h1 { font-size:20px;font-weight:700;color:#1e293b }
+        .logo p  { font-size:13px;color:#64748b;margin-top:4px }
+        label { display:block;font-size:12px;font-weight:600;
+                color:#475569;margin-bottom:5px;text-transform:uppercase;
+                letter-spacing:0.4px }
+        input { width:100%;padding:10px 14px;border:1px solid #e2e8f0;
+                border-radius:8px;font-size:14px;font-family:inherit;
+                color:#1e293b;margin-bottom:14px;
+                transition:border-color 0.15s }
+        input:focus { outline:none;border-color:#00d2b2 }
+        .btn { width:100%;padding:12px;background:#00213f;color:#fff;
+               border:none;border-radius:8px;font-size:14px;
+               font-weight:700;cursor:pointer;font-family:inherit;
+               transition:opacity 0.15s }
+        .btn:hover { opacity:0.9 }
+        .alert { padding:10px 14px;background:#fee2e2;color:#991b1b;
+                 border-radius:8px;font-size:13px;margin-bottom:16px;
+                 border:1px solid #fecaca }
+        .footer { text-align:center;font-size:11px;color:#cbd5e1;
+                  margin-top:20px }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">
+        <img src="/static/assets/ceemuci_logo_rond.png"
+             alt="CEEMUCI">
+        <h1>CEEMUCI Diaspora</h1>
+        <p>Espace membres · Recensement bacheliers</p>
+    </div>
+
+    {% if error %}
+    <div class="alert">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        <label>Email</label>
+        <input type="email" name="email" required autofocus
+               placeholder="votre@email.com">
+        <label>Mot de passe</label>
+        <input type="password" name="password" required
+               placeholder="••••••••">
+        <button type="submit" class="btn">Se connecter →</button>
+    </form>
+
+    <div class="footer">CEEMUCI Diaspora · Accès réservé aux membres</div>
+</div>
+</body>
+</html>

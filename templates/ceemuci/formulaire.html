@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEEMUCI — Recensement Bacheliers 2026</title>
+    <style>
+        * { box-sizing:border-box;margin:0;padding:0 }
+        body {
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+            background:#f0f4f8;min-height:100vh;padding:30px 16px;
+            color:#1e293b;
+        }
+        .container { max-width:640px;margin:0 auto }
+
+        /* HEADER */
+        .header {
+            background:#00213f;border-radius:16px;
+            padding:28px 32px;margin-bottom:24px;
+            display:flex;align-items:center;gap:20px;
+            color:#fff;
+        }
+        .header img {
+            width:70px;height:70px;border-radius:50%;
+            object-fit:cover;flex-shrink:0;
+            border:3px solid #00d2b2;
+        }
+        .header h1 { font-size:20px;font-weight:800;margin-bottom:4px }
+        .header p  { font-size:13px;color:#94a3b8;line-height:1.5 }
+
+        /* NOTICE */
+        .notice {
+            background:#fffbeb;border:1px solid #f59e0b;
+            border-radius:10px;padding:14px 18px;
+            margin-bottom:24px;font-size:13px;
+            color:#92400e;line-height:1.6;
+        }
+        .notice strong { color:#78350f }
+
+        /* CARD */
+        .card {
+            background:#fff;border-radius:14px;padding:28px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.06);
+            margin-bottom:16px;
+            border:1px solid #e2e8f0;
+        }
+        .card-title {
+            font-size:13px;font-weight:700;color:#00213f;
+            text-transform:uppercase;letter-spacing:0.5px;
+            margin-bottom:18px;padding-bottom:10px;
+            border-bottom:2px solid #00d2b2;
+            display:inline-block;
+        }
+
+        /* FORM */
+        .form-row { display:grid;gap:14px;margin-bottom:14px }
+        .form-row.cols2 { grid-template-columns:1fr 1fr }
+        .form-group { display:flex;flex-direction:column }
+        label {
+            font-size:11px;font-weight:700;color:#64748b;
+            text-transform:uppercase;letter-spacing:0.4px;
+            margin-bottom:5px;
+        }
+        label span.req { color:#ef4444;margin-left:2px }
+        label span.opt {
+            color:#94a3b8;font-weight:400;
+            text-transform:none;font-size:10px;
+            margin-left:4px;
+        }
+        input, select {
+            padding:10px 13px;border:1px solid #e2e8f0;
+            border-radius:8px;font-size:14px;
+            font-family:inherit;color:#1e293b;
+            transition:border-color 0.15s;background:#fff;
+        }
+        input:focus, select:focus {
+            outline:none;border-color:#00d2b2;
+            box-shadow:0 0 0 3px rgba(0,210,178,0.1);
+        }
+        input::placeholder { color:#cbd5e1 }
+
+        /* RADIO */
+        .radio-group {
+            display:flex;gap:12px;flex-wrap:wrap;margin-top:4px
+        }
+        .radio-option {
+            display:flex;align-items:center;gap:8px;
+            padding:9px 16px;border:1px solid #e2e8f0;
+            border-radius:8px;cursor:pointer;font-size:14px;
+            color:#475569;transition:all 0.15s;
+            flex:1;min-width:120px;
+        }
+        .radio-option input[type="radio"] { display:none }
+        .radio-option.selected {
+            border-color:#00d2b2;background:#e6faf8;
+            color:#00213f;font-weight:600;
+        }
+        .radio-dot {
+            width:16px;height:16px;border-radius:50%;
+            border:2px solid #cbd5e1;flex-shrink:0;
+            display:flex;align-items:center;justify-content:center;
+            transition:all 0.15s;
+        }
+        .radio-option.selected .radio-dot {
+            border-color:#00d2b2;background:#00d2b2;
+        }
+        .radio-option.selected .radio-dot::after {
+            content:'';width:6px;height:6px;
+            border-radius:50%;background:#fff;display:block;
+        }
+
+        /* SUBMIT */
+        .btn-submit {
+            width:100%;padding:14px;background:#00213f;
+            color:#fff;border:none;border-radius:10px;
+            font-size:15px;font-weight:700;cursor:pointer;
+            font-family:inherit;transition:opacity 0.15s;
+            margin-top:8px;
+        }
+        .btn-submit:hover { opacity:0.9 }
+
+        /* ALERT */
+        .alert-success {
+            background:#ecfdf5;border:1px solid #6ee7b7;
+            border-radius:10px;padding:16px 20px;
+            color:#065f46;font-size:14px;font-weight:600;
+            margin-bottom:20px;text-align:center;
+        }
+        .alert-error {
+            background:#fee2e2;border:1px solid #fca5a5;
+            border-radius:10px;padding:16px 20px;
+            color:#991b1b;font-size:14px;
+            margin-bottom:20px;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align:center;font-size:11px;color:#94a3b8;
+            margin-top:24px;line-height:1.8;
+        }
+
+        @media (max-width:500px) {
+            .form-row.cols2 { grid-template-columns:1fr }
+            .header { flex-direction:column;text-align:center }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <img src="/static/assets/ceemuci_logo_rond.png" alt="CEEMUCI">
+        <div>
+            <h1>Recensement Bacheliers 2026</h1>
+            <p>CEEMUCI Diaspora · Communauté des Étudiants
+               et Élèves Musulmans de Côte d'Ivoire</p>
+        </div>
+    </div>
+
+    <!-- NOTICE -->
+    <div class="notice">
+        <strong>📢 Information importante</strong><br>
+        Les résultats d'orientation universitaire ne sont pas encore
+        disponibles. Tu peux déjà remplir ce formulaire avec tes
+        informations personnelles — les champs <em>Université</em>
+        et <em>Filière</em> sont facultatifs et pourront être
+        complétés ultérieurement. La CEEMUCI Diaspora prépare
+        des activités d'accueil et d'accompagnement pour les
+        nouveaux bacheliers de notre communauté.
+    </div>
+
+    {% if success %}
+    <div class="alert-success">
+        ✅ Ton inscription a bien été enregistrée !
+        Bienvenue dans la base de données CEEMUCI.
+        Nous te contacterons prochainement.
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert-error">❌ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" id="formRecensement">
+
+        <!-- INFOS PERSONNELLES -->
+        <div class="card">
+            <div class="card-title">Informations personnelles</div>
+
+            <div class="form-row cols2">
+                <div class="form-group">
+                    <label>Nom <span class="req">*</span></label>
+                    <input type="text" name="nom" required
+                           placeholder="KONÉ"
+                           value="{{ form.nom if form else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Prénoms <span class="req">*</span></label>
+                    <input type="text" name="prenoms" required
+                           placeholder="Aminata"
+                           value="{{ form.prenoms if form else '' }}">
+                </div>
+            </div>
+
+            <div class="form-row cols2">
+                <div class="form-group">
+                    <label>Sexe <span class="req">*</span></label>
+                    <select name="sexe" required>
+                        <option value="">Choisir...</option>
+                        <option value="Masculin"
+                            {% if form and form.sexe=='Masculin' %}selected{% endif %}>
+                            Masculin
+                        </option>
+                        <option value="Féminin"
+                            {% if form and form.sexe=='Féminin' %}selected{% endif %}>
+                            Féminin
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ville d'origine <span class="req">*</span></label>
+                    <input type="text" name="ville_origine" required
+                           placeholder="Abidjan, Bouaké..."
+                           value="{{ form.ville_origine if form else '' }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- ORIENTATION -->
+        <div class="card">
+            <div class="card-title">Orientation universitaire</div>
+            <p style="font-size:12px;color:#94a3b8;margin-bottom:16px">
+                Ces champs sont facultatifs — à compléter quand
+                les résultats d'orientation seront disponibles.
+            </p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        Université d'accueil
+                        <span class="opt">(facultatif)</span>
+                    </label>
+                    <input type="text" name="universite"
+                           placeholder="Ex: Université Félix Houphouët-Boigny"
+                           value="{{ form.universite if form else '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        Filière
+                        <span class="opt">(facultatif)</span>
+                    </label>
+                    <input type="text" name="filiere"
+                           placeholder="Ex: Médecine, Droit, Informatique..."
+                           value="{{ form.filiere if form else '' }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACTS -->
+        <div class="card">
+            <div class="card-title">Contacts</div>
+
+            <div class="form-row cols2">
+                <div class="form-group">
+                    <label>Téléphone <span class="req">*</span></label>
+                    <input type="tel" name="telephone" required
+                           placeholder="+225 07 00 00 00 00"
+                           value="{{ form.telephone if form else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp <span class="req">*</span></label>
+                    <input type="tel" name="whatsapp"
+                           placeholder="+225 07 00 00 00 00"
+                           value="{{ form.whatsapp if form else '' }}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        Email
+                        <span class="opt">(facultatif)</span>
+                    </label>
+                    <input type="email" name="email"
+                           placeholder="exemple@gmail.com"
+                           value="{{ form.email if form else '' }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- CEEMUCI -->
+        <div class="card">
+            <div class="card-title">Appartenance CEEMUCI</div>
+            <label style="margin-bottom:10px;display:block">
+                Appartenais-tu à la CEEMUCI avant le bac ?
+                <span class="req">*</span>
+            </label>
+            <div class="radio-group">
+                <label class="radio-option
+                    {% if form and form.ceemuci_membre=='1' %}selected{% endif %}"
+                    id="opt-oui">
+                    <input type="radio" name="ceemuci_membre"
+                           value="1" required
+                           {% if form and form.ceemuci_membre=='1' %}checked{% endif %}>
+                    <span class="radio-dot"></span>
+                    Oui, j'étais membre
+                </label>
+                <label class="radio-option
+                    {% if form and form.ceemuci_membre=='0' %}selected{% endif %}"
+                    id="opt-non">
+                    <input type="radio" name="ceemuci_membre"
+                           value="0"
+                           {% if form and form.ceemuci_membre=='0' %}checked{% endif %}>
+                    <span class="radio-dot"></span>
+                    Non, je découvre
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            ✅ Enregistrer mon inscription
+        </button>
+
+    </form>
+
+    <div class="footer">
+        CEEMUCI Diaspora · Communauté des Étudiants et Élèves
+        Musulmans de Côte d'Ivoire<br>
+        Vos données sont utilisées uniquement dans le cadre
+        des activités CEEMUCI.
+    </div>
+
+</div>
+
+<script>
+// Radio buttons visuels
+document.querySelectorAll('.radio-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+        document.querySelectorAll('.radio-option')
+                .forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input[type="radio"]').checked = true;
+    });
+});
+</script>
+</body>
+</html>
