@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEEMUCI - Sondage Présence Ibn Baz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background:#f4f7f4;padding:28px 16px;min-height:100vh }
+        .main-card { max-width:580px;margin:0 auto }
+
+        .header-card {
+            background:linear-gradient(135deg,#1a5c2a,#2d8a45);
+            border-radius:16px;padding:24px 28px;
+            color:#fff;margin-bottom:20px;
+            display:flex;align-items:center;gap:18px;
+        }
+        .header-card img {
+            width:65px;height:65px;border-radius:50%;
+            object-fit:cover;border:3px solid rgba(255,255,255,0.4);
+            flex-shrink:0;
+        }
+        .header-card h1 { font-size:19px;font-weight:800;margin:0 0 4px }
+        .header-card p  { font-size:13px;opacity:0.8;margin:0 }
+
+        .deadline {
+            background:#fff8e6;border:1px solid #f0c040;
+            border-left:4px solid #e6a800;border-radius:10px;
+            padding:12px 16px;margin-bottom:18px;
+            font-size:13px;color:#6b5000;font-weight:600;
+        }
+
+        .section-card {
+            background:#fff;border-radius:12px;
+            padding:22px 26px;margin-bottom:14px;
+            border:1px solid #d4e4d4;
+        }
+        .section-title {
+            font-size:11px;font-weight:700;
+            text-transform:uppercase;letter-spacing:0.6px;
+            color:#1a5c2a;margin-bottom:16px;
+            padding-bottom:8px;
+            border-bottom:2px solid #2d8a45;
+            display:inline-block;
+        }
+        .form-label {
+            font-size:12px;font-weight:600;
+            color:#4a6352;text-transform:uppercase;
+            letter-spacing:0.3px;margin-bottom:5px;
+        }
+        .form-control {
+            border:1px solid #d4e4d4;border-radius:8px;
+            padding:10px 14px;font-size:14px;
+        }
+        .form-control:focus {
+            border-color:#2d8a45;
+            box-shadow:0 0 0 3px rgba(45,138,69,0.12);
+        }
+
+        /* OPTIONS VISUELLES */
+        .options-grid {
+            display:grid;gap:10px;
+            margin-top:6px;
+        }
+        .options-grid.cols2 { grid-template-columns:1fr 1fr }
+        .options-grid.cols3 { grid-template-columns:1fr 1fr 1fr }
+
+        .opt-btn {
+            border:1.5px solid #d4e4d4;border-radius:10px;
+            padding:14px 12px;cursor:pointer;
+            display:flex;align-items:center;gap:10px;
+            font-size:14px;color:#4a6352;
+            transition:all 0.15s;background:#fafffe;
+            text-align:left;
+        }
+        .opt-btn:hover {
+            border-color:#2d8a45;background:#f0faf0;
+        }
+        .opt-btn.active {
+            border-color:#2d8a45;background:#f0faf0;
+            color:#1a5c2a;font-weight:700;
+        }
+        .opt-icon {
+            font-size:20px;flex-shrink:0;
+        }
+        .opt-dot {
+            width:16px;height:16px;border-radius:50%;
+            border:2px solid #c8dcc8;flex-shrink:0;
+            margin-left:auto;display:flex;
+            align-items:center;justify-content:center;
+        }
+        .opt-btn.active .opt-dot {
+            border-color:#2d8a45;background:#2d8a45;
+        }
+        .opt-btn.active .opt-dot::after {
+            content:'';width:6px;height:6px;
+            border-radius:50%;background:#fff;display:block;
+        }
+        input[type="radio"] { display:none }
+
+        .btn-submit {
+            width:100%;padding:14px;background:#1a5c2a;
+            color:#fff;border:none;border-radius:10px;
+            font-size:15px;font-weight:700;cursor:pointer;
+            transition:background 0.15s;margin-top:4px;
+        }
+        .btn-submit:hover { background:#2d8a45 }
+
+        .alert-success {
+            background:#f0faf4;border:1px solid #6ee7b7;
+            border-left:4px solid #059669;border-radius:10px;
+            padding:18px 22px;color:#065f46;font-size:15px;
+            font-weight:600;margin-bottom:20px;text-align:center;
+        }
+        .alert-error {
+            background:#fff5f5;border:1px solid #fca5a5;
+            border-left:4px solid #dc2626;border-radius:10px;
+            padding:14px 18px;color:#991b1b;font-size:14px;
+            margin-bottom:18px;
+        }
+        .footer-note {
+            text-align:center;font-size:11px;
+            color:#9ab0a0;margin-top:20px;line-height:1.8;
+        }
+
+        @media (max-width:480px) {
+            .options-grid.cols3 { grid-template-columns:1fr }
+            .header-card { flex-direction:column;text-align:center }
+        }
+    </style>
+</head>
+<body>
+<div class="main-card">
+
+    <!-- HEADER -->
+    <div class="header-card">
+        <img src="/static/assets/ceemuci_logo_rond.png" alt="CEEMUCI">
+        <div>
+            <h1>Sondage - Présence Ibn Baz</h1>
+            <p>CEEMUCI · Organisation des Djouman du vendredi</p>
+        </div>
+    </div>
+
+    <!-- DEADLINE -->
+    <div class="deadline">
+        ⏰ Merci de répondre avant le <strong>mercredi 26 août 2026
+        à 10h00 GMT</strong>
+    </div>
+
+    {% if success %}
+    <div class="alert-success">
+        ✅ Réponse enregistrée - Barakallahu fikoum !<br>
+        <span style="font-weight:400;font-size:13px">
+            Nous t'informerons du planning de rotation.
+        </span>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert-error">❌ {{ error }}</div>
+    {% endif %}
+
+    {% if not success %}
+    <form method="POST" id="sondageForm">
+
+        <!-- IDENTITÉ -->
+        <div class="section-card">
+            <div class="section-title">Ton identité</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nom *</label>
+                    <input type="text" name="nom"
+                           class="form-control" required
+                           placeholder="KONÉ">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Prénoms *</label>
+                    <input type="text" name="prenoms"
+                           class="form-control" required
+                           placeholder="Ibrahim">
+                </div>
+            </div>
+            <div class="mt-3">
+                <label class="form-label">WhatsApp *</label>
+                <input type="tel" name="whatsapp"
+                       class="form-control" required
+                       placeholder="+225 07 00 00 00 00">
+            </div>
+        </div>
+
+        <!-- Q1 LOCALISATION -->
+        <div class="section-card">
+            <div class="section-title">
+                Question 1 - Tu es basé où ?
+            </div>
+            <div class="options-grid cols2">
+                <label class="opt-btn" data-group="localisation">
+                    <input type="radio" name="localisation"
+                           value="Abidjan" required>
+                    <span class="opt-icon">🏙️</span>
+                    <span>Abidjan</span>
+                    <span class="opt-dot"></span>
+                </label>
+                <label class="opt-btn" data-group="localisation">
+                    <input type="radio" name="localisation"
+                           value="Hors Abidjan">
+                    <span class="opt-icon">🌍</span>
+                    <span>Hors Abidjan</span>
+                    <span class="opt-dot"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q2 DISPONIBILITÉ -->
+        <div class="section-card">
+            <div class="section-title">
+                Question 2 - Disponible pour les Djouman du vendredi ?
+            </div>
+            <div class="options-grid cols3">
+                <label class="opt-btn" data-group="disponible">
+                    <input type="radio" name="disponible_djouman"
+                           value="Oui" required>
+                    <span class="opt-icon">✅</span>
+                    <span>Oui</span>
+                    <span class="opt-dot"></span>
+                </label>
+                <label class="opt-btn" data-group="disponible">
+                    <input type="radio" name="disponible_djouman"
+                           value="Parfois">
+                    <span class="opt-icon">🔄</span>
+                    <span>Parfois</span>
+                    <span class="opt-dot"></span>
+                </label>
+                <label class="opt-btn" data-group="disponible">
+                    <input type="radio" name="disponible_djouman"
+                           value="Non">
+                    <span class="opt-icon">❌</span>
+                    <span>Non</span>
+                    <span class="opt-dot"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Q3 IBN BAZ -->
+        <div class="section-card">
+            <div class="section-title">
+                Question 3 - Ibn Baz est accessible pour toi ?
+            </div>
+            <div class="options-grid cols2">
+                <label class="opt-btn" data-group="ibn">
+                    <input type="radio" name="ibn_baz_accessible"
+                           value="Oui" required>
+                    <span class="opt-icon">✅</span>
+                    <span>Oui, accessible</span>
+                    <span class="opt-dot"></span>
+                </label>
+                <label class="opt-btn" data-group="ibn">
+                    <input type="radio" name="ibn_baz_accessible"
+                           value="Non">
+                    <span class="opt-icon">❌</span>
+                    <span>Non, trop loin</span>
+                    <span class="opt-dot"></span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            Envoyer ma réponse →
+        </button>
+
+    </form>
+    {% endif %}
+
+    <div class="footer-note">
+        CEEMUCI · Données utilisées uniquement pour l'organisation
+        interne<br>Barakallahu fikoum
+    </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll(
+            `.opt-btn[data-group="${group}"]`
+        ).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        btn.querySelector('input[type="radio"]').checked = true;
+    });
+});
+</script>
+</body>
+</html>

@@ -3005,5 +3005,61 @@ def ceemuci_supprimer(bid):
     flash('Fiche supprimée.', 'success')
     return redirect(url_for('ceemuci_admin'))
 
+
+@app.route('/ceemuci/Amanah_suivie', methods=['GET', 'POST'])
+def ceemuci_amanah():
+    success = False
+    error   = None
+
+    if request.method == 'POST':
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute("""
+                INSERT INTO ceemuci_amanah
+                    (nom, prenoms, whatsapp,
+                     localisation, disponible_djouman,
+                     ibn_baz_accessible)
+                VALUES (%s,%s,%s,%s,%s,%s)
+            """, (
+                request.form.get('nom','').strip(),
+                request.form.get('prenoms','').strip(),
+                request.form.get('whatsapp','').strip(),
+                request.form.get('localisation'),
+                request.form.get('disponible_djouman'),
+                request.form.get('ibn_baz_accessible'),
+            ))
+            mysql.connection.commit()
+            cur.close()
+            success = True
+        except Exception as e:
+            error = f'Erreur : {str(e)}'
+
+    return render_template('ceemuci/amanah.html',
+                           success=success, error=error)
+
+@app.route('/ceemuci/admin/amanah')
+@ceemuci_login_required
+def ceemuci_admin_amanah():
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT id, nom, prenoms, whatsapp,
+               localisation, disponible_djouman,
+               ibn_baz_accessible, created_at
+        FROM ceemuci_amanah
+        ORDER BY created_at DESC
+    """)
+    reponses = cur.fetchall()
+    cur.close()
+
+    stats = {
+        'total'     : len(reponses),
+        'abidjan'   : sum(1 for r in reponses if r[4]=='Abidjan'),
+        'dispo_oui' : sum(1 for r in reponses if r[5]=='Oui'),
+        'ibn_oui'   : sum(1 for r in reponses if r[6]=='Oui'),
+    }
+
+    return render_template('ceemuci/admin_amanah.html',
+                           reponses=reponses, stats=stats)
+
 if __name__ == '__main__':
     app.run(debug=False)

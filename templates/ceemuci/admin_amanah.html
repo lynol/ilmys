@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEEMUCI — Sondage Ibn Baz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background:#f4f7f4;padding:24px 16px }
+        .topbar {
+            background:#1a5c2a;border-radius:12px;
+            padding:14px 22px;color:#fff;
+            display:flex;align-items:center;
+            justify-content:space-between;
+            margin-bottom:20px;
+        }
+        .topbar h1 { font-size:16px;font-weight:700;margin:0 }
+        .topbar p  { font-size:11px;opacity:0.7;margin:0 }
+        .stat {
+            background:#fff;border-radius:10px;padding:16px;
+            border:1px solid #d4e4d4;border-top:3px solid #2d8a45;
+            text-align:center;
+        }
+        .stat-val {
+            font-size:28px;font-weight:800;color:#1a5c2a;
+        }
+        .stat-label {
+            font-size:11px;color:#64748b;font-weight:600;
+            margin-top:4px;
+        }
+        .card {
+            background:#fff;border-radius:12px;
+            border:1px solid #d4e4d4;overflow:hidden;
+        }
+        .card-header {
+            background:#f0faf4;padding:12px 18px;
+            border-bottom:1px solid #d4e4d4;
+            display:flex;justify-content:space-between;
+            align-items:center;flex-wrap:wrap;gap:8px;
+        }
+        .card-header h2 {
+            font-size:14px;font-weight:700;
+            color:#1a5c2a;margin:0;
+        }
+        table {
+            width:100%;border-collapse:collapse;font-size:13px
+        }
+        thead th {
+            background:#f0faf4;color:#4a6352;font-weight:700;
+            padding:10px 14px;text-align:left;
+            border-bottom:1px solid #d4e4d4;font-size:11px;
+            text-transform:uppercase;letter-spacing:0.4px;
+        }
+        tbody td {
+            padding:10px 14px;border-bottom:1px solid #f0f7f0;
+            color:#334155;
+        }
+        tbody tr:hover td { background:#f9fdf9 }
+        .badge {
+            display:inline-block;padding:3px 9px;
+            border-radius:20px;font-size:11px;font-weight:700;
+        }
+        .badge-oui     { background:#dcfce7;color:#166534 }
+        .badge-non     { background:#fee2e2;color:#991b1b }
+        .badge-parfois { background:#fef9c3;color:#854d0e }
+        .badge-abidjan { background:#dbeafe;color:#1d4ed8 }
+        .badge-hors    { background:#f3e8ff;color:#6b21a8 }
+        input[type="text"] {
+            padding:7px 12px;border:1px solid #d4e4d4;
+            border-radius:8px;font-size:13px;width:220px;
+        }
+        .btn-export {
+            padding:6px 14px;border-radius:8px;font-size:12px;
+            font-weight:600;text-decoration:none;
+            background:#1a5c2a;color:#fff;border:none;cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div>
+        <h1>Sondage — Présence Ibn Baz</h1>
+        <p>Résultats · CEEMUCI Admin</p>
+    </div>
+    <div style="display:flex;gap:8px">
+        <a href="{{ url_for('ceemuci_admin') }}"
+           style="padding:6px 14px;border-radius:8px;
+                  font-size:12px;font-weight:600;
+                  background:rgba(255,255,255,0.15);
+                  color:#fff;text-decoration:none">
+            ← Bacheliers
+        </a>
+        <a href="{{ url_for('ceemuci_logout') }}"
+           style="padding:6px 14px;border-radius:8px;
+                  font-size:12px;font-weight:600;
+                  background:#fee2e2;color:#991b1b;
+                  text-decoration:none">
+            Déconnexion
+        </a>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat">
+            <div class="stat-val">{{ stats.total }}</div>
+            <div class="stat-label">Réponses totales</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat" style="border-top-color:#3b82f6">
+            <div class="stat-val" style="color:#1d4ed8">
+                {{ stats.abidjan }}
+            </div>
+            <div class="stat-label">Basés Abidjan</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat" style="border-top-color:#059669">
+            <div class="stat-val" style="color:#065f46">
+                {{ stats.dispo_oui }}
+            </div>
+            <div class="stat-label">Disponibles vendredi</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat" style="border-top-color:#7c3aed">
+            <div class="stat-val" style="color:#5b21b6">
+                {{ stats.ibn_oui }}
+            </div>
+            <div class="stat-label">Ibn Baz accessible</div>
+        </div>
+    </div>
+</div>
+
+<!-- TABLEAU -->
+<div class="card">
+    <div class="card-header">
+        <h2>Réponses ({{ reponses|length }})</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="searchInput"
+                   placeholder="Rechercher..."
+                   onkeyup="filterTable()">
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table id="mainTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nom & Prénoms</th>
+                    <th>WhatsApp</th>
+                    <th>Localisation</th>
+                    <th>Djouman vendredi</th>
+                    <th>Ibn Baz</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reponses %}
+                <tr>
+                    <td style="color:#94a3b8;font-size:11px">
+                        {{ loop.index }}
+                    </td>
+                    <td style="font-weight:700;color:#1e293b">
+                        {{ r[1] }} {{ r[2] }}
+                    </td>
+                    <td>{{ r[3] or '—' }}</td>
+                    <td>
+                        <span class="badge
+                            {% if r[4]=='Abidjan' %}badge-abidjan
+                            {% else %}badge-hors{% endif %}">
+                            {{ r[4] or '—' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge
+                            {% if r[5]=='Oui' %}badge-oui
+                            {% elif r[5]=='Non' %}badge-non
+                            {% else %}badge-parfois{% endif %}">
+                            {{ r[5] or '—' }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge
+                            {% if r[6]=='Oui' %}badge-oui
+                            {% else %}badge-non{% endif %}">
+                            {{ r[6] or '—' }}
+                        </span>
+                    </td>
+                    <td style="color:#94a3b8;font-size:11px">
+                        {{ r[7].strftime('%d/%m %H:%M') if r[7] else '—' }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if not reponses %}
+    <div style="text-align:center;padding:40px;color:#9ab0a0;
+                font-size:13px">
+        Aucune réponse pour le moment.
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function filterTable() {
+    const q = document.getElementById('searchInput')
+                       .value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r => {
+        r.style.display =
+            r.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>
