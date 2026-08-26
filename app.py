@@ -3006,7 +3006,6 @@ def ceemuci_supprimer(bid):
     flash('Fiche supprimée.', 'success')
     return redirect(url_for('ceemuci_admin'))
 
-
 @app.route('/ceemuci/Amanah_suivie', methods=['GET', 'POST'])
 def ceemuci_amanah():
     success = False
@@ -3015,23 +3014,35 @@ def ceemuci_amanah():
     if request.method == 'POST':
         try:
             cur = mysql.connection.cursor()
+
+            # Vérif doublon whatsapp
             cur.execute("""
-                INSERT INTO ceemuci_amanah
-                    (nom, prenoms, whatsapp,
-                     localisation, disponible_djouman,
-                     ibn_baz_accessible)
-                VALUES (%s,%s,%s,%s,%s,%s)
-            """, (
-                request.form.get('nom','').strip(),
-                request.form.get('prenoms','').strip(),
-                request.form.get('whatsapp','').strip(),
-                request.form.get('localisation'),
-                request.form.get('disponible_djouman'),
-                request.form.get('ibn_baz_accessible'),
-            ))
-            mysql.connection.commit()
+                SELECT id FROM ceemuci_amanah
+                WHERE whatsapp = %s
+            """, (request.form.get('whatsapp','').strip(),))
+            existing = cur.fetchone()
+
+            if existing:
+                error = 'Ce numéro WhatsApp a déjà soumis une réponse.'
+            else:
+                cur.execute("""
+                    INSERT INTO ceemuci_amanah
+                        (nom, prenoms, whatsapp,
+                         localisation, disponible_djouman,
+                         ibn_baz_accessible)
+                    VALUES (%s,%s,%s,%s,%s,%s)
+                """, (
+                    request.form.get('nom','').strip(),
+                    request.form.get('prenoms','').strip(),
+                    request.form.get('whatsapp','').strip(),
+                    request.form.get('localisation'),
+                    request.form.get('disponible_djouman'),
+                    request.form.get('ibn_baz_accessible'),
+                ))
+                mysql.connection.commit()
+                success = True
+
             cur.close()
-            success = True
         except Exception as e:
             error = f'Erreur : {str(e)}'
 
@@ -3071,7 +3082,6 @@ def ceemuci_admin_amanah():
 
     return render_template('ceemuci/admin_amanah.html',
                            reponses=reponses, stats=stats)
-
 
 
 @app.route('/ceemuci/admin/planning', methods=['GET', 'POST'])
