@@ -226,12 +226,21 @@
 
     <!-- NOTICE -->
     <div class="notice">
-        <strong>📢 Information</strong><br>
-        Les résultats d'orientation universitaire ne sont pas encore
-        disponibles. Tu peux déjà remplir ce formulaire -
-        les champs <em>Université</em> et <em>Filière</em>
-        sont facultatifs. La CEEMUCI prépare des activités
-        d'accueil et d'accompagnement pour les nouveaux bacheliers.
+        <strong>🎉 Félicitations aux nouveaux bacheliers !</strong><br>
+        La CEEMUCI prépare un accueil dans nos coordinations universitaires
+        pour t'accompagner, t'orienter et te coacher dans ta nouvelle vie
+        d'étudiant. Remplis ce formulaire pour que nous puissions te
+        contacter. Barakallahu fikoum.
+    </div>
+
+    <div style="background:#f0faf4;border-radius:10px;
+                padding:14px 18px;margin-bottom:18px;
+                font-size:13px;color:#1a5c2a;
+                border-left:4px solid #2d8a45;line-height:1.7">
+        <strong>Pourquoi ce formulaire ?</strong><br>
+        La CEEMUCI t'accompagne dès ton entrée à l'université -
+        orientation, intégration, soutien académique et spirituel.
+        Rejoins une communauté qui te ressemble.
     </div>
 
     {% if success %}
@@ -306,29 +315,20 @@
         <!-- ORIENTATION -->
         <div class="section-card">
             <div class="section-title">Orientation universitaire</div>
-            <p style="font-size:13px;color:#7a9a82;margin-bottom:18px">
-                Champs facultatifs -à compléter quand les résultats
-                seront disponibles.
-            </p>
+            
             <div class="mb-3">
                 <label class="form-label">
-                    Université d'accueil
-                    <span class="opt">(facultatif)</span>
+                    Université d'accueil <span class="req">*</span>
                 </label>
                 <input type="text" name="universite"
-                       class="form-control"
-                       placeholder="Ex: Université Félix Houphouët-Boigny"
-                       value="{{ form.universite if form else '' }}">
+                    class="form-control" required>
             </div>
             <div>
                 <label class="form-label">
-                    Filière
-                    <span class="opt">(facultatif)</span>
+                    Filière <span class="req">*</span>
                 </label>
                 <input type="text" name="filiere"
-                       class="form-control"
-                       placeholder="Ex: Médecine, Droit, Informatique..."
-                       value="{{ form.filiere if form else '' }}">
+                    class="form-control" required>
             </div>
         </div>
 
