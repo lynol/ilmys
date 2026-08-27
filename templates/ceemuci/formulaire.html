@@ -227,20 +227,10 @@
     <!-- NOTICE -->
     <div class="notice">
         <strong>🎉 Félicitations aux nouveaux bacheliers !</strong><br>
-        La CEEMUCI prépare un accueil dans nos coordinations universitaires
+        La CEEMUCI prépare un accueil des nouveaux bacheliers
         pour t'accompagner, t'orienter et te coacher dans ta nouvelle vie
         d'étudiant. Remplis ce formulaire pour que nous puissions te
         contacter. Barakallahu fikoum.
-    </div>
-
-    <div style="background:#f0faf4;border-radius:10px;
-                padding:14px 18px;margin-bottom:18px;
-                font-size:13px;color:#1a5c2a;
-                border-left:4px solid #2d8a45;line-height:1.7">
-        <strong>Pourquoi ce formulaire ?</strong><br>
-        La CEEMUCI t'accompagne dès ton entrée à l'université -
-        orientation, intégration, soutien académique et spirituel.
-        Rejoins une communauté qui te ressemble.
     </div>
 
     {% if success %}
@@ -306,7 +296,7 @@
                     </label>
                     <input type="text" name="ville_origine"
                            class="form-control" required
-                           placeholder="Abidjan, Bouaké, Korhogo..."
+                           placeholder="Yopougon, Bouaké, Korhogo..."
                            value="{{ form.ville_origine if form else '' }}">
                 </div>
             </div>
@@ -314,14 +304,15 @@
 
         <!-- ORIENTATION -->
         <div class="section-card">
-            <div class="section-title">Orientation universitaire</div>
+            <div class="section-title">Orientation académique</div>
             
             <div class="mb-3">
                 <label class="form-label">
-                    Université d'accueil <span class="req">*</span>
+                    Université / Grande École <span class="req">*</span>
                 </label>
                 <input type="text" name="universite"
-                    class="form-control" required>
+                    class="form-control" required
+                    placeholder="Ex: UFHB, IUA, ESATIC, UPGC...">
             </div>
             <div>
                 <label class="form-label">
